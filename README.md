@@ -1,6 +1,4 @@
-# computer-vision-shoplifting-detection
-
-## Overview
+# Shoplifting Detection AI Vision Model
 
 A simple computer vision project for detecting shoplifting using the UCF Crime dataset. The repo contains code to prepare a tabular dataset from video data and training code that consumes that tabular dataset.
 
