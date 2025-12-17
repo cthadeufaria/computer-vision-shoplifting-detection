@@ -1,3 +1,12 @@
+# Dataset:
+data
+dataset/*
+!dataset/Anomaly_Train.txt
+!dataset/ReadMe-Anomaly-Detection.txt
+!dataset/Temporal_Anomaly_Annotation_for_Testing_Videos.txt
+
+models/*
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
