@@ -1,11 +1,14 @@
 # Dataset:
 data
+!shopformer/data/
+shopformer/data/PoseLift/
 dataset/*
 !dataset/Anomaly_Train.txt
 !dataset/ReadMe-Anomaly-Detection.txt
 !dataset/Temporal_Anomaly_Annotation_for_Testing_Videos.txt
 
 models/*
+!shopformer/models/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -214,3 +217,11 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Shopformer checkpoints (large model files)
+shopformer/checkpoints/
+shopformer/checkpoints_deeper_wider/
+*.pt
+
+# OS files
+.DS_Store

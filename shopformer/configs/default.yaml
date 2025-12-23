@@ -1,0 +1,60 @@
+# Shopformer Default Configuration
+# Based on the paper: "Shopformer: Transformer-Based Framework for
+# Detecting Shoplifting via Human Pose" (CVPR 2025)
+
+# Model Architecture
+model:
+  in_channels: 2              # Input channels (x, y coordinates)
+  hidden_channels: 64         # Hidden dimension in GCAE
+  latent_channels: 8          # Latent dimension (tokens)
+  num_keypoints: 17           # COCO-17 keypoint format
+  seq_len: 12                 # Input sequence length (frames)
+  num_tokens: 2               # Number of output tokens
+  gcae_layers: 4              # Number of ST-GCN layers in GCAE
+  transformer_heads: 2        # Number of attention heads
+  transformer_layers: 2       # Number of transformer layers
+  transformer_ff_dim: 64      # Feed-forward dimension
+  dropout: 0.1                # Dropout rate
+  layout: 'coco'              # Skeleton layout
+
+# Training Configuration
+training:
+  # Stage 1: GCAE Training
+  stage1:
+    epochs: 10
+    learning_rate: 5.0e-5
+    optimizer: 'adam'
+    loss: 'mse'
+
+  # Stage 2: Transformer Training
+  stage2:
+    epochs: 20
+    learning_rate: 5.0e-5
+    optimizer: 'adam'
+    loss: 'mse'
+
+  # General
+  batch_size: 32
+  num_workers: 4
+  seed: 42
+
+# Data Configuration
+data:
+  dataset: 'poselift'
+  data_dir: './data/PoseLift'
+  seq_stride: 6               # Stride for sliding window
+  normalize: true
+  include_confidence: false
+
+# Evaluation
+evaluation:
+  metrics:
+    - 'auc_roc'
+    - 'auc_pr'
+    - 'accuracy'
+    - 'f1'
+
+# Paths
+paths:
+  checkpoint_dir: './checkpoints'
+  log_dir: './logs'
