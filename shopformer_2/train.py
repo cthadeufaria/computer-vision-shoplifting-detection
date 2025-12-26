@@ -80,6 +80,17 @@ def get_scheduler(optimizer, config: Dict, num_batches: int, stage: int):
 
         return torch.optim.lr_scheduler.LambdaLR(optimizer, lr_lambda)
 
+    elif scheduler_type == 'step':
+        # Step LR: halve learning rate every N epochs
+        step_size = scheduler_cfg.get('step_size', 10)
+        gamma = scheduler_cfg.get('gamma', 0.5)
+        # StepLR steps per epoch, so use epoch-based stepping
+        return torch.optim.lr_scheduler.StepLR(
+            optimizer,
+            step_size=step_size * steps_per_epoch,  # Convert epochs to steps
+            gamma=gamma
+        )
+
     elif scheduler_type == 'reduce_on_plateau':
         return torch.optim.lr_scheduler.ReduceLROnPlateau(
             optimizer,

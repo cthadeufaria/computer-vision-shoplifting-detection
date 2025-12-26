@@ -34,7 +34,7 @@ training:
 
   # Stage 1: GCAE Training
   stage1:
-    epochs: 100                     # Max epochs (early stopping enabled)
+    epochs: 200                     # Max epochs (early stopping enabled)
     learning_rate: 5.0e-5           # Paper: 5e-5
     weight_decay: 0                 # Paper doesn't use weight decay
 
@@ -50,10 +50,12 @@ training:
   grad_clip: 1.0
 
   # Learning rate scheduler
-  # Paper uses constant LR (no scheduler, no warmup)
+  # Halve LR every 10 epochs for stable convergence
   scheduler:
-    type: none                      # none, cosine_warmup, or reduce_on_plateau
-    warmup_epochs: 0                # Paper: no warmup
+    type: step                      # none, step, cosine_warmup, or reduce_on_plateau
+    step_size: 10                   # Halve LR every 10 epochs
+    gamma: 0.5                      # Multiply LR by 0.5
+    warmup_epochs: 0                # No warmup
     min_lr: 1.0e-6
     # For reduce_on_plateau:
     factor: 0.5
