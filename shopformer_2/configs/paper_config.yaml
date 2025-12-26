@@ -50,13 +50,14 @@ training:
   grad_clip: 1.0
 
   # Learning rate scheduler
-  # Halve LR every 10 epochs for stable convergence
+  # Exponential decay: ~5% reduction per epoch (gentler than step decay)
   scheduler:
-    type: step                      # none, step, cosine_warmup, or reduce_on_plateau
-    step_size: 10                   # Halve LR every 10 epochs
-    gamma: 0.5                      # Multiply LR by 0.5
+    type: exponential               # none, step, exponential, cosine_warmup, or reduce_on_plateau
+    gamma: 0.95                     # Multiply LR by 0.95 each epoch (~60% at epoch 10)
     warmup_epochs: 0                # No warmup
     min_lr: 1.0e-6
+    # For step scheduler:
+    step_size: 10
     # For reduce_on_plateau:
     factor: 0.5
     patience: 5

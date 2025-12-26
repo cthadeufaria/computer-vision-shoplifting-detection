@@ -91,6 +91,18 @@ def get_scheduler(optimizer, config: Dict, num_batches: int, stage: int):
             gamma=gamma
         )
 
+    elif scheduler_type == 'exponential':
+        # Exponential LR: multiply by gamma every epoch
+        # gamma=0.95 means ~5% decay per epoch
+        gamma = scheduler_cfg.get('gamma', 0.95)
+        # ExponentialLR applies gamma per step, so compute per-step gamma
+        # to achieve desired per-epoch decay
+        gamma_per_step = gamma ** (1.0 / steps_per_epoch)
+        return torch.optim.lr_scheduler.ExponentialLR(
+            optimizer,
+            gamma=gamma_per_step
+        )
+
     elif scheduler_type == 'reduce_on_plateau':
         return torch.optim.lr_scheduler.ReduceLROnPlateau(
             optimizer,
