@@ -66,17 +66,37 @@ class EarlyStopping:
 
 
 class PoseAugmentation:
-    """Data augmentation for pose sequences."""
+    """Aggressive data augmentation for pose sequences to combat overfitting."""
 
     def __init__(self,
                  jitter_std: float = 0.02,
                  scale_range: tuple = (0.9, 1.1),
                  rotation_range: float = 0.1,
-                 temporal_dropout: float = 0.1):
+                 temporal_dropout: float = 0.1,
+                 horizontal_flip_prob: float = 0.5,
+                 keypoint_dropout: float = 0.1,
+                 time_warp_prob: float = 0.3,
+                 mixup_alpha: float = 0.0):
         self.jitter_std = jitter_std
         self.scale_range = scale_range
         self.rotation_range = rotation_range
         self.temporal_dropout = temporal_dropout
+        self.horizontal_flip_prob = horizontal_flip_prob
+        self.keypoint_dropout = keypoint_dropout
+        self.time_warp_prob = time_warp_prob
+        self.mixup_alpha = mixup_alpha
+
+        # COCO keypoint pairs for horizontal flip (left <-> right)
+        self.flip_pairs = [
+            (1, 2),   # eyes
+            (3, 4),   # ears
+            (5, 6),   # shoulders
+            (7, 8),   # elbows
+            (9, 10),  # wrists
+            (11, 12), # hips
+            (13, 14), # knees
+            (15, 16), # ankles
+        ]
 
     def __call__(self, poses: torch.Tensor) -> torch.Tensor:
         """
@@ -85,8 +105,26 @@ class PoseAugmentation:
             poses: (batch, 2, seq_len, num_keypoints)
         """
         batch_size = poses.size(0)
+        device = poses.device
 
-        # Random jitter
+        # Horizontal flip with keypoint swapping
+        if self.horizontal_flip_prob > 0:
+            flip_mask = torch.rand(batch_size) < self.horizontal_flip_prob
+            if flip_mask.any():
+                flipped = poses.clone()
+                # Flip x coordinates
+                flipped[:, 0, :, :] = -flipped[:, 0, :, :]
+                # Swap left-right keypoint pairs
+                for left, right in self.flip_pairs:
+                    if left < poses.size(3) and right < poses.size(3):
+                        temp = flipped[:, :, :, left].clone()
+                        flipped[:, :, :, left] = flipped[:, :, :, right]
+                        flipped[:, :, :, right] = temp
+                # Apply flip to selected samples
+                flip_mask = flip_mask.view(batch_size, 1, 1, 1).to(device)
+                poses = poses * (~flip_mask).float() + flipped * flip_mask.float()
+
+        # Random jitter (Gaussian noise)
         if self.jitter_std > 0:
             noise = torch.randn_like(poses) * self.jitter_std
             poses = poses + noise
@@ -94,14 +132,14 @@ class PoseAugmentation:
         # Random scaling per sample
         if self.scale_range[0] != 1.0 or self.scale_range[1] != 1.0:
             scales = torch.empty(batch_size, 1, 1, 1).uniform_(*self.scale_range)
-            scales = scales.to(poses.device)
+            scales = scales.to(device)
             poses = poses * scales
 
         # Random rotation (small angle)
         if self.rotation_range > 0:
             angles = torch.empty(batch_size).uniform_(-self.rotation_range, self.rotation_range)
-            cos_a = torch.cos(angles).view(batch_size, 1, 1, 1).to(poses.device)
-            sin_a = torch.sin(angles).view(batch_size, 1, 1, 1).to(poses.device)
+            cos_a = torch.cos(angles).view(batch_size, 1, 1, 1).to(device)
+            sin_a = torch.sin(angles).view(batch_size, 1, 1, 1).to(device)
 
             x = poses[:, 0:1, :, :]
             y = poses[:, 1:2, :, :]
@@ -115,8 +153,35 @@ class PoseAugmentation:
         if self.temporal_dropout > 0:
             seq_len = poses.size(2)
             mask = torch.rand(batch_size, 1, seq_len, 1) > self.temporal_dropout
-            mask = mask.to(poses.device).float()
+            mask = mask.to(device).float()
             poses = poses * mask
+
+        # Keypoint dropout (simulate occlusion)
+        if self.keypoint_dropout > 0:
+            num_keypoints = poses.size(3)
+            kp_mask = torch.rand(batch_size, 1, 1, num_keypoints) > self.keypoint_dropout
+            kp_mask = kp_mask.to(device).float()
+            poses = poses * kp_mask
+
+        # Time warping (random temporal permutation of adjacent frames)
+        if self.time_warp_prob > 0:
+            warp_mask = torch.rand(batch_size) < self.time_warp_prob
+            if warp_mask.any():
+                seq_len = poses.size(2)
+                for b in range(batch_size):
+                    if warp_mask[b] and seq_len > 2:
+                        # Swap 1-2 random adjacent frame pairs
+                        num_swaps = torch.randint(1, 3, (1,)).item()
+                        for _ in range(num_swaps):
+                            idx = torch.randint(0, seq_len - 1, (1,)).item()
+                            poses[b, :, idx, :], poses[b, :, idx + 1, :] = \
+                                poses[b, :, idx + 1, :].clone(), poses[b, :, idx, :].clone()
+
+        # Mixup (blend samples within batch)
+        if self.mixup_alpha > 0 and batch_size > 1:
+            lam = np.random.beta(self.mixup_alpha, self.mixup_alpha)
+            perm = torch.randperm(batch_size)
+            poses = lam * poses + (1 - lam) * poses[perm]
 
         return poses
 
@@ -275,16 +340,17 @@ def main():
     parser.add_argument('--output_dir', type=str, default='./checkpoints',
                         help='Output directory for checkpoints')
 
-    # Model config
-    parser.add_argument('--seq_len', type=int, default=12)
+    # Model config (aligned with paper: 2 layers, 2 heads, 64 ff_dim)
+    # Using smaller hidden_channels (32) to reduce overfitting with limited data
+    parser.add_argument('--seq_len', type=int, default=24)  # Paper uses 24
     parser.add_argument('--num_keypoints', type=int, default=17)
     parser.add_argument('--num_tokens', type=int, default=2)
-    parser.add_argument('--hidden_channels', type=int, default=64)
+    parser.add_argument('--hidden_channels', type=int, default=32)  # Reduced from 64
     parser.add_argument('--latent_channels', type=int, default=8)
     parser.add_argument('--transformer_heads', type=int, default=2)
     parser.add_argument('--transformer_layers', type=int, default=2)
-    parser.add_argument('--transformer_ff_dim', type=int, default=128)
-    parser.add_argument('--dropout', type=float, default=0.1)
+    parser.add_argument('--transformer_ff_dim', type=int, default=64)  # Paper: 64
+    parser.add_argument('--dropout', type=float, default=0.2)  # Increased for regularization
 
     # Training config
     parser.add_argument('--stage1_epochs', type=int, default=30)
@@ -305,12 +371,19 @@ def main():
     parser.add_argument('--early_stopping', action='store_true', default=True)
     parser.add_argument('--patience', type=int, default=15)
 
-    # Augmentation
-    parser.add_argument('--augment', action='store_true', default=True)
-    parser.add_argument('--jitter_std', type=float, default=0.02)
-    parser.add_argument('--scale_range', type=float, nargs=2, default=[0.95, 1.05])
-    parser.add_argument('--rotation_range', type=float, default=0.05)
-    parser.add_argument('--temporal_dropout', type=float, default=0.05)
+    # Augmentation (aggressive defaults to combat overfitting)
+    parser.add_argument('--augment', action='store_true', default=False,
+                        help='Enable data augmentation')
+    parser.add_argument('--no-augment', dest='augment', action='store_false',
+                        help='Disable data augmentation (default)')
+    parser.add_argument('--jitter_std', type=float, default=0.03)
+    parser.add_argument('--scale_range', type=float, nargs=2, default=[0.85, 1.15])
+    parser.add_argument('--rotation_range', type=float, default=0.15)
+    parser.add_argument('--temporal_dropout', type=float, default=0.1)
+    parser.add_argument('--horizontal_flip_prob', type=float, default=0.5)
+    parser.add_argument('--keypoint_dropout', type=float, default=0.15)
+    parser.add_argument('--time_warp_prob', type=float, default=0.3)
+    parser.add_argument('--mixup_alpha', type=float, default=0.2)
 
     # Logging
     parser.add_argument('--log_interval', type=int, default=1)
@@ -337,9 +410,17 @@ def main():
             jitter_std=args.jitter_std,
             scale_range=tuple(args.scale_range),
             rotation_range=args.rotation_range,
-            temporal_dropout=args.temporal_dropout
+            temporal_dropout=args.temporal_dropout,
+            horizontal_flip_prob=args.horizontal_flip_prob,
+            keypoint_dropout=args.keypoint_dropout,
+            time_warp_prob=args.time_warp_prob,
+            mixup_alpha=args.mixup_alpha
         )
-        print("Data augmentation enabled")
+        print(f"Aggressive data augmentation enabled:")
+        print(f"  - Jitter: {args.jitter_std}, Scale: {args.scale_range}, Rotation: {args.rotation_range}")
+        print(f"  - Temporal dropout: {args.temporal_dropout}, Keypoint dropout: {args.keypoint_dropout}")
+        print(f"  - Horizontal flip: {args.horizontal_flip_prob}, Time warp: {args.time_warp_prob}")
+        print(f"  - Mixup alpha: {args.mixup_alpha}")
 
     # Setup data
     print("Setting up data...")
@@ -347,6 +428,7 @@ def main():
         data_dir=args.data_dir,
         batch_size=args.batch_size,
         seq_len=args.seq_len,
+        stride=args.seq_len // 2,  # 50% overlap as in paper
         use_synthetic=args.use_synthetic,
         synthetic_samples=2000 if args.use_synthetic else 0
     )

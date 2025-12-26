@@ -25,11 +25,176 @@ Each .npy label file contains:
 
 import os
 import pickle
+import math
 import numpy as np
 import torch
 from torch.utils.data import Dataset, DataLoader
 from typing import Optional, List, Tuple, Dict, Any
 from pathlib import Path
+
+
+# ============================================================================
+# Affine Transform Augmentations (based on STG-NF paper approach)
+# ============================================================================
+
+def get_affine_transform_matrix(sx=1, sy=1, tx=0, ty=0, rot=0, shearx=0., sheary=0., flip=False):
+    """Generate 3x3 affine transformation matrix."""
+    cos_r = math.cos(math.radians(rot))
+    sin_r = math.sin(math.radians(rot))
+
+    # Flip matrix
+    flip_val = -1.0 if flip else 1.0
+
+    # Combined transformation
+    # Order: flip -> scale/translate -> shear -> rotate
+    mat = np.array([
+        [sx * flip_val * cos_r - sheary * sy * sin_r,
+         shearx * sx * flip_val * cos_r - sy * sin_r,
+         tx * cos_r - ty * sin_r],
+        [sx * flip_val * sin_r + sheary * sy * cos_r,
+         shearx * sx * flip_val * sin_r + sy * cos_r,
+         tx * sin_r + ty * cos_r],
+        [0, 0, 1]
+    ], dtype=np.float32)
+
+    return mat
+
+
+def apply_affine_transform(pose_seq, transform_matrix):
+    """
+    Apply affine transformation to pose sequence.
+
+    Args:
+        pose_seq: Shape (T, V, C) where C >= 2 (x, y, ...)
+        transform_matrix: 3x3 affine transform matrix
+
+    Returns:
+        Transformed pose sequence
+    """
+    T, V, C = pose_seq.shape
+    result = pose_seq.copy()
+
+    # Transform x, y coordinates
+    coords = pose_seq[:, :, :2]  # (T, V, 2)
+    ones = np.ones((T, V, 1))
+    coords_h = np.concatenate([coords, ones], axis=-1)  # (T, V, 3)
+
+    # Apply transformation: (T, V, 3) @ (3, 3).T -> (T, V, 3)
+    transformed = np.einsum('tvc,cd->tvd', coords_h, transform_matrix[:2, :].T)
+
+    result[:, :, :2] = transformed
+    return result
+
+
+# COCO keypoint indices for left-right swap
+COCO_KEYPOINT_FLIP_PAIRS = [
+    (1, 2),   # left_eye, right_eye
+    (3, 4),   # left_ear, right_ear
+    (5, 6),   # left_shoulder, right_shoulder
+    (7, 8),   # left_elbow, right_elbow
+    (9, 10),  # left_wrist, right_wrist
+    (11, 12), # left_hip, right_hip
+    (13, 14), # left_knee, right_knee
+    (15, 16), # left_ankle, right_ankle
+]
+
+
+def flip_keypoints(pose_seq, num_keypoints=17):
+    """Swap left and right keypoints after horizontal flip."""
+    result = pose_seq.copy()
+    for left_idx, right_idx in COCO_KEYPOINT_FLIP_PAIRS:
+        if left_idx < num_keypoints and right_idx < num_keypoints:
+            result[:, left_idx], result[:, right_idx] = (
+                pose_seq[:, right_idx].copy(),
+                pose_seq[:, left_idx].copy()
+            )
+    return result
+
+
+class PoseAugmentor:
+    """
+    Pose sequence augmentor with affine transforms.
+    Based on STG-NF paper's augmentation strategy.
+    """
+
+    def __init__(
+        self,
+        flip_prob: float = 0.5,
+        shear_range: float = 0.1,
+        scale_range: Tuple[float, float] = (0.9, 1.1),
+        rotation_range: float = 10.0,  # degrees
+        translation_range: float = 0.1,
+        jitter_std: float = 0.02,
+        temporal_dropout_prob: float = 0.1,
+        num_keypoints: int = 17
+    ):
+        self.flip_prob = flip_prob
+        self.shear_range = shear_range
+        self.scale_range = scale_range
+        self.rotation_range = rotation_range
+        self.translation_range = translation_range
+        self.jitter_std = jitter_std
+        self.temporal_dropout_prob = temporal_dropout_prob
+        self.num_keypoints = num_keypoints
+
+    def __call__(self, pose_seq: np.ndarray) -> np.ndarray:
+        """
+        Apply random augmentations to pose sequence.
+
+        Args:
+            pose_seq: Shape (T, V, C)
+
+        Returns:
+            Augmented pose sequence
+        """
+        result = pose_seq.copy()
+
+        # Random horizontal flip
+        do_flip = np.random.random() < self.flip_prob
+
+        # Random shear
+        shearx = np.random.uniform(-self.shear_range, self.shear_range)
+        sheary = np.random.uniform(-self.shear_range, self.shear_range)
+
+        # Random scale
+        scale = np.random.uniform(self.scale_range[0], self.scale_range[1])
+
+        # Random rotation
+        rotation = np.random.uniform(-self.rotation_range, self.rotation_range)
+
+        # Random translation
+        tx = np.random.uniform(-self.translation_range, self.translation_range)
+        ty = np.random.uniform(-self.translation_range, self.translation_range)
+
+        # Build transform matrix
+        transform = get_affine_transform_matrix(
+            sx=scale, sy=scale,
+            tx=tx, ty=ty,
+            rot=rotation,
+            shearx=shearx, sheary=sheary,
+            flip=do_flip
+        )
+
+        # Apply affine transform
+        result = apply_affine_transform(result, transform)
+
+        # Swap left-right keypoints if flipped
+        if do_flip:
+            result = flip_keypoints(result, self.num_keypoints)
+
+        # Add coordinate jitter
+        if self.jitter_std > 0:
+            jitter = np.random.randn(*result[:, :, :2].shape) * self.jitter_std
+            result[:, :, :2] += jitter
+
+        # Temporal dropout (zero out random frames)
+        if self.temporal_dropout_prob > 0:
+            T = result.shape[0]
+            for t in range(T):
+                if np.random.random() < self.temporal_dropout_prob:
+                    result[t] = 0
+
+        return result
 
 
 class PoseLiftDataset(Dataset):
