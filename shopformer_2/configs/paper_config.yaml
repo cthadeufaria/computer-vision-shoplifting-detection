@@ -1,0 +1,94 @@
+# Shopformer_2 Configuration
+# Paper-aligned settings: 12 heads, 4 layers, 64 FFN (consistent across all experiments)
+# Embedding size 144 (8 * 18 keypoints) achieves best AUC-ROC of 69.15%
+
+model:
+  # Input specifications
+  in_channels: 2                    # x, y coordinates only (no confidence)
+  num_keypoints: 18                 # COCO-17 + synthetic neck = 18 (matches paper)
+  seq_len: 12                       # Paper: 12 frames per sequence
+  num_tokens: 2                     # Paper: 2 tokens per sequence
+
+  # GCAE Tokenizer (Graph Convolutional Autoencoder)
+  gcae:
+    hidden_channels: 64             # Intermediate channel size
+    latent_channels: 8              # Token embedding channels: 8 * 18 = 144 (paper optimal)
+    num_layers: 4                   # 4 ST-GCN layers
+    dropout: 0.1
+
+  # Transformer Encoder-Decoder (PAPER SPECS - consistent across all experiments)
+  transformer:
+    input_dim: 144                  # 8 * 18 = 144 (matches d_model, no projection needed)
+    d_model: 144                    # 144 / 12 heads = 12 per head
+    num_heads: 12                   # Paper: 12 attention heads
+    num_layers: 4                   # Paper: 4 encoder + 4 decoder layers
+    dim_feedforward: 64             # Paper: 64 FFN dimension
+    dropout: 0.1
+
+training:
+  # Device selection (auto, mps, cuda, cpu)
+  device: auto
+
+  # Stage 1: GCAE Training
+  stage1:
+    epochs: 50
+    learning_rate: 5.0e-5
+    weight_decay: 1.0e-4
+
+  # Stage 2: Transformer Training (frozen GCAE)
+  stage2:
+    epochs: 100
+    learning_rate: 5.0e-5
+    weight_decay: 1.0e-4
+
+  # Optimization
+  batch_size: 32
+  gradient_accumulation: 4          # Effective batch = 128
+  grad_clip: 1.0
+
+  # Learning rate scheduler
+  scheduler:
+    type: cosine_warmup             # cosine_warmup or reduce_on_plateau
+    warmup_epochs: 5
+    min_lr: 1.0e-6
+    # For reduce_on_plateau:
+    factor: 0.5
+    patience: 5
+
+  # Early stopping
+  early_stopping:
+    enabled: false
+    patience: 20
+    min_delta: 0.001
+
+data:
+  # Dataset location (relative to config file)
+  data_dir: ../../shopformer/data/PoseLift
+
+  # Sequence extraction
+  stride: 6                         # 50% overlap with seq_len=12 (was 12)
+  normalize: true
+  include_confidence: false
+
+  # Data augmentation (REDUCED for stability - reconstruction tasks need less augmentation)
+  augmentation:
+    enabled: true
+    flip_prob: 0.3                  # Reduced from 0.5
+    jitter_std: 0.01                # Reduced from 0.02 (less noise)
+    scale_range: [0.95, 1.05]       # Reduced from [0.9, 1.1] (less scale variation)
+    rotation_range: 5.0             # Reduced from 10.0 degrees
+    temporal_dropout_prob: 0.05     # Reduced from 0.1
+    keypoint_dropout_prob: 0.0      # Disabled by default
+
+# Checkpoint settings
+checkpoint:
+  save_dir: checkpoints
+  save_best: true
+  save_last: true
+  save_frequency: 10                # Save every N epochs
+
+# Logging
+logging:
+  log_interval: 10                  # Log every N batches
+  use_tensorboard: true
+  tensorboard_dir: runs
