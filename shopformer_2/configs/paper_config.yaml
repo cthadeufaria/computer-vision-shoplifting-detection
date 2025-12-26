@@ -29,17 +29,20 @@ training:
   # Device selection (auto, mps, cuda, cpu)
   device: auto
 
+  # Optimizer: Paper uses Adam (not AdamW)
+  optimizer: adam                   # adam or adamw
+
   # Stage 1: GCAE Training
   stage1:
-    epochs: 50
-    learning_rate: 5.0e-5
-    weight_decay: 1.0e-4
+    epochs: 20                      # Paper doesn't specify, but total is ~20
+    learning_rate: 5.0e-5           # Paper: 5e-5
+    weight_decay: 0                 # Paper doesn't use weight decay
 
   # Stage 2: Transformer Training (frozen GCAE)
   stage2:
-    epochs: 100
-    learning_rate: 5.0e-5
-    weight_decay: 1.0e-4
+    epochs: 20                      # Paper: 10-20 epochs total
+    learning_rate: 5.0e-5           # Paper: 5e-5
+    weight_decay: 0                 # Paper doesn't use weight decay
 
   # Optimization
   batch_size: 32
@@ -47,9 +50,10 @@ training:
   grad_clip: 1.0
 
   # Learning rate scheduler
+  # Paper uses constant LR (no scheduler, no warmup)
   scheduler:
-    type: cosine_warmup             # cosine_warmup or reduce_on_plateau
-    warmup_epochs: 5
+    type: none                      # none, cosine_warmup, or reduce_on_plateau
+    warmup_epochs: 0                # Paper: no warmup
     min_lr: 1.0e-6
     # For reduce_on_plateau:
     factor: 0.5

@@ -32,10 +32,28 @@ from utils.device import get_device, setup_mps_environment, clear_mps_cache
 from utils.metrics import compute_metrics, compute_auc_roc
 
 
+def get_optimizer(params, config: Dict, stage_cfg: Dict):
+    """Create optimizer based on config (Adam or AdamW)."""
+    optimizer_type = config.get('training', {}).get('optimizer', 'adamw').lower()
+    lr = stage_cfg['learning_rate']
+    weight_decay = stage_cfg.get('weight_decay', 0)
+
+    if optimizer_type == 'adam':
+        # Paper uses Adam without weight decay
+        return torch.optim.Adam(params, lr=lr)
+    else:
+        # AdamW with weight decay
+        return torch.optim.AdamW(params, lr=lr, weight_decay=weight_decay)
+
+
 def get_scheduler(optimizer, config: Dict, num_batches: int, stage: int):
     """Create learning rate scheduler."""
     scheduler_cfg = config.get('training', {}).get('scheduler', {})
-    scheduler_type = scheduler_cfg.get('type', 'cosine_warmup')
+    scheduler_type = scheduler_cfg.get('type', 'cosine_warmup').lower()
+
+    # Paper uses constant LR (no scheduler)
+    if scheduler_type == 'none' or scheduler_type == 'constant':
+        return None
 
     if stage == 1:
         epochs = config['training']['stage1']['epochs']
@@ -93,17 +111,12 @@ def train_stage1(
 
     stage_cfg = config['training']['stage1']
     epochs = stage_cfg['epochs']
-    lr = stage_cfg['learning_rate']
-    weight_decay = stage_cfg['weight_decay']
     grad_accum = config['training']['gradient_accumulation']
     grad_clip = config['training']['grad_clip']
     log_interval = config.get('logging', {}).get('log_interval', 10)
 
-    optimizer = torch.optim.AdamW(
-        model.gcae.parameters(),
-        lr=lr,
-        weight_decay=weight_decay
-    )
+    # Use optimizer from config (Adam for paper alignment, AdamW otherwise)
+    optimizer = get_optimizer(model.gcae.parameters(), config, stage_cfg)
 
     scheduler = get_scheduler(optimizer, config, len(train_loader), stage=1)
 
@@ -251,8 +264,6 @@ def train_stage2(
 
     stage_cfg = config['training']['stage2']
     epochs = stage_cfg['epochs']
-    lr = stage_cfg['learning_rate']
-    weight_decay = stage_cfg['weight_decay']
     grad_accum = config['training']['gradient_accumulation']
     grad_clip = config['training']['grad_clip']
     log_interval = config.get('logging', {}).get('log_interval', 10)
@@ -262,11 +273,8 @@ def train_stage2(
     patience = early_stopping_cfg.get('patience', 20)
     min_delta = early_stopping_cfg.get('min_delta', 0.001)
 
-    optimizer = torch.optim.AdamW(
-        model.transformer.parameters(),
-        lr=lr,
-        weight_decay=weight_decay
-    )
+    # Use optimizer from config (Adam for paper alignment, AdamW otherwise)
+    optimizer = get_optimizer(model.transformer.parameters(), config, stage_cfg)
 
     scheduler = get_scheduler(optimizer, config, len(train_loader), stage=2)
 
