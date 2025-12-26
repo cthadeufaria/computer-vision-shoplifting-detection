@@ -1,12 +1,12 @@
 # Shopformer_2 Configuration
-# Paper-aligned settings: 12 heads, 4 layers, 64 FFN (consistent across all experiments)
+# Paper-optimal settings from ablation studies: 2 heads, 2 layers, 64 FFN
 # Embedding size 144 (8 * 18 keypoints) achieves best AUC-ROC of 69.15%
 
 model:
   # Input specifications
   in_channels: 2                    # x, y coordinates only (no confidence)
   num_keypoints: 18                 # COCO-17 + synthetic neck = 18 (matches paper)
-  seq_len: 24                       # Paper: 24 frames per sequence (from training command)
+  seq_len: 12                       # Paper: 12 frames per sequence
   num_tokens: 2                     # Paper: 2 tokens per sequence
 
   # GCAE Tokenizer (Graph Convolutional Autoencoder)
@@ -16,13 +16,13 @@ model:
     num_layers: 4                   # 4 ST-GCN layers
     dropout: 0.1
 
-  # Transformer Encoder-Decoder (PAPER SPECS - consistent across all experiments)
+  # Transformer Encoder-Decoder (PAPER OPTIMAL from ablation studies)
   transformer:
     input_dim: 144                  # 8 * 18 = 144 (matches d_model, no projection needed)
-    d_model: 144                    # 144 / 12 heads = 12 per head
-    num_heads: 12                   # Paper: 12 attention heads
-    num_layers: 4                   # Paper: 4 encoder + 4 decoder layers
-    dim_feedforward: 64             # Paper: 64 FFN dimension
+    d_model: 144                    # 144 / 2 heads = 72 per head
+    num_heads: 2                    # Paper optimal: 2 attention heads
+    num_layers: 2                   # Paper optimal: 2 encoder + 2 decoder layers
+    dim_feedforward: 64             # Paper optimal: 64 FFN dimension
     dropout: 0.1
 
 training:
@@ -40,7 +40,7 @@ training:
 
   # Stage 2: Transformer Training (frozen GCAE)
   stage2:
-    epochs: 10                      # Paper: 10 epochs (from training command)
+    epochs: 20                      # Paper: 10-20 epochs total
     learning_rate: 5.0e-5           # Paper: 5e-5
     weight_decay: 0                 # Paper doesn't use weight decay
 
@@ -70,7 +70,7 @@ data:
   data_dir: ../../shopformer/data/PoseLift
 
   # Sequence extraction
-  stride: 12                        # 50% overlap with seq_len=24 (paper: --seg_stride 12)
+  stride: 6                         # 50% overlap with seq_len=12 (was 12)
   normalize: true
   include_confidence: false
 
