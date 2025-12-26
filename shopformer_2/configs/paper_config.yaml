@@ -6,7 +6,7 @@ model:
   # Input specifications
   in_channels: 2                    # x, y coordinates only (no confidence)
   num_keypoints: 18                 # COCO-17 + synthetic neck = 18 (matches paper)
-  seq_len: 12                       # Paper: 12 frames per sequence
+  seq_len: 24                       # Paper: 24 frames per sequence (from training command)
   num_tokens: 2                     # Paper: 2 tokens per sequence
 
   # GCAE Tokenizer (Graph Convolutional Autoencoder)
@@ -40,7 +40,7 @@ training:
 
   # Stage 2: Transformer Training (frozen GCAE)
   stage2:
-    epochs: 20                      # Paper: 10-20 epochs total
+    epochs: 10                      # Paper: 10 epochs (from training command)
     learning_rate: 5.0e-5           # Paper: 5e-5
     weight_decay: 0                 # Paper doesn't use weight decay
 
@@ -70,7 +70,7 @@ data:
   data_dir: ../../shopformer/data/PoseLift
 
   # Sequence extraction
-  stride: 6                         # 50% overlap with seq_len=12 (was 12)
+  stride: 12                        # 50% overlap with seq_len=24 (paper: --seg_stride 12)
   normalize: true
   include_confidence: false
 
