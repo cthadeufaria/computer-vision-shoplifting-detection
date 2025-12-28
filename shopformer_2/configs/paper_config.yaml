@@ -37,13 +37,13 @@ training:
 
   # Stage 1: GCAE Training
   stage1:
-    epochs: 200                     # Max epochs (early stopping enabled)
+    epochs: 30                      # Reduced for faster iteration
     learning_rate: 5.0e-5           # Paper: 5e-5
     weight_decay: 0                 # Paper doesn't use weight decay
 
   # Stage 2: Transformer Training (frozen GCAE)
   stage2:
-    epochs: 200                     # Max epochs (early stopping enabled)
+    epochs: 30                      # Reduced for faster iteration
     learning_rate: 5.0e-5           # Paper: 5e-5
     weight_decay: 0                 # Paper doesn't use weight decay
 
