@@ -68,13 +68,30 @@ def get_scheduler(optimizer, config: Dict, num_batches: int, stage: int):
     steps_per_epoch = num_batches // grad_accum
 
     if scheduler_type == 'warmup_constant':
-        # Warmup from start_lr to end_lr, then constant
-        # This addresses "epoch 1 is best" issue by starting with very low LR
+        # Warmup from start_lr to end_lr, then constant (no decay)
         warmup_start_lr = scheduler_cfg.get('warmup_start_lr', 1e-7)
         warmup_end_lr = scheduler_cfg.get('warmup_end_lr', 5e-5)
         warmup_steps = warmup_epochs * steps_per_epoch
+        base_lr = optimizer.defaults['lr']
 
-        # Store base LR for reference
+        def lr_lambda(step):
+            if step < warmup_steps:
+                progress = step / max(warmup_steps, 1)
+                current_lr = warmup_start_lr + progress * (warmup_end_lr - warmup_start_lr)
+                return current_lr / base_lr
+            else:
+                return warmup_end_lr / base_lr
+
+        return torch.optim.lr_scheduler.LambdaLR(optimizer, lr_lambda)
+
+    elif scheduler_type == 'warmup_cosine':
+        # Warmup from start_lr to end_lr, then cosine decay to min_lr
+        # This is the recommended scheduler: warmup + decay
+        warmup_start_lr = scheduler_cfg.get('warmup_start_lr', 1e-7)
+        warmup_end_lr = scheduler_cfg.get('warmup_end_lr', 5e-5)
+        warmup_steps = warmup_epochs * steps_per_epoch
+        total_steps = epochs * steps_per_epoch
+        decay_steps = total_steps - warmup_steps
         base_lr = optimizer.defaults['lr']
 
         def lr_lambda(step):
@@ -84,8 +101,32 @@ def get_scheduler(optimizer, config: Dict, num_batches: int, stage: int):
                 current_lr = warmup_start_lr + progress * (warmup_end_lr - warmup_start_lr)
                 return current_lr / base_lr
             else:
-                # Constant at warmup_end_lr
-                return warmup_end_lr / base_lr
+                # Cosine decay from end_lr to min_lr
+                decay_progress = (step - warmup_steps) / max(decay_steps, 1)
+                current_lr = min_lr + 0.5 * (warmup_end_lr - min_lr) * (1 + np.cos(np.pi * decay_progress))
+                return current_lr / base_lr
+
+        return torch.optim.lr_scheduler.LambdaLR(optimizer, lr_lambda)
+
+    elif scheduler_type == 'warmup_exponential':
+        # Warmup from start_lr to end_lr, then exponential decay
+        warmup_start_lr = scheduler_cfg.get('warmup_start_lr', 1e-7)
+        warmup_end_lr = scheduler_cfg.get('warmup_end_lr', 5e-5)
+        gamma = scheduler_cfg.get('gamma', 0.95)  # Per-epoch decay factor
+        warmup_steps = warmup_epochs * steps_per_epoch
+        base_lr = optimizer.defaults['lr']
+
+        def lr_lambda(step):
+            if step < warmup_steps:
+                # Linear warmup from start_lr to end_lr
+                progress = step / max(warmup_steps, 1)
+                current_lr = warmup_start_lr + progress * (warmup_end_lr - warmup_start_lr)
+                return current_lr / base_lr
+            else:
+                # Exponential decay from end_lr
+                epochs_after_warmup = (step - warmup_steps) / max(steps_per_epoch, 1)
+                current_lr = max(min_lr, warmup_end_lr * (gamma ** epochs_after_warmup))
+                return current_lr / base_lr
 
         return torch.optim.lr_scheduler.LambdaLR(optimizer, lr_lambda)
 

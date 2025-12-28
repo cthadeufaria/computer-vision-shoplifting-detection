@@ -53,15 +53,15 @@ training:
   grad_clip: 1.0
 
   # Learning rate scheduler
-  # Warmup addresses "epoch 1 is best" issue by starting with very low LR
+  # Warmup + decay: addresses "epoch 1 is best" issue and provides gradual decay
   scheduler:
-    type: warmup_constant           # warmup_constant, none, step, exponential, cosine_warmup, or reduce_on_plateau
+    type: warmup_cosine             # warmup_cosine (recommended), warmup_exponential, warmup_constant, none, step, exponential, cosine_warmup, reduce_on_plateau
     warmup_epochs: 10               # Warmup for 10 epochs
     warmup_start_lr: 1.0e-7         # Start very low
     warmup_end_lr: 5.0e-5           # Ramp up to paper LR
-    min_lr: 1.0e-6
-    # For exponential/step scheduler:
-    gamma: 0.95                     # Multiply LR by 0.95 each epoch
+    min_lr: 1.0e-6                  # Minimum LR for decay phase
+    # For warmup_exponential/exponential/step scheduler:
+    gamma: 0.95                     # Multiply LR by 0.95 each epoch (after warmup)
     step_size: 10
     # For reduce_on_plateau:
     factor: 0.5
