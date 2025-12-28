@@ -207,6 +207,25 @@ class ShopformerTransformer(nn.Module):
         x = self.pos_encoder(x)
         return self.encoder(x)
 
+    def get_positionally_encoded_tokens(self, tokens: torch.Tensor) -> torch.Tensor:
+        """
+        Get tokens with positional encoding applied.
+
+        Paper specifies MSE loss between positionally-encoded tokens and
+        reconstructed tokens. This method provides the PE-augmented tokens
+        for loss computation.
+
+        Args:
+            tokens: Input tokens, shape (batch, num_tokens, input_dim)
+
+        Returns:
+            Positionally-encoded tokens, shape (batch, num_tokens, d_model)
+        """
+        x = self.input_projection(tokens)
+        # Apply PE without dropout for loss computation
+        x = x + self.pos_encoder.pe[:, :x.size(1), :]
+        return x
+
     def decode(self, memory: torch.Tensor, tokens: torch.Tensor) -> torch.Tensor:
         """
         Decode from latent representation.

@@ -67,7 +67,29 @@ def get_scheduler(optimizer, config: Dict, num_batches: int, stage: int):
     grad_accum = config['training'].get('gradient_accumulation', 1)
     steps_per_epoch = num_batches // grad_accum
 
-    if scheduler_type == 'cosine_warmup':
+    if scheduler_type == 'warmup_constant':
+        # Warmup from start_lr to end_lr, then constant
+        # This addresses "epoch 1 is best" issue by starting with very low LR
+        warmup_start_lr = scheduler_cfg.get('warmup_start_lr', 1e-7)
+        warmup_end_lr = scheduler_cfg.get('warmup_end_lr', 5e-5)
+        warmup_steps = warmup_epochs * steps_per_epoch
+
+        # Store base LR for reference
+        base_lr = optimizer.defaults['lr']
+
+        def lr_lambda(step):
+            if step < warmup_steps:
+                # Linear warmup from start_lr to end_lr
+                progress = step / max(warmup_steps, 1)
+                current_lr = warmup_start_lr + progress * (warmup_end_lr - warmup_start_lr)
+                return current_lr / base_lr
+            else:
+                # Constant at warmup_end_lr
+                return warmup_end_lr / base_lr
+
+        return torch.optim.lr_scheduler.LambdaLR(optimizer, lr_lambda)
+
+    elif scheduler_type == 'cosine_warmup':
         warmup_steps = warmup_epochs * steps_per_epoch
         total_steps = epochs * steps_per_epoch
 
@@ -295,6 +317,8 @@ def train_stage2(
     early_stopping_enabled = early_stopping_cfg.get('enabled', True)
     patience = early_stopping_cfg.get('patience', 20)
     min_delta = early_stopping_cfg.get('min_delta', 0.001)
+    # Paper trains for fixed epochs; loss-based stopping may work better than AUC-ROC
+    early_stopping_metric = early_stopping_cfg.get('metric', 'loss')  # 'auc_roc' or 'loss'
 
     # Use optimizer from config (Adam for paper alignment, AdamW otherwise)
     optimizer = get_optimizer(model.transformer.parameters(), config, stage_cfg)
@@ -302,6 +326,7 @@ def train_stage2(
     scheduler = get_scheduler(optimizer, config, len(train_loader), stage=2)
 
     best_auc = 0.0
+    best_loss = float('inf')
     patience_counter = 0
     global_step = 0
 
@@ -323,7 +348,18 @@ def train_stage2(
 
             # Reconstruct with transformer
             reconstructed_tokens = model.transformer(tokens)
-            loss = F.mse_loss(reconstructed_tokens, tokens)
+
+            # Paper specifies MSE between positionally-encoded tokens and reconstructed
+            # tokens. When use_pe_loss=True, we compare against PE-augmented tokens.
+            use_pe_loss = config.get('training', {}).get('use_pe_loss', True)
+            if use_pe_loss:
+                # Get positionally-encoded tokens (without dropout) as target
+                with torch.no_grad():
+                    pe_tokens = model.transformer.get_positionally_encoded_tokens(tokens)
+                loss = F.mse_loss(reconstructed_tokens, pe_tokens)
+            else:
+                # Original: compare against raw tokens
+                loss = F.mse_loss(reconstructed_tokens, tokens)
 
             # Gradient accumulation
             loss_scaled = loss / grad_accum
@@ -367,11 +403,21 @@ def train_stage2(
 
         # Update scheduler if reduce_on_plateau
         if isinstance(scheduler, torch.optim.lr_scheduler.ReduceLROnPlateau):
-            scheduler.step(auc)
+            # Use loss for plateau detection (lower is better)
+            scheduler.step(-avg_loss if early_stopping_metric == 'loss' else auc)
 
-        # Save best checkpoint
-        if auc > best_auc + min_delta:
-            best_auc = auc
+        # Save best checkpoint based on selected metric
+        is_improvement = False
+        if early_stopping_metric == 'loss':
+            if avg_loss < best_loss - min_delta:
+                best_loss = avg_loss
+                is_improvement = True
+        else:  # auc_roc
+            if auc > best_auc + min_delta:
+                best_auc = auc
+                is_improvement = True
+
+        if is_improvement:
             patience_counter = 0
             checkpoint = {
                 'epoch': epoch,
@@ -380,11 +426,15 @@ def train_stage2(
                 'transformer_state_dict': model.transformer.state_dict(),
                 'optimizer_state_dict': optimizer.state_dict(),
                 'auc_roc': auc,
+                'loss': avg_loss,
                 'metrics': metrics,
                 'config': config
             }
             torch.save(checkpoint, checkpoint_dir / 'stage2_best.pt')
-            print(f"  New best! Saved checkpoint (AUC: {auc:.4f})")
+            if early_stopping_metric == 'loss':
+                print(f"  New best! Saved checkpoint (Loss: {avg_loss:.6f}, AUC: {auc:.4f})")
+            else:
+                print(f"  New best! Saved checkpoint (AUC: {auc:.4f}, Loss: {avg_loss:.6f})")
         else:
             patience_counter += 1
             print(f"  No improvement. Patience: {patience_counter}/{patience}")
@@ -425,7 +475,10 @@ def train_stage2(
     }
     torch.save(checkpoint, checkpoint_dir / 'stage2_final.pt')
 
-    print(f"\nStage 2 complete. Best AUC-ROC: {best_auc:.4f}")
+    if early_stopping_metric == 'loss':
+        print(f"\nStage 2 complete. Best Loss: {best_loss:.6f} (Best AUC-ROC: {best_auc:.4f})")
+    else:
+        print(f"\nStage 2 complete. Best AUC-ROC: {best_auc:.4f} (Best Loss: {best_loss:.6f})")
     return model, best_auc
 
 

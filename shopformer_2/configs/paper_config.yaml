@@ -32,6 +32,9 @@ training:
   # Optimizer: Paper uses Adam (not AdamW)
   optimizer: adam                   # adam or adamw
 
+  # Paper specifies MSE between positionally-encoded tokens and reconstructed tokens
+  use_pe_loss: true                 # true = compare PE tokens, false = compare raw tokens
+
   # Stage 1: GCAE Training
   stage1:
     epochs: 200                     # Max epochs (early stopping enabled)
@@ -50,23 +53,27 @@ training:
   grad_clip: 1.0
 
   # Learning rate scheduler
-  # Exponential decay: ~5% reduction per epoch (gentler than step decay)
+  # Warmup addresses "epoch 1 is best" issue by starting with very low LR
   scheduler:
-    type: exponential               # none, step, exponential, cosine_warmup, or reduce_on_plateau
-    gamma: 0.95                     # Multiply LR by 0.95 each epoch (~60% at epoch 10)
-    warmup_epochs: 0                # No warmup
+    type: warmup_constant           # warmup_constant, none, step, exponential, cosine_warmup, or reduce_on_plateau
+    warmup_epochs: 10               # Warmup for 10 epochs
+    warmup_start_lr: 1.0e-7         # Start very low
+    warmup_end_lr: 5.0e-5           # Ramp up to paper LR
     min_lr: 1.0e-6
-    # For step scheduler:
+    # For exponential/step scheduler:
+    gamma: 0.95                     # Multiply LR by 0.95 each epoch
     step_size: 10
     # For reduce_on_plateau:
     factor: 0.5
     patience: 5
 
   # Early stopping
+  # Paper trains for fixed 20 epochs; loss-based stopping is more stable than AUC-ROC
   early_stopping:
     enabled: true
     patience: 20                    # Stop if no improvement for 20 epochs
     min_delta: 0.001
+    metric: loss                    # 'loss' (paper-aligned) or 'auc_roc'
 
 data:
   # Dataset location (relative to config file)
