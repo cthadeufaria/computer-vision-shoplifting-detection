@@ -1,12 +1,13 @@
 """
 Shopformer Transformer Module.
 
-Paper-aligned implementation with:
-- 12 attention heads
-- 4 encoder + 4 decoder layers
-- 64 FFN dimension (paper specification)
-- 144 d_model (divisible by 12 heads)
+Paper-aligned implementation (from ablation studies):
+- 2 attention heads (optimal)
+- 2 encoder + 2 decoder layers (optimal)
+- 64 FFN dimension
+- 144 d_model (144 / 2 heads = 72 per head)
 - 144 embedding size = 8 channels * 18 keypoints (paper optimal)
+- Post-LN (standard transformer from Vaswani et al., 2017)
 """
 
 import math
@@ -60,11 +61,12 @@ class ShopformerTransformer(nn.Module):
     """
     Transformer encoder-decoder for Shopformer.
 
-    Paper specs:
-    - 12 attention heads
-    - 4 encoder layers + 4 decoder layers
-    - 512 feed-forward dimension
-    - 144 model dimension (144 / 12 = 12 per head)
+    Paper optimal specs (from ablation studies):
+    - 2 attention heads
+    - 2 encoder layers + 2 decoder layers
+    - 64 feed-forward dimension
+    - 144 model dimension (144 / 2 = 72 per head)
+    - Post-LN (standard transformer, norm_first=False)
 
     The transformer takes GCAE tokens and reconstructs them.
     Anomaly detection is based on reconstruction error.
@@ -73,10 +75,10 @@ class ShopformerTransformer(nn.Module):
     def __init__(
         self,
         input_dim: int = 144,           # GCAE output: 8 * 18 = 144 (paper optimal)
-        d_model: int = 144,             # 144 / 12 heads = 12 per head
-        nhead: int = 12,                # Paper: 12 attention heads
-        num_encoder_layers: int = 4,    # Paper: 4 encoder layers
-        num_decoder_layers: int = 4,    # Paper: 4 decoder layers
+        d_model: int = 144,             # 144 / 2 heads = 72 per head
+        nhead: int = 2,                 # Paper optimal: 2 attention heads
+        num_encoder_layers: int = 2,    # Paper optimal: 2 encoder layers
+        num_decoder_layers: int = 2,    # Paper optimal: 2 decoder layers
         dim_feedforward: int = 64,      # Paper: 64 FFN dimension
         dropout: float = 0.1,
         max_seq_len: int = 100,
@@ -109,7 +111,7 @@ class ShopformerTransformer(nn.Module):
             dropout=dropout,
             activation=activation,
             batch_first=True,
-            norm_first=True  # Pre-LN for better training stability
+            norm_first=False  # Post-LN (standard transformer, matches paper)
         )
         encoder_norm = nn.LayerNorm(d_model)
         self.encoder = nn.TransformerEncoder(
@@ -126,7 +128,7 @@ class ShopformerTransformer(nn.Module):
             dropout=dropout,
             activation=activation,
             batch_first=True,
-            norm_first=True
+            norm_first=False  # Post-LN (standard transformer, matches paper)
         )
         decoder_norm = nn.LayerNorm(d_model)
         self.decoder = nn.TransformerDecoder(
@@ -246,13 +248,13 @@ class ShopformerTransformer(nn.Module):
 class TransformerConfig:
     """Configuration class for ShopformerTransformer."""
 
-    # Paper-aligned defaults
+    # Paper optimal defaults (from ablation studies)
     INPUT_DIM = 144          # 8 * 18 = 144 (paper optimal embedding size)
-    D_MODEL = 144            # Divisible by 12 heads (144/12=12)
-    NHEAD = 12               # Paper specification
-    NUM_ENCODER_LAYERS = 4   # Paper specification
-    NUM_DECODER_LAYERS = 4   # Paper specification
-    DIM_FEEDFORWARD = 64     # Paper specification (64, not 512)
+    D_MODEL = 144            # Divisible by 2 heads (144/2=72 per head)
+    NHEAD = 2                # Paper optimal: 2 attention heads
+    NUM_ENCODER_LAYERS = 2   # Paper optimal: 2 encoder layers
+    NUM_DECODER_LAYERS = 2   # Paper optimal: 2 decoder layers
+    DIM_FEEDFORWARD = 64     # Paper specification
     DROPOUT = 0.1
     MAX_SEQ_LEN = 100
     ACTIVATION = 'gelu'
