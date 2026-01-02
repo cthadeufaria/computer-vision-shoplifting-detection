@@ -221,7 +221,14 @@ __marimo__/
 # Shopformer checkpoints (large model files)
 shopformer/checkpoints/
 shopformer/checkpoints_deeper_wider/
+shopformer/checkpoints_affine_aug/
+shopformer/checkpoints_aggressive_aug/
+shopformer/checkpoints_no_aug/
+shopformer_2/checkpoints/
 *.pt
+
+# External/cloned repos
+shopformer_official/
 
 # OS files
 .DS_Store
