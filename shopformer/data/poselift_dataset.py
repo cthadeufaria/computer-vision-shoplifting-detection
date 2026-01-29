@@ -1,6 +1,5 @@
 """
 PoseLift Dataset Loader
-
 This module implements data loading for the PoseLift dataset,
 the benchmark dataset for pose-based shoplifting detection.
 
