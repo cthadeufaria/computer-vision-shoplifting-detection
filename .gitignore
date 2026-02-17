@@ -150,6 +150,7 @@ celerybeat.pid
 .env
 .envrc
 .venv
+stg_nf_official/.venv/
 env/
 venv/
 ENV/
