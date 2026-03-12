@@ -1,11 +1,14 @@
 from model import XceptionTime
+from pathlib import Path
 
 
 def main():
+    repo_root = Path(__file__).resolve().parents[1]
+
     # Initialize and train the XceptionTime model
     csv_paths = [
-        "dataset/ucf-crime_dataset.csv",  # anomalies
-        "dataset/ucf-crime_dataset-normal.csv",  # normal
+        str(repo_root / "dataset" / "ucf-crime_dataset.csv"),  # anomalies
+        str(repo_root / "dataset" / "ucf-crime_dataset-normal.csv"),  # normal
     ]
     
     xception_model = XceptionTime(csv_paths=csv_paths)

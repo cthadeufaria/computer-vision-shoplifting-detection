@@ -1,0 +1,230 @@
+
+ ▐▛███▜▌   Claude Code v2.1.50
+▝▜█████▛▘  Sonnet 4.6 · Claude Max
+  ▘▘ ▝▝    ~/git/computer-vision-shoplifting-detection/stg_nf_official
+
+❯ run the inference test with display and threshhold of -1.2 for the stg-nf 
+   model inference pipeline                                                 
+
+⏺ Recalled 1 memory, searched for 2 patterns, read 1 file (ctrl+o to expand)
+
+⏺ Let me look for test scripts and any display/threshold options.
+
+⏺ Searched for 3 patterns, read 1 file (ctrl+o to expand)
+
+⏺ The video_inference_pipeline.py has the --display and --anomaly_threshold
+  args. Let me check the full CLI.
+
+⏺ Read 1 file (ctrl+o to expand)
+
+⏺ Now let me check what exports and sinth samples are available.
+
+⏺ Searched for 1 pattern, read 4 files (ctrl+o to expand)
+
+⏺ Good - I have all I need. Running the inference test using the ShanghaiTech
+  model with --display and --anomaly_threshold -1.2 against the sinth samples:
+
+⏺ Bash(cd
+      /Users/bernese/git/computer-vision-shoplifting-detection/stg_nf_official
+      && .venv/bin/python video_inference_pipeline.py \
+        --model ShanghaiTech_85_9 \…)
+  ⎿  /Users/bernese/git/computer-vision-shoplifting-detection/stg_nf_offici
+     al/.venv/lib/python3.11/site-packages/mmpose/datasets/datasets/utils.p
+     y:102: UserWarning: The metainfo config file "configs/_base_/datasets/
+     … +34 lines (ctrl+o to expand)
+  ⎿  (timeout 5m)
+
+⏺ Pipeline completed successfully. Here's a summary:
+
+  Model: ShanghaiTech_85_9 (85.9% AUC)
+  Threshold: -1.2 (frames alert when STG score ≤ -1.2)
+  Display: live OpenCV window shown during inference
+
+  Results:
+
+  ┌─────────────────────────────────┬────────┬────────────────────┐
+  │             Sample              │ Frames │       Output       │
+  ├─────────────────────────────────┼────────┼────────────────────┤
+  │ Normal Normal (10).mp4          │ 351    │ scores + pose JSON │
+  ├─────────────────────────────────┼────────┼────────────────────┤
+  │ Shoplifting Shoplifting (1).mp4 │ 311    │ scores + pose JSON │
+  └─────────────────────────────────┴────────┴────────────────────┘
+
+  Artifacts saved to stg_nf_official/inference_outputs/video_online/:
+  - *_scores.json — per-frame anomaly scores and alert flags
+  - *_tracked_pose.json — tracked skeleton data per frame
+
+✻ Churned for 3m 34s
+
+❯ how to fine tune the threshold for wild videos taken by me of             
+  shopping/shoplifting                                                      
+
+⏺ Let me look at the scores output from the last run and the scoring utilities
+  to give you grounded advice.
+
+⏺ Read 1 file (ctrl+o to expand)
+
+⏺ Here's what the data reveals and a concrete calibration workflow:
+
+  ---
+  What the current data shows (important!)
+
+  The scores from your last run reveal a domain mismatch problem:
+
+  ┌─────────────┬────────────────┬───────┬────────────────────────┐
+  │    Video    │  Score range   │ Mean  │     Alerts at -1.2     │
+  ├─────────────┼────────────────┼───────┼────────────────────────┤
+  │ Normal      │ [-1.92, -0.91] │ -1.15 │ 101 (false positives!) │
+  ├─────────────┼────────────────┼───────┼────────────────────────┤
+  │ Shoplifting │ [-1.18, -0.87] │ -1.02 │ 0 (missed completely!) │
+  └─────────────┴────────────────┴───────┴────────────────────────┘
+
+  The model is inverted for your domain — normal shopping looks more anomalous
+  than shoplifting. This is because STG-NF was trained on ShanghaiTech campus 
+  scenes (running, fighting, cycling) not retail environments. A single
+  threshold won't fix this — you need calibration data.
+
+  ---
+  How to properly calibrate for wild retail videos
+
+  Step 1 — Build a labeled calibration set
+
+  Record/collect ~20-30 short clips, labeled:
+  - normal/ — browsing, picking items off shelves, paying, walking
+  - shoplifting/ — concealing items, pocket stuffing, bag stuffing, quick grabs
+
+  Step 2 — Run inference on all clips, collect scores
+
+  # Run each video, saves scores JSON automatically
+  cd stg_nf_official
+  for video in ../dataset/your_clips/normal/*.mp4; do
+    .venv/bin/python video_inference_pipeline.py \
+      --model ShanghaiTech_85_9 --dataset ShanghaiTech \
+      --video "$video" --no_display \
+      --output_dir inference_outputs/calibration
+  done
+
+  for video in ../dataset/your_clips/shoplifting/*.mp4; do
+    .venv/bin/python video_inference_pipeline.py \
+      --model ShanghaiTech_85_9 --dataset ShanghaiTech \
+      --video "$video" --no_display \
+      --output_dir inference_outputs/calibration
+  done
+
+  Step 3 — Find the optimal threshold
+
+  Run this analysis script after collecting scores:
+
+  import json, glob, numpy as np
+  from sklearn.metrics import roc_curve, roc_auc_score, f1_score
+
+  all_scores = []
+  all_labels = []  # 1 = shoplifting, 0 = normal
+
+  for path in glob.glob("inference_outputs/calibration/**/*scores.json",
+  recursive=True):
+      with open(path) as f:
+          data = json.load(f)
+
+      # Determine label from path
+      label = 1 if "shoplifting" in path.lower() else 0
+
+      # Use clip-level max-score aggregation (most anomalous frame wins)
+      scores = [r["score"] for r in data["results"] if r["score"] is not None]
+      if not scores:
+          continue
+
+      # For clip-level classification: use the min score (most anomalous)
+      clip_score = min(scores)
+      all_scores.append(clip_score)
+      all_labels.append(label)
+
+  all_scores = np.array(all_scores)
+  all_labels = np.array(all_labels)
+
+  # Find threshold that maximizes F1
+  thresholds = np.linspace(all_scores.min(), all_scores.max(), 200)
+  best_f1, best_thresh = 0, 0
+  for th in thresholds:
+      preds = (all_scores <= th).astype(int)  # alert = score <= threshold
+      tp = ((preds == 1) & (all_labels == 1)).sum()
+      fp = ((preds == 1) & (all_labels == 0)).sum()
+      fn = ((preds == 0) & (all_labels == 1)).sum()
+      if tp + fp + fn == 0:
+          continue
+      f1 = 2*tp / (2*tp + fp + fn)
+      if f1 > best_f1:
+          best_f1, best_thresh = f1, th
+
+  print(f"Optimal threshold: {best_thresh:.4f}  (F1={best_f1:.3f})")
+
+  # Also check FPR at this threshold
+  fpr, tpr, roc_thresh = roc_curve(all_labels, -all_scores)  # negate: 
+  lower=more anomalous
+  auc = roc_auc_score(all_labels, -all_scores)
+  print(f"AUC-ROC on your data: {auc:.3f}")
+
+  # Find threshold for FPR < 10% 
+  target_fpr = 0.10
+  idx = np.searchsorted(fpr, target_fpr)
+  low_fpr_thresh = -roc_thresh[idx]
+  print(f"Threshold for FPR<{target_fpr*100:.0f}%: {low_fpr_thresh:.4f}  
+  (TPR={tpr[idx]:.3f})")
+
+  Step 4 — Adaptive / per-scene baseline (more robust)
+
+  Rather than a fixed global threshold, normalize scores against that person's
+  recent history:
+
+  # Instead of: alert = score <= -1.2
+  # Use: alert = score <= (baseline - k * std)
+
+  from collections import deque
+
+  class AdaptiveThreshold:
+      def __init__(self, window=150, k=2.0):
+          self.history = deque(maxlen=window)  # ~5 sec at 30fps
+          self.k = k
+
+      def is_alert(self, score):
+          self.history.append(score)
+          if len(self.history) < 30:
+              return False  # not enough data yet
+          mean = np.mean(self.history)
+          std = np.std(self.history)
+          return score <= (mean - self.k * std)
+
+  This is more robust for wild videos because it adapts to whatever "normal"
+  looks like in your specific store/camera/lighting.
+
+  ---
+  Root cause: consider retraining on retail data
+
+  The deeper fix is that the ShanghaiTech weights don't match your domain. Once
+  you've built your calibration set, the right next step is training (or
+  fine-tuning) on it — even 30-50 labeled clips would help significantly. That's
+   what the --mode train-scratch workflow is for.
+
+✻ Baked for 1m 14s
+
+❯ how can i save this conversation for later? 
+
+⏺ claude-code-guide(How to save conversations in Claude Code)
+  ⎿  Done (4 tool uses · 34.8k tokens · 25s)
+  (ctrl+o to expand)
+
+⏺ A few options:
+
+  Easiest — export to a file right now:
+  /export shoplifting-threshold-tuning.md
+  This saves the full conversation as Markdown.
+
+  Resume later — conversations are auto-saved per project. When you come back:
+  claude --resume      # interactive picker of past sessions
+  claude --continue    # resumes the most recent session
+
+  Name this session so it's easy to find:
+  /rename shoplifting-threshold-calibration
+  Then later: claude --resume shoplifting-threshold-calibration
+
+✻ Cogitated for 35s

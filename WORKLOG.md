@@ -7,8 +7,8 @@ This file is the single source of truth for current status, model results, and n
 
 ## 1) Repo Map (Current Tracks)
 
-1. **Legacy tabular pipeline (root)**  
-   Files: `preprocess.py`, `dataset.py`, `train.py`, `model.py`  
+1. **Legacy tabular pipeline (`legacy_ucf_crime/`)**  
+   Files: `legacy_ucf_crime/preprocess.py`, `legacy_ucf_crime/dataset.py`, `legacy_ucf_crime/train.py`, `legacy_ucf_crime/model.py`  
    Dataset: UCF-Crime videos -> tabular CSV features  
    Status: No metrics/results artifacts found in repo.
 
@@ -107,4 +107,3 @@ Copy/paste for each run:
 - Where are the PoseLift data and checkpoints stored locally?
 - Do you want to preserve compatibility with the original `shopformer/` pipeline?
 - Should we standardize a single output folder (e.g., `results/`) at repo root?
-

@@ -1,8 +1,12 @@
 from model import Tracker
+from pathlib import Path
 import cv2 as cv
 
 
 def main():
+    repo_root = Path(__file__).resolve().parents[1]
+    dataset_dir = repo_root / "dataset"
+
     # Initialize the people tracking model
     people_tracker = Tracker()
     i = 0
@@ -12,7 +16,7 @@ def main():
         "Shopping"  # TODO: finish shopping category with videos part 2
     ]  # TODO: check usage of another dataset presented in the paper https://doi.org/10.3390/app13148341.
 
-    with open('./dataset/Anomaly_Train.txt', 'r') as f:
+    with open(dataset_dir / "Anomaly_Train.txt", 'r') as f:
         videos = f.read().split('\n')
 
     # Load the videos for saving bounding boxes into dataset
@@ -28,7 +32,7 @@ def main():
             print(f"Skipping, {label}, {video}.")
             continue
 
-        cap = cv.VideoCapture('./dataset/' + video)
+        cap = cv.VideoCapture(str(dataset_dir / video))
 
         if not cap.isOpened():
             print(f"Failed to load video: {video}")

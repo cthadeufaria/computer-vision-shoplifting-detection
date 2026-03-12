@@ -1,6 +1,23 @@
 # Computer Vision Shoplifting Detection - Project Context
 
-**Last Updated:** 2026-01-05
+**Last Updated:** 2026-03-08
+
+---
+
+## Last Session — Resume Point
+
+**Exported transcript:** `shoplifting-threshold-tuning.txt` (project root)
+
+**Where we stopped (2026-03-08):**
+- Ran `video_inference_pipeline.py` with `--anomaly_threshold -1.2 --display --run_sinth_samples` using the `ShanghaiTech_85_9` model
+- Discovered a **domain mismatch**: the ShanghaiTech model assigns *lower* (more anomalous) scores to normal shopping footage than to shoplifting footage — the threshold of -1.2 triggered 101 false positives on the Normal clip and 0 alerts on the Shoplifting clip
+- Scores output: `stg_nf_official/inference_outputs/video_online/`
+
+**Immediate next steps:**
+1. Build a labeled calibration set from your own wild retail videos (`normal/` + `shoplifting/` clips)
+2. Run batch inference and use the threshold-finding script (in transcript) to find the optimal threshold via F1 or FPR target
+3. Consider adaptive/per-scene thresholding (`mean - k*std` over a rolling window) — more robust than a fixed global value
+4. Long term: retrain or fine-tune on retail data to fix the domain mismatch at the model level
 
 ---
 

@@ -1,5 +1,6 @@
 # import torch
 import os
+from pathlib import Path
 import numpy as np
 import pandas as pd
 from ultralytics import YOLO
@@ -13,9 +14,13 @@ from tsai.inference import load_learner
 
 class Tracker:
     def __init__(self, model_path="./models/crowdhuman_yolov5m.pt"):
+        repo_root = Path(__file__).resolve().parents[1]
+
         # https://github.com/MahenderAutonomo/yolov5-crowdhuman?tab=readme-ov-file
         # self.model = torch.hub.load('ultralytics/yolov5', 'custom', path=model_path, force_reload=True)  # https://stackoverflow.com/questions/70167811/how-to-load-custom-model-in-pytorch
-        self.model = YOLO("./models/yolov5mu.pt")
+        self.model = YOLO(str(repo_root / "models" / "yolov5mu.pt"))
+        self.dataset_dir = repo_root / "dataset"
+        self.models_dir = repo_root / "models"
 
         self.anomalies = [
             "Abuse",
@@ -47,10 +52,10 @@ class Tracker:
 
         if label in self.anomalies:
             is_anomaly = True
-            path = "dataset/ucf-crime_dataset.csv"
+            path = self.dataset_dir / "ucf-crime_dataset.csv"
         else:
             is_anomaly = False
-            path = "dataset/ucf-crime_dataset-normal.csv"
+            path = self.dataset_dir / "ucf-crime_dataset-normal.csv"
 
         # Save bounding boxes into dataset
         data = [BBox(
@@ -122,10 +127,12 @@ class XceptionTime:  # TODO: implement XceptionTime model for time series classi
     def train(self):
         tfms = [None, TSClassification()]
         batch_tfms = TSStandardize()
-        clf = TSClassifier(self.X, self.y, splits=self.splits, path='models', arch="XceptionTime", tfms=tfms, batch_tfms=batch_tfms, metrics=accuracy)
+        models_dir = Path(__file__).resolve().parents[1] / "models"
+        clf = TSClassifier(self.X, self.y, splits=self.splits, path=str(models_dir), arch="XceptionTime", tfms=tfms, batch_tfms=batch_tfms, metrics=accuracy)
         clf.fit_one_cycle(200, 3e-4)
-        clf.export("XceptionTime.pkl")
+        clf.export(str(models_dir / "XceptionTime.pkl"))
 
     def infer(self):
-        clf = load_learner("models/XceptionTime.pkl")
+        models_dir = Path(__file__).resolve().parents[1] / "models"
+        clf = load_learner(str(models_dir / "XceptionTime.pkl"))
         probs, target, preds = clf.get_X_preds(self.X[self.splits[1]], self.y[self.splits[1]])
