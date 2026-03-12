@@ -1,0 +1,4 @@
+[submodule "stg_nf_official"]
+	path = stg_nf_official
+	url = https://github.com/cthadeufaria/STG-NF.git
+	branch = main

@@ -7,11 +7,17 @@ tracks for shoplifting and video-anomaly detection research:
 - a `shopformer/` PoseLift implementation with saved training artifacts
 - a `shopformer_2/` PoseLift implementation that is the current main
   shoplifting path
-- an in-repo `stg_nf_official/` fork of STG-NF with added workflow and video
-  inference tooling
+- a fork-backed `stg_nf_official/` submodule for STG-NF with added workflow and
+  video inference tooling
 
 The previous root README described only the legacy prototype, which is not the
 best entry point anymore.
+
+Clone with submodules if you want the STG-NF code checked out immediately:
+
+```bash
+git clone --recurse-submodules git@github.com:cthadeufaria/computer-vision-shoplifting-detection.git
+```
 
 ## Current Status
 
@@ -20,7 +26,7 @@ best entry point anymore.
 | `legacy_ucf_crime/` | UCF-Crime | YOLO boxes -> CSV -> time-series classifier | Early prototype, incomplete, no saved metrics |
 | `shopformer/` | PoseLift | First Shopformer implementation | Trained once; metrics saved |
 | `shopformer_2/` | PoseLift | Main Shopformer development path | Training and evaluation code present; no saved metrics artifact committed yet |
-| `stg_nf_official/` | ShanghaiTech, UBnormal, custom videos | STG-NF baseline, export, and video inference | Most operational track after setup; benchmark eval artifacts and custom inference tooling exist |
+| `stg_nf_official/` | ShanghaiTech, UBnormal, custom videos | STG-NF baseline, export, and video inference | Fork-backed submodule; benchmark tooling and custom inference code live there, while local artifacts live under `artifacts/stg_nf/` |
 
 ## Recorded Results In This Repo
 
@@ -116,6 +122,7 @@ Current state:
 Purpose:
 
 - local working copy of STG-NF with added usability improvements for this repo
+- now backed by your fork at `cthadeufaria/STG-NF`
 
 What exists in addition to the upstream-style training/eval code:
 

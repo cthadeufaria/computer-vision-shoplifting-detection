@@ -231,5 +231,10 @@ shopformer_2/checkpoints/
 # External/cloned repos
 shopformer_official/
 
+# STG-NF local runtime artifacts (kept outside the submodule)
+artifacts/stg_nf/**
+!artifacts/stg_nf/
+!artifacts/stg_nf/README.md
+
 # OS files
 .DS_Store
