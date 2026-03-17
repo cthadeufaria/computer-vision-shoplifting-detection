@@ -21,16 +21,6 @@
 
 ---
 
-## Quick Start for Claude
-
-When working on this project:
-1. The main implementation is in `shopformer_2/` directory
-2. Current model achieves ~58% AUC-ROC, target is 69.15% (paper) or 80%+ (commercial)
-3. This is a **pose-based** approach for **privacy-preserving** shoplifting detection
-4. Key advantage: GDPR compliant (no facial recognition, no biometric data)
-
----
-
 ## Project Goal
 
 Build a commercially viable, privacy-preserving shoplifting detection system using human pose sequences. The approach uses skeleton/pose data only (no RGB video storage) to detect anomalous behaviors indicative of shoplifting.
