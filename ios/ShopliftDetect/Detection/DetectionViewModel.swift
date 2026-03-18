@@ -65,7 +65,7 @@ final class DetectionViewModel: ObservableObject {
             if await buffer.isReady, let window = await buffer.currentWindow() {
                 let normalizer = PoseNormalizer(videoWidth: Float(width), videoHeight: Float(height))
                 if let mlArray = try? normalizer.normalize(window),
-                   let score = try? STGNFModel().runInference(on: mlArray) {
+                   let score = try? STGNFModelRunner().runInference(on: mlArray) {
                     let result = anomalyScorer.classify(score: score, isWarmup: false)
                     detectionState = .running(latestResult: result)
                 }

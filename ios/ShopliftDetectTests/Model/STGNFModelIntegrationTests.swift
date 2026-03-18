@@ -6,11 +6,11 @@ import CoreML
 /// They are skipped automatically when the model is absent.
 final class STGNFModelIntegrationTests: XCTestCase {
 
-    private var model: STGNFModel?
+    private var model: STGNFModelRunner?
 
     override func setUp() {
         super.setUp()
-        model = try? STGNFModel()
+        model = try? STGNFModelRunner()
     }
 
     private func skipIfNoModel() throws {

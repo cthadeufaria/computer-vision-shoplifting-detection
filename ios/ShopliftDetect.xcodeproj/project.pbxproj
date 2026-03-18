@@ -16,6 +16,7 @@
 		1312FBC1DDFA68BDF67EC314 /* PoseSkeleton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F15ED481F24B75C9E334547 /* PoseSkeleton.swift */; };
 		2A071CD34E7093D0CEB8441B /* DetectionToggleUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E6D1FA6D0F7A8E00623E82F /* DetectionToggleUITests.swift */; };
 		2BFCB07522099205C76EF61E /* AnomalyScorerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB508AB28F692C8E67200488 /* AnomalyScorerTests.swift */; };
+		3C188E165B06B39148F32D6C /* STGNFModel.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = 620A741B88EFC23F02912327 /* STGNFModel.mlpackage */; };
 		3E326D2585B76869CFA75F4B /* OnboardingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2714C5D423374F287CE5F395 /* OnboardingViewModel.swift */; };
 		4508A2B6584BF497594AAC94 /* AnomalyResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 249367B62D95A41113BDB920 /* AnomalyResult.swift */; };
 		4A359BE27193D29472625C30 /* SkeletonOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECD88A9A310D02C00E0C1A5F /* SkeletonOverlayView.swift */; };
@@ -26,7 +27,6 @@
 		75E4F306495CA025EB6C1637 /* AnomalyScorer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7288FDA2CC4C844F197D2A8 /* AnomalyScorer.swift */; };
 		81806DED9B8439A5A98D13A5 /* PoseNormalizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D40079FA6D8EAF200771AA98 /* PoseNormalizer.swift */; };
 		82DD183A4D60F6103BFF6AC4 /* DetectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93AC2E43E9753F33558320AF /* DetectionViewModel.swift */; };
-		90EC46DB3F1EFC480F080418 /* STGNFModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 909741F0AEC76BF334B838AC /* STGNFModel.swift */; };
 		96C671E3B830EF931CACED9C /* CameraSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F77590CAC647FE3631EEA9 /* CameraSession.swift */; };
 		9D00705BA6BB93EE1688B391 /* PoseEstimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C85226C93A0593B1940ED6DA /* PoseEstimator.swift */; };
 		9EF510A933F1443DA5702723 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87421E424E4EFC067EDD8AC6 /* HomeViewModel.swift */; };
@@ -40,6 +40,7 @@
 		CB766BC652B2912BC5DE3A37 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A8AFAAE12C2D54FD880DCE6 /* HomeView.swift */; };
 		D6A9E36B61C44C17FEBD8D60 /* PoseNormalizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6359123FEAC1B25977609A49 /* PoseNormalizerTests.swift */; };
 		E21B6D500B27111267DA8992 /* DetectionState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B902C55BFA1157F4D892DF3 /* DetectionState.swift */; };
+		E967A48E368AD5243B82EB45 /* STGNFModelWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = F24C2D68A487CA54A3F1E0E5 /* STGNFModelWrapper.swift */; };
 		FC5BA15712B60F01553E1DFE /* FrameBufferTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08B0B5E64E637835B936739B /* FrameBufferTests.swift */; };
 /* End PBXBuildFile section */
 
@@ -73,6 +74,7 @@
 		2E6D1FA6D0F7A8E00623E82F /* DetectionToggleUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetectionToggleUITests.swift; sourceTree = "<group>"; };
 		4B11EFCE5F2D8339E76887AE /* OnboardingUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingUITests.swift; sourceTree = "<group>"; };
 		51C5939E25CEBBB78EB12E7C /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		620A741B88EFC23F02912327 /* STGNFModel.mlpackage */ = {isa = PBXFileReference; path = STGNFModel.mlpackage; sourceTree = "<group>"; };
 		6359123FEAC1B25977609A49 /* PoseNormalizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoseNormalizerTests.swift; sourceTree = "<group>"; };
 		648057EC4BCBB3707A35C50D /* ShopliftDetectApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopliftDetectApp.swift; sourceTree = "<group>"; };
 		6A8AFAAE12C2D54FD880DCE6 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
@@ -86,7 +88,6 @@
 		86CE3585F4029C772E8F8B2F /* ShopliftDetectUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = ShopliftDetectUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		87421E424E4EFC067EDD8AC6 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		89F77590CAC647FE3631EEA9 /* CameraSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraSession.swift; sourceTree = "<group>"; };
-		909741F0AEC76BF334B838AC /* STGNFModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = STGNFModel.swift; sourceTree = "<group>"; };
 		93AC2E43E9753F33558320AF /* DetectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetectionViewModel.swift; sourceTree = "<group>"; };
 		95AAB046AEBB41FF0A6400F0 /* FrameBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrameBuffer.swift; sourceTree = "<group>"; };
 		9AC92BE2C676E071B356AB39 /* CoreML.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreML.framework; path = System/Library/Frameworks/CoreML.framework; sourceTree = SDKROOT; };
@@ -99,6 +100,7 @@
 		D40079FA6D8EAF200771AA98 /* PoseNormalizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoseNormalizer.swift; sourceTree = "<group>"; };
 		D7DDBF2108E2B3F0BDC679F5 /* KeypointConverterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeypointConverterTests.swift; sourceTree = "<group>"; };
 		ECD88A9A310D02C00E0C1A5F /* SkeletonOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkeletonOverlayView.swift; sourceTree = "<group>"; };
+		F24C2D68A487CA54A3F1E0E5 /* STGNFModelWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = STGNFModelWrapper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -138,6 +140,7 @@
 			children = (
 				762285DBF2AB8D9E04BCE294 /* Assets.xcassets */,
 				1A2C8C8B573D1E5E5EAE3CFB /* Info.plist */,
+				620A741B88EFC23F02912327 /* STGNFModel.mlpackage */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -147,7 +150,7 @@
 			children = (
 				A7288FDA2CC4C844F197D2A8 /* AnomalyScorer.swift */,
 				95AAB046AEBB41FF0A6400F0 /* FrameBuffer.swift */,
-				909741F0AEC76BF334B838AC /* STGNFModel.swift */,
+				F24C2D68A487CA54A3F1E0E5 /* STGNFModelWrapper.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -435,7 +438,8 @@
 				9D00705BA6BB93EE1688B391 /* PoseEstimator.swift in Sources */,
 				81806DED9B8439A5A98D13A5 /* PoseNormalizer.swift in Sources */,
 				1312FBC1DDFA68BDF67EC314 /* PoseSkeleton.swift in Sources */,
-				90EC46DB3F1EFC480F080418 /* STGNFModel.swift in Sources */,
+				3C188E165B06B39148F32D6C /* STGNFModel.mlpackage in Sources */,
+				E967A48E368AD5243B82EB45 /* STGNFModelWrapper.swift in Sources */,
 				696D98DB463589C8F2D1A3DC /* ScoreCardView.swift in Sources */,
 				738525DA0A87F14848D03A26 /* ShopliftDetectApp.swift in Sources */,
 				4A359BE27193D29472625C30 /* SkeletonOverlayView.swift in Sources */,
