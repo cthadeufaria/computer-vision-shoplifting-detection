@@ -1,0 +1,2129 @@
+{
+  "video_path": "/Users/bernese/git/computer-vision-shoplifting-detection/dataset/sinth/Normal/Normal (10).mp4",
+  "dataset": "UBnormal",
+  "model_export_dir": "/Users/bernese/git/computer-vision-shoplifting-detection/stg_nf_official/exports/UBnormal/UBnormal_unsupervised_71_8",
+  "pose_backend_requested": "rtmo",
+  "pose_backend_active": "rtmo",
+  "segment_length": 16,
+  "fps": 30.0,
+  "frame_count_processed": 180,
+  "results": [
+    {
+      "frame_index": 0,
+      "timestamp_sec": 0.0,
+      "score": null,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {},
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 1,
+      "timestamp_sec": 0.03333333333333333,
+      "score": null,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {},
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 2,
+      "timestamp_sec": 0.06666666666666667,
+      "score": null,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {},
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 3,
+      "timestamp_sec": 0.1,
+      "score": null,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {},
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 4,
+      "timestamp_sec": 0.13333333333333333,
+      "score": null,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {},
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 5,
+      "timestamp_sec": 0.16666666666666666,
+      "score": null,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {},
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 6,
+      "timestamp_sec": 0.2,
+      "score": null,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {},
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 7,
+      "timestamp_sec": 0.23333333333333334,
+      "score": null,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {},
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 8,
+      "timestamp_sec": 0.26666666666666666,
+      "score": null,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {},
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 9,
+      "timestamp_sec": 0.3,
+      "score": null,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {},
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 10,
+      "timestamp_sec": 0.3333333333333333,
+      "score": null,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {},
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 11,
+      "timestamp_sec": 0.36666666666666664,
+      "score": null,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {},
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 12,
+      "timestamp_sec": 0.4,
+      "score": null,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {},
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 13,
+      "timestamp_sec": 0.43333333333333335,
+      "score": null,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {},
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 14,
+      "timestamp_sec": 0.4666666666666667,
+      "score": null,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {},
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 15,
+      "timestamp_sec": 0.5,
+      "score": -0.8118657469749451,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.8118657469749451,
+        "2": -0.6282340288162231
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 16,
+      "timestamp_sec": 0.5333333333333333,
+      "score": -0.8135167956352234,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.8135167956352234,
+        "2": -0.6290723085403442
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 17,
+      "timestamp_sec": 0.5666666666666667,
+      "score": -0.8147676587104797,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.8147676587104797,
+        "2": -0.6291100978851318
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 18,
+      "timestamp_sec": 0.6,
+      "score": -0.8172136545181274,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.8172136545181274,
+        "2": -0.6286218762397766
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 19,
+      "timestamp_sec": 0.6333333333333333,
+      "score": -0.8199753761291504,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.8199753761291504,
+        "2": -0.6283378601074219
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 20,
+      "timestamp_sec": 0.6666666666666666,
+      "score": -0.822411835193634,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.822411835193634,
+        "2": -0.6282039284706116
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 21,
+      "timestamp_sec": 0.7,
+      "score": -0.8242285251617432,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.8242285251617432,
+        "2": -0.6280571818351746
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 22,
+      "timestamp_sec": 0.7333333333333333,
+      "score": -0.8260374665260315,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.8260374665260315,
+        "2": -0.6276565194129944
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 23,
+      "timestamp_sec": 0.7666666666666667,
+      "score": -0.8277550935745239,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.8277550935745239,
+        "2": -0.6271069645881653
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 24,
+      "timestamp_sec": 0.8,
+      "score": -0.8291125297546387,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.8291125297546387,
+        "2": -0.6259556412696838
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 25,
+      "timestamp_sec": 0.8333333333333334,
+      "score": -0.8302168250083923,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.8302168250083923,
+        "2": -0.6258954405784607
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 26,
+      "timestamp_sec": 0.8666666666666667,
+      "score": -0.8316906690597534,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.8316906690597534,
+        "2": -0.6251358389854431
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 27,
+      "timestamp_sec": 0.9,
+      "score": -0.8331695795059204,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.8331695795059204,
+        "2": -0.6247482299804688
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 28,
+      "timestamp_sec": 0.9333333333333333,
+      "score": -0.8341748118400574,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.8341748118400574,
+        "2": -0.6242160201072693
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 29,
+      "timestamp_sec": 0.9666666666666667,
+      "score": -0.8353571891784668,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.8353571891784668,
+        "2": -0.6237027049064636
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 30,
+      "timestamp_sec": 1.0,
+      "score": -0.8364889025688171,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.8364889025688171,
+        "2": -0.6232070326805115
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 31,
+      "timestamp_sec": 1.0333333333333334,
+      "score": -0.8382999300956726,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.8382999300956726,
+        "2": -0.6227171421051025
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 32,
+      "timestamp_sec": 1.0666666666666667,
+      "score": -0.8398562669754028,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.8398562669754028,
+        "2": -0.6222907900810242
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 33,
+      "timestamp_sec": 1.1,
+      "score": -0.8415277600288391,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.8415277600288391,
+        "2": -0.6220747828483582
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 34,
+      "timestamp_sec": 1.1333333333333333,
+      "score": -0.8436633348464966,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.8436633348464966,
+        "2": -0.6221249103546143
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 35,
+      "timestamp_sec": 1.1666666666666667,
+      "score": -0.8469839096069336,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.8469839096069336,
+        "2": -0.6221985816955566
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 36,
+      "timestamp_sec": 1.2,
+      "score": -0.8504893183708191,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.8504893183708191,
+        "2": -0.6221026182174683
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 37,
+      "timestamp_sec": 1.2333333333333334,
+      "score": -0.8545565605163574,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.8545565605163574,
+        "2": -0.6222332119941711
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 38,
+      "timestamp_sec": 1.2666666666666666,
+      "score": -0.8600487112998962,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.8600487112998962,
+        "2": -0.6222593784332275
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 39,
+      "timestamp_sec": 1.3,
+      "score": -0.8693141937255859,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.8693141937255859,
+        "2": -0.6221534013748169
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 40,
+      "timestamp_sec": 1.3333333333333333,
+      "score": -0.8796782493591309,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.8796782493591309,
+        "2": -0.6225751042366028
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 41,
+      "timestamp_sec": 1.3666666666666667,
+      "score": -0.895489513874054,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.895489513874054,
+        "2": -0.6227971315383911
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 42,
+      "timestamp_sec": 1.4,
+      "score": -0.9134721159934998,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.9134721159934998,
+        "2": -0.6231384873390198
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 43,
+      "timestamp_sec": 1.4333333333333333,
+      "score": -0.9350073933601379,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.9350073933601379,
+        "2": -0.6234887838363647
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 44,
+      "timestamp_sec": 1.4666666666666666,
+      "score": -0.9574859738349915,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.9574859738349915,
+        "2": -0.6237399578094482
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 45,
+      "timestamp_sec": 1.5,
+      "score": -0.9813827872276306,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.9813827872276306,
+        "2": -0.6237404346466064
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 46,
+      "timestamp_sec": 1.5333333333333334,
+      "score": -1.0078620910644531,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.0078620910644531,
+        "2": -0.6237611174583435
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 47,
+      "timestamp_sec": 1.5666666666666667,
+      "score": -1.0373233556747437,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.0373233556747437,
+        "2": -0.623784601688385
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 48,
+      "timestamp_sec": 1.6,
+      "score": -1.0664504766464233,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.0664504766464233,
+        "2": -0.6237790584564209
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 49,
+      "timestamp_sec": 1.6333333333333333,
+      "score": -1.0992975234985352,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.0992975234985352,
+        "2": -0.6236858367919922
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 50,
+      "timestamp_sec": 1.6666666666666667,
+      "score": -1.1349855661392212,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.1349855661392212,
+        "2": -0.623624861240387
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 51,
+      "timestamp_sec": 1.7,
+      "score": -1.1758908033370972,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.1758908033370972,
+        "2": -0.6235868334770203
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 52,
+      "timestamp_sec": 1.7333333333333334,
+      "score": -1.221914291381836,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.221914291381836,
+        "2": -0.6232948303222656
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 53,
+      "timestamp_sec": 1.7666666666666666,
+      "score": -1.266660451889038,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.266660451889038,
+        "2": -0.6229216456413269
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 54,
+      "timestamp_sec": 1.8,
+      "score": -1.3062597513198853,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.3062597513198853,
+        "2": -0.6225056648254395
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 55,
+      "timestamp_sec": 1.8333333333333333,
+      "score": -1.3430777788162231,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.3430777788162231,
+        "2": -0.6232146620750427
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 56,
+      "timestamp_sec": 1.8666666666666667,
+      "score": -1.3871591091156006,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.3871591091156006,
+        "2": -0.6240419745445251
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 57,
+      "timestamp_sec": 1.9,
+      "score": -1.4342111349105835,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.4342111349105835,
+        "2": -0.6247751116752625
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 58,
+      "timestamp_sec": 1.9333333333333333,
+      "score": -1.486819863319397,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.486819863319397,
+        "2": -0.6248345375061035
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 59,
+      "timestamp_sec": 1.9666666666666666,
+      "score": -1.5299326181411743,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.5299326181411743,
+        "2": -0.6260812878608704
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 60,
+      "timestamp_sec": 2.0,
+      "score": -1.5435463190078735,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.5435463190078735,
+        "2": -0.6262938380241394
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 61,
+      "timestamp_sec": 2.033333333333333,
+      "score": -1.5566442012786865,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.5566442012786865,
+        "2": -0.625579297542572
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 62,
+      "timestamp_sec": 2.066666666666667,
+      "score": -1.56389582157135,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.56389582157135,
+        "2": -0.6254217028617859
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 63,
+      "timestamp_sec": 2.1,
+      "score": -1.5634042024612427,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.5634042024612427,
+        "2": -0.6253052949905396
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 64,
+      "timestamp_sec": 2.1333333333333333,
+      "score": -1.5615893602371216,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.5615893602371216,
+        "2": -0.6245068311691284
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 65,
+      "timestamp_sec": 2.1666666666666665,
+      "score": -1.5559011697769165,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.5559011697769165,
+        "2": -0.6235749125480652
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 66,
+      "timestamp_sec": 2.2,
+      "score": -1.5453413724899292,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.5453413724899292,
+        "2": -0.6226948499679565
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 67,
+      "timestamp_sec": 2.2333333333333334,
+      "score": -1.5300556421279907,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.5300556421279907,
+        "2": -0.6219662427902222
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 68,
+      "timestamp_sec": 2.2666666666666666,
+      "score": -1.5084072351455688,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.5084072351455688,
+        "2": -0.621347963809967
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 69,
+      "timestamp_sec": 2.3,
+      "score": -1.4824116230010986,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.4824116230010986,
+        "2": -0.6203892827033997
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 70,
+      "timestamp_sec": 2.3333333333333335,
+      "score": -1.453022837638855,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.453022837638855,
+        "2": -0.6197456121444702
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 71,
+      "timestamp_sec": 2.3666666666666667,
+      "score": -1.4245814085006714,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.4245814085006714,
+        "2": -0.618698239326477
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 72,
+      "timestamp_sec": 2.4,
+      "score": -1.395025372505188,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.395025372505188,
+        "2": -0.6183335185050964
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 73,
+      "timestamp_sec": 2.433333333333333,
+      "score": -1.3646339178085327,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.3646339178085327,
+        "2": -0.6172928810119629
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 74,
+      "timestamp_sec": 2.466666666666667,
+      "score": -1.3352391719818115,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.3352391719818115,
+        "2": -0.6168447732925415
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 75,
+      "timestamp_sec": 2.5,
+      "score": -1.306049108505249,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.306049108505249,
+        "2": -0.6166872978210449
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 76,
+      "timestamp_sec": 2.533333333333333,
+      "score": -1.2801477909088135,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.2801477909088135,
+        "2": -0.6167904138565063
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 77,
+      "timestamp_sec": 2.566666666666667,
+      "score": -1.2541207075119019,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.2541207075119019,
+        "2": -0.6174663305282593
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 78,
+      "timestamp_sec": 2.6,
+      "score": -1.228510856628418,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.228510856628418,
+        "2": -0.6179383397102356
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 79,
+      "timestamp_sec": 2.6333333333333333,
+      "score": -1.207511305809021,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.207511305809021,
+        "2": -0.6185064315795898
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 80,
+      "timestamp_sec": 2.6666666666666665,
+      "score": -1.192060947418213,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.192060947418213,
+        "2": -0.6192957758903503
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 81,
+      "timestamp_sec": 2.7,
+      "score": -1.1843386888504028,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.1843386888504028,
+        "2": -0.6203620433807373
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 82,
+      "timestamp_sec": 2.7333333333333334,
+      "score": -1.1773027181625366,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.1773027181625366,
+        "2": -0.6212188601493835
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 83,
+      "timestamp_sec": 2.7666666666666666,
+      "score": -1.171776533126831,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.171776533126831,
+        "2": -0.6222513914108276
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 84,
+      "timestamp_sec": 2.8,
+      "score": -1.1676114797592163,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.1676114797592163,
+        "2": -0.6230007410049438
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 85,
+      "timestamp_sec": 2.8333333333333335,
+      "score": -1.164068579673767,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.164068579673767,
+        "2": -0.6238260269165039
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 86,
+      "timestamp_sec": 2.8666666666666667,
+      "score": -1.156981348991394,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.156981348991394,
+        "2": -0.62469482421875
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 87,
+      "timestamp_sec": 2.9,
+      "score": -1.1495593786239624,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.1495593786239624,
+        "2": -0.6252854466438293
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 88,
+      "timestamp_sec": 2.933333333333333,
+      "score": -1.1464660167694092,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.1464660167694092,
+        "2": -0.6257789134979248
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 89,
+      "timestamp_sec": 2.966666666666667,
+      "score": -1.1438498497009277,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.1438498497009277,
+        "2": -0.6266467571258545
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 90,
+      "timestamp_sec": 3.0,
+      "score": -1.1404764652252197,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.1404764652252197,
+        "2": -0.6272443532943726
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 91,
+      "timestamp_sec": 3.033333333333333,
+      "score": -1.1375446319580078,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.1375446319580078,
+        "2": -0.6278702020645142
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 92,
+      "timestamp_sec": 3.066666666666667,
+      "score": -1.136675238609314,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.136675238609314,
+        "2": -0.6288430094718933
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 93,
+      "timestamp_sec": 3.1,
+      "score": -1.1311025619506836,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.1311025619506836,
+        "2": -0.629543662071228
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 94,
+      "timestamp_sec": 3.1333333333333333,
+      "score": -1.123150110244751,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.123150110244751,
+        "2": -0.6302265524864197
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 95,
+      "timestamp_sec": 3.1666666666666665,
+      "score": -1.111897587776184,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.111897587776184,
+        "2": -0.6306389570236206
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 96,
+      "timestamp_sec": 3.2,
+      "score": -1.0968652963638306,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.0968652963638306,
+        "2": -0.6334714293479919
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 97,
+      "timestamp_sec": 3.2333333333333334,
+      "score": -1.0842456817626953,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.0842456817626953,
+        "2": -0.6354728937149048
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 98,
+      "timestamp_sec": 3.2666666666666666,
+      "score": -1.0696977376937866,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.0696977376937866,
+        "2": -0.6375440955162048
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 99,
+      "timestamp_sec": 3.3,
+      "score": -1.0583696365356445,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.0583696365356445,
+        "2": -0.6383309364318848
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 100,
+      "timestamp_sec": 3.3333333333333335,
+      "score": -1.0477182865142822,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.0477182865142822,
+        "2": -0.6399120688438416
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 101,
+      "timestamp_sec": 3.3666666666666667,
+      "score": -1.0367473363876343,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.0367473363876343,
+        "2": -0.6416171193122864
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 102,
+      "timestamp_sec": 3.4,
+      "score": -1.0256493091583252,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.0256493091583252,
+        "2": -0.6429809927940369
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 103,
+      "timestamp_sec": 3.433333333333333,
+      "score": -1.0145506858825684,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.0145506858825684,
+        "2": -0.6438710689544678
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 104,
+      "timestamp_sec": 3.466666666666667,
+      "score": -1.00362229347229,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.00362229347229,
+        "2": -0.6449497938156128
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 105,
+      "timestamp_sec": 3.5,
+      "score": -0.9929555654525757,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.9929555654525757,
+        "2": -0.6458750367164612
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 106,
+      "timestamp_sec": 3.533333333333333,
+      "score": -0.9830822348594666,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.9830822348594666,
+        "2": -0.6468719244003296
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 107,
+      "timestamp_sec": 3.566666666666667,
+      "score": -0.9748455882072449,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.9748455882072449,
+        "2": -0.6475944519042969
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 108,
+      "timestamp_sec": 3.6,
+      "score": -0.9655535817146301,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.9655535817146301,
+        "2": -0.6476727724075317
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 109,
+      "timestamp_sec": 3.6333333333333333,
+      "score": -0.957313597202301,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.957313597202301,
+        "2": -0.6475316286087036
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 110,
+      "timestamp_sec": 3.6666666666666665,
+      "score": -0.9489114284515381,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.9489114284515381,
+        "2": -0.6476259231567383
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 111,
+      "timestamp_sec": 3.7,
+      "score": -0.9392229914665222,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.9392229914665222,
+        "2": -0.6478074789047241
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 112,
+      "timestamp_sec": 3.7333333333333334,
+      "score": -0.929858386516571,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.929858386516571,
+        "2": -0.6473594307899475
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 113,
+      "timestamp_sec": 3.7666666666666666,
+      "score": -0.921149492263794,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.921149492263794,
+        "2": -0.6470524072647095
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 114,
+      "timestamp_sec": 3.8,
+      "score": -0.91359543800354,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.91359543800354,
+        "2": -0.6463845372200012
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 115,
+      "timestamp_sec": 3.8333333333333335,
+      "score": -0.9065885543823242,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.9065885543823242,
+        "2": -0.6456902027130127
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 116,
+      "timestamp_sec": 3.8666666666666667,
+      "score": -0.900339663028717,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.900339663028717,
+        "2": -0.6446787714958191
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 117,
+      "timestamp_sec": 3.9,
+      "score": -0.8950805068016052,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.8950805068016052,
+        "2": -0.6440750956535339
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 118,
+      "timestamp_sec": 3.933333333333333,
+      "score": -0.8903895020484924,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.8903895020484924,
+        "2": -0.6431905627250671
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 119,
+      "timestamp_sec": 3.966666666666667,
+      "score": -0.8860538601875305,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.8860538601875305,
+        "2": -0.642193078994751
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 120,
+      "timestamp_sec": 4.0,
+      "score": -0.8823913335800171,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.8823913335800171,
+        "2": -0.641473650932312
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 121,
+      "timestamp_sec": 4.033333333333333,
+      "score": -0.8798665404319763,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.8798665404319763,
+        "2": -0.6408933997154236
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 122,
+      "timestamp_sec": 4.066666666666666,
+      "score": -0.878273606300354,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.878273606300354,
+        "2": -0.6405842304229736
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 123,
+      "timestamp_sec": 4.1,
+      "score": -0.8752715587615967,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.8752715587615967,
+        "2": -0.6402627229690552
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 124,
+      "timestamp_sec": 4.133333333333334,
+      "score": -0.8740701079368591,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.8740701079368591,
+        "2": -0.6395658850669861
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 125,
+      "timestamp_sec": 4.166666666666667,
+      "score": -0.8736989498138428,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.8736989498138428,
+        "2": -0.6383722424507141
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 126,
+      "timestamp_sec": 4.2,
+      "score": -0.873173177242279,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.873173177242279,
+        "2": -0.6375177502632141
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 127,
+      "timestamp_sec": 4.233333333333333,
+      "score": -0.8733580112457275,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.8733580112457275,
+        "2": -0.6368175745010376
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 128,
+      "timestamp_sec": 4.266666666666667,
+      "score": -0.873993992805481,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.873993992805481,
+        "2": -0.6363257765769958
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 129,
+      "timestamp_sec": 4.3,
+      "score": -0.8749127388000488,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.8749127388000488,
+        "2": -0.6359005570411682
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 130,
+      "timestamp_sec": 4.333333333333333,
+      "score": -0.8750251531600952,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.8750251531600952,
+        "2": -0.6357840299606323
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 131,
+      "timestamp_sec": 4.366666666666666,
+      "score": -0.8747089505195618,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.8747089505195618,
+        "2": -0.6357380747795105
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 132,
+      "timestamp_sec": 4.4,
+      "score": -0.873745858669281,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.873745858669281,
+        "2": -0.6361939907073975
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 133,
+      "timestamp_sec": 4.433333333333334,
+      "score": -0.8730198740959167,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.8730198740959167,
+        "2": -0.6368595361709595
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 134,
+      "timestamp_sec": 4.466666666666667,
+      "score": -0.8719178438186646,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.8719178438186646,
+        "2": -0.6371341943740845
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 135,
+      "timestamp_sec": 4.5,
+      "score": -0.8712593913078308,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.8712593913078308,
+        "2": -0.6377139687538147
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 136,
+      "timestamp_sec": 4.533333333333333,
+      "score": -0.8702813386917114,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.8702813386917114,
+        "2": -0.6381971836090088
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 137,
+      "timestamp_sec": 4.566666666666666,
+      "score": -0.869156002998352,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.869156002998352,
+        "2": -0.6386210918426514
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 138,
+      "timestamp_sec": 4.6,
+      "score": -0.867233395576477,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.867233395576477,
+        "2": -0.6392458081245422
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 139,
+      "timestamp_sec": 4.633333333333334,
+      "score": -0.8665190935134888,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.8665190935134888,
+        "2": -0.6398839950561523
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 140,
+      "timestamp_sec": 4.666666666666667,
+      "score": -0.8655758500099182,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.8655758500099182,
+        "2": -0.6404539346694946
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 141,
+      "timestamp_sec": 4.7,
+      "score": -0.8647806644439697,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.8647806644439697,
+        "2": -0.6410613059997559
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 142,
+      "timestamp_sec": 4.733333333333333,
+      "score": -0.8644030094146729,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.8644030094146729,
+        "2": -0.6414941549301147
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 143,
+      "timestamp_sec": 4.766666666666667,
+      "score": -0.8644880652427673,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.8644880652427673,
+        "2": -0.6420309543609619
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 144,
+      "timestamp_sec": 4.8,
+      "score": -0.8653082251548767,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.8653082251548767,
+        "2": -0.6423512101173401
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 145,
+      "timestamp_sec": 4.833333333333333,
+      "score": -0.8659409284591675,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.8659409284591675,
+        "2": -0.6428420543670654
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 146,
+      "timestamp_sec": 4.866666666666666,
+      "score": -0.8677840828895569,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.8677840828895569,
+        "2": -0.6433395743370056
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 147,
+      "timestamp_sec": 4.9,
+      "score": -0.8704204559326172,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.8704204559326172,
+        "2": -0.6437391638755798
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 148,
+      "timestamp_sec": 4.933333333333334,
+      "score": -0.874377965927124,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.874377965927124,
+        "2": -0.6440314054489136
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 149,
+      "timestamp_sec": 4.966666666666667,
+      "score": -0.8776918053627014,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.8776918053627014,
+        "2": -0.6443881392478943
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 150,
+      "timestamp_sec": 5.0,
+      "score": -0.8817880153656006,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.8817880153656006,
+        "2": -0.644982099533081
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 151,
+      "timestamp_sec": 5.033333333333333,
+      "score": -0.885627031326294,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.885627031326294,
+        "2": -0.6452746391296387
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 152,
+      "timestamp_sec": 5.066666666666666,
+      "score": -0.8896072506904602,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.8896072506904602,
+        "2": -0.6455330848693848
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 153,
+      "timestamp_sec": 5.1,
+      "score": -0.8938115835189819,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.8938115835189819,
+        "2": -0.6458211541175842
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 154,
+      "timestamp_sec": 5.133333333333334,
+      "score": -0.8983338475227356,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.8983338475227356,
+        "2": -0.6458772420883179
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 155,
+      "timestamp_sec": 5.166666666666667,
+      "score": -0.9021894931793213,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.9021894931793213,
+        "2": -0.6456555724143982
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 156,
+      "timestamp_sec": 5.2,
+      "score": -0.9059301614761353,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.9059301614761353,
+        "2": -0.6450846195220947
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 157,
+      "timestamp_sec": 5.233333333333333,
+      "score": -0.9103236794471741,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.9103236794471741,
+        "2": -0.6443204879760742
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 158,
+      "timestamp_sec": 5.266666666666667,
+      "score": -0.9151945114135742,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.9151945114135742,
+        "2": -0.6434100270271301
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 159,
+      "timestamp_sec": 5.3,
+      "score": -0.9205499887466431,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.9205499887466431,
+        "2": -0.642458438873291
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 160,
+      "timestamp_sec": 5.333333333333333,
+      "score": -0.9251996278762817,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.9251996278762817,
+        "2": -0.6418212652206421
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 161,
+      "timestamp_sec": 5.366666666666666,
+      "score": -0.9297252297401428,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.9297252297401428,
+        "2": -0.6411439776420593
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 162,
+      "timestamp_sec": 5.4,
+      "score": -0.9346985220909119,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.9346985220909119,
+        "2": -0.6403293013572693
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 163,
+      "timestamp_sec": 5.433333333333334,
+      "score": -0.9421098828315735,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.9421098828315735,
+        "2": -0.6397706270217896
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 164,
+      "timestamp_sec": 5.466666666666667,
+      "score": -0.9491136074066162,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.9491136074066162,
+        "2": -0.6393502950668335
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 165,
+      "timestamp_sec": 5.5,
+      "score": -0.9589327573776245,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.9589327573776245,
+        "2": -0.6389124989509583
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 166,
+      "timestamp_sec": 5.533333333333333,
+      "score": -0.9679011702537537,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.9679011702537537,
+        "2": -0.6385618448257446
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 167,
+      "timestamp_sec": 5.566666666666666,
+      "score": -0.9768446087837219,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.9768446087837219,
+        "2": -0.6383896470069885
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 168,
+      "timestamp_sec": 5.6,
+      "score": -0.9856879115104675,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.9856879115104675,
+        "2": -0.6383635401725769
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 169,
+      "timestamp_sec": 5.633333333333334,
+      "score": -0.9993298053741455,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -0.9993298053741455,
+        "2": -0.6383522748947144
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 170,
+      "timestamp_sec": 5.666666666666667,
+      "score": -1.0115083456039429,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.0115083456039429,
+        "2": -0.638624370098114
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 171,
+      "timestamp_sec": 5.7,
+      "score": -1.0240520238876343,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.0240520238876343,
+        "2": -0.6388846039772034
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 172,
+      "timestamp_sec": 5.733333333333333,
+      "score": -1.0356918573379517,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.0356918573379517,
+        "2": -0.6392743587493896
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 173,
+      "timestamp_sec": 5.766666666666667,
+      "score": -1.047619342803955,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.047619342803955,
+        "2": -0.639789879322052
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 174,
+      "timestamp_sec": 5.8,
+      "score": -1.0605368614196777,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.0605368614196777,
+        "2": -0.6402150988578796
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 175,
+      "timestamp_sec": 5.833333333333333,
+      "score": -1.0726964473724365,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.0726964473724365,
+        "2": -0.6406578421592712
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 176,
+      "timestamp_sec": 5.866666666666666,
+      "score": -1.0840768814086914,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.0840768814086914,
+        "2": -0.6409633755683899
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 177,
+      "timestamp_sec": 5.9,
+      "score": -1.0922082662582397,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.0922082662582397,
+        "2": -0.6411939859390259
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 178,
+      "timestamp_sec": 5.933333333333334,
+      "score": -1.099526047706604,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.099526047706604,
+        "2": -0.6415144801139832
+      },
+      "num_person_detections": 2
+    },
+    {
+      "frame_index": 179,
+      "timestamp_sec": 5.966666666666667,
+      "score": -1.1070911884307861,
+      "alert": null,
+      "anomaly_threshold": null,
+      "track_scores": {
+        "1": -1.1070911884307861,
+        "2": -0.6416396498680115
+      },
+      "num_person_detections": 2
+    }
+  ],
+  "pose_json_path": "/Users/bernese/git/computer-vision-shoplifting-detection/stg_nf_official/inference_outputs/video_online_model_compare/normal_Normal (10)_UBnormal_unsupervised_71_8_tracked_pose.json",
+  "output_video": null
+}

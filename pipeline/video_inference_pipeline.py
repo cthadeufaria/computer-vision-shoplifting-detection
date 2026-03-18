@@ -469,7 +469,7 @@ class OnlineVideoInferencePipeline:
     def infer_video(
         self,
         video_path: str,
-        output_dir: str = "inference_outputs/video_online",
+        output_dir: str = str(Path(__file__).parent / "inference_outputs" / "video_online"),
         output_name: Optional[str] = None,
         display: bool = True,
         save_annotated_video: bool = True,
@@ -687,7 +687,7 @@ class OnlineVideoInferencePipeline:
     def infer_sinth_samples(
         self,
         sinth_root: str,
-        output_dir: str = "inference_outputs/video_online",
+        output_dir: str = str(Path(__file__).parent / "inference_outputs" / "video_online"),
         display: bool = True,
         save_annotated_video: bool = True,
         max_frames: Optional[int] = None,
@@ -747,7 +747,8 @@ def main() -> None:
     parser.add_argument("--anomaly_threshold", type=float, default=None,
                         help="If set, mark frames as ALERT when STG score <= threshold.")
 
-    parser.add_argument("--output_dir", type=str, default="inference_outputs/video_online")
+    _default_output_dir = str(Path(__file__).parent / "inference_outputs" / "video_online")
+    parser.add_argument("--output_dir", type=str, default=_default_output_dir)
     parser.add_argument("--max_frames", type=int, default=None,
                         help="Optional cap for fast smoke tests.")
     parser.add_argument("--save_annotated_video", action="store_true",

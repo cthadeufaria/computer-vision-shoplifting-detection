@@ -126,7 +126,7 @@ class STGNFInferencer:
 
     def infer(self,
               remaining_base_args: List[str],
-              output: str = "inference_outputs",
+              output: str = str(Path(__file__).parent / "inference_outputs"),
               device: Optional[str] = None,
               num_workers: int = 0,
               no_gt: bool = False) -> Dict:
@@ -230,7 +230,8 @@ def main() -> None:
                         help="Root directory to search when --model is a folder name.")
     parser.add_argument("--list_models", action="store_true",
                         help="List available exported models under --exports_root and exit.")
-    parser.add_argument("--output", type=str, default="inference_outputs", help="Output root dir.")
+    _default_output = str(Path(__file__).parent / "inference_outputs")
+    parser.add_argument("--output", type=str, default=_default_output, help="Output root dir.")
     parser.add_argument("--device", type=str, default=None, help="Override device (e.g. mps/cpu/cuda:0).")
     parser.add_argument("--num_workers", type=int, default=0, help="Dataloader workers.")
     parser.add_argument("--no_gt", action="store_true", help="Skip GT-based scoring (AUC/frame-level scores).")
