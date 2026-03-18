@@ -19,6 +19,28 @@ struct KeypointConverter {
         .leftAnkle, .rightAnkle
     ]
 
+    // Internal for testing: COCO17→COCO18 append + OpenPose reindexing.
+    static func reorder(coco17: [Keypoint], neck: Keypoint) -> [Keypoint] {
+        let coco18Raw = coco17 + [neck]
+        return oppOrder.map { coco18Raw[$0] }
+    }
+
+    // Internal for testing: selects neck from Vision (if conf ≥ 0.3) or shoulder average.
+    static func selectNeck(
+        visionNeck: Keypoint?,
+        leftShoulder: Keypoint,
+        rightShoulder: Keypoint
+    ) -> Keypoint {
+        if let neck = visionNeck, neck.confidence >= 0.3 {
+            return neck
+        }
+        return Keypoint(
+            x: (leftShoulder.x + rightShoulder.x) * 0.5,
+            y: (leftShoulder.y + rightShoulder.y) * 0.5,
+            confidence: (leftShoulder.confidence + rightShoulder.confidence) * 0.5
+        )
+    }
+
     /// Converts a pose observation to an 18-keypoint skeleton in pixel coordinates.
     /// - Parameters:
     ///   - observation: Vision pose observation.

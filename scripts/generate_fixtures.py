@@ -133,6 +133,56 @@ def generate_normalization_fixture():
 
 
 # ---------------------------------------------------------------------------
+# Fixture 3: PyTorch NLL reference (optional — requires torch + checkpoint)
+# ---------------------------------------------------------------------------
+def generate_nll_fixture():
+    """
+    Requires Python 3.11 with torch installed and ShanghaiTech_85_9.tar checkpoint.
+    Generates inference_nll_sample.json with a seeded [1,2,24,18] input and PyTorch NLL.
+    """
+    try:
+        import torch  # noqa: F401
+    except ImportError:
+        print("⚠  torch not available — skipping NLL fixture (re-run with Python 3.11)")
+        return
+
+    SCRIPTS_DIR = os.path.dirname(os.path.abspath(__file__))
+    sys.path.insert(0, SCRIPTS_DIR)
+    try:
+        from convert_stgnf_to_coreml import build_model  # noqa: F401, E402
+    except Exception as e:
+        print(f"⚠  Could not import conversion script ({e}) — skipping NLL fixture")
+        return
+
+    print("→ Building STG-NF model for NLL fixture …")
+    try:
+        wrapper = build_model()
+    except Exception as e:
+        print(f"⚠  build_model() failed ({e}) — skipping NLL fixture")
+        return
+
+    import torch as torch_module
+    torch_module.manual_seed(0)
+    example = torch_module.randn(1, 2, 24, 18)
+
+    with torch_module.no_grad():
+        nll_tensor = wrapper(example)
+    nll_value = float(nll_tensor.item())
+
+    fixture = {
+        "description": "Seeded (seed=0) random input [1,2,24,18]. PyTorch NLL reference.",
+        "input_pose_window": example.numpy().tolist(),  # [1,2,24,18]
+        "expected_nll": nll_value,
+    }
+
+    path = os.path.join(FIXTURES_DIR, "inference_nll_sample.json")
+    with open(path, "w") as f:
+        json.dump(fixture, f, indent=2)
+    print(f"✓ {path}")
+    print(f"  NLL = {nll_value:.6f}")
+
+
+# ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 if __name__ == "__main__":
@@ -141,4 +191,6 @@ if __name__ == "__main__":
     generate_coco17_fixture()
     print()
     generate_normalization_fixture()
+    print()
+    generate_nll_fixture()
     print("\nDone.")

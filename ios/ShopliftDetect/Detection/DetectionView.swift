@@ -46,6 +46,7 @@ struct DetectionView: View {
                             .font(.title)
                             .foregroundStyle(.white)
                     }
+                    .accessibilityIdentifier("xmark.circle.fill")
                     .padding()
                     Spacer()
                 }

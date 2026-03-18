@@ -41,6 +41,12 @@ targets:
     platform: iOS
     sources:
       - path: ShopliftDetectTests
+        excludes:
+          - "Fixtures/**"
+    resources:
+      - path: ShopliftDetectTests/Fixtures/coco17_sample.json
+      - path: ShopliftDetectTests/Fixtures/normal_pose_window.json
+      - path: ShopliftDetectTests/Fixtures/inference_nll_sample.json
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.shopliftdetect.tests
