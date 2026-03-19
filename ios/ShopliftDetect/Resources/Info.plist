@@ -6,6 +6,16 @@
 	<string>com.shopliftdetect.app</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleName</key>
+	<string>ShopliftDetect</string>
+	<key>CFBundleDisplayName</key>
+	<string>ShopliftDetect</string>
+	<key>CFBundleVersion</key>
+	<string>1</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Camera access is required to detect poses for shoplifting anomaly analysis.</string>
 	<key>UIApplicationSceneManifest</key>
