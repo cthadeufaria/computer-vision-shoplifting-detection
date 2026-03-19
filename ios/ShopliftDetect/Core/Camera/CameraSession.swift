@@ -19,7 +19,10 @@ final class CameraSession: NSObject, ObservableObject {
         captureSession.beginConfiguration()
         captureSession.sessionPreset = .hd1920x1080
 
-        guard let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back),
+        // Prefer back camera on iPhone; fall back to any available camera (Mac/simulator).
+        let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
+            ?? AVCaptureDevice.default(for: .video)
+        guard let device,
               let input = try? AVCaptureDeviceInput(device: device),
               captureSession.canAddInput(input) else {
             throw CameraError.deviceUnavailable
