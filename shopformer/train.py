@@ -25,8 +25,11 @@ import torch.nn.functional as F
 from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
 
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
 from models.shopformer import Shopformer, build_shopformer
-from data.poselift_dataset import PoseLiftDataset, PoseLiftDataModule
+from datasets.poselift_shopformer import PoseLiftDataset, PoseLiftDataModule
 from utils.config import load_config, save_config
 from utils.device import get_device, setup_mps_environment, clear_mps_cache
 from utils.metrics import compute_metrics, compute_auc_roc

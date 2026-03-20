@@ -77,7 +77,7 @@ training:
 
 data:
   # Dataset location (relative to config file)
-  data_dir: ../../shopformer/data/PoseLift
+  data_dir: ../../data/PoseLift
 
   # Sequence extraction
   stride: 6                         # 50% overlap with seq_len=12 (was 12)

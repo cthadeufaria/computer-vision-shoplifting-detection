@@ -368,7 +368,7 @@ class PoseLiftDataset(Dataset):
             augmentor = PoseAugmentor.from_config(config)
 
         return cls(
-            data_dir=data_cfg.get('data_dir', '../shopformer/data/PoseLift'),
+            data_dir=data_cfg.get('data_dir', '../data/PoseLift'),
             split=split,
             seq_len=model_cfg.get('seq_len', 24),
             stride=data_cfg.get('stride', 12),

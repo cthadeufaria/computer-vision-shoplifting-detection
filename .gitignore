@@ -1,11 +1,6 @@
 # Dataset:
 data
-!shopformer/data/
-shopformer/data/PoseLift/
-dataset/*
-!dataset/Anomaly_Train.txt
-!dataset/ReadMe-Anomaly-Detection.txt
-!dataset/Temporal_Anomaly_Annotation_for_Testing_Videos.txt
+dataset
 
 models/*
 !shopformer/models/

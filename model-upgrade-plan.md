@@ -19,9 +19,9 @@ STG-NF currently supports ShanghaiTech and UBnormal. PoseLift stores pose data d
 
 **File to create:** `stg_nf_official/datasets/poselift.py`
 
-PoseLift format (from `shopformer_2/data/poselift_dataset.py`):
+PoseLift format (from `datasets/poselift_shopformer.py`):
 ```
-shopformer/data/PoseLift/Pickle_files/
+data/PoseLift/Pickle_files/
 ├── Train/       # pickle files: frame_num → {person_id → [bbox, keypoints(17,3)]}
 ├── Test/        # same format
 └── GT/          # ground truth: per-frame binary anomaly labels (test only)
@@ -36,7 +36,7 @@ The loader must:
 6. Output shape: `[N, seg_len, 18, 3]` — same as existing STG-NF dataset classes
 7. Load GT labels from `GT/` for test evaluation
 
-**Reference:** `shopformer_2/data/poselift_dataset.py` — existing PoseLift loader in the repo. Use its pickle loading logic, but output in STG-NF's expected format instead of Shopformer's.
+**Reference:** `datasets/poselift_shopformer.py` — existing PoseLift loader in the repo. Use its pickle loading logic, but output in STG-NF's expected format instead of Shopformer's.
 
 ### Adaptation 2: Register PoseLift in `args.py`
 
@@ -57,7 +57,7 @@ if args.dataset == 'PoseLift':
 
 STG-NF's `normalize_pose()` requires pixel-space coordinates and a `vid_res=[W, H]` to divide by. PoseLift pickles store raw keypoints — check whether they're already normalized (0–1) or in pixel space. If normalized, set `vid_res=[1,1]` for a no-op resolution divide.
 
-**Check:** inspect a few pickle files from `shopformer/data/PoseLift/Pickle_files/Train/` to confirm coordinate range.
+**Check:** inspect a few pickle files from `data/PoseLift/Pickle_files/Train/` to confirm coordinate range.
 
 ### Adaptation 4: Ground Truth Format Mapping
 
@@ -80,7 +80,7 @@ cd stg_nf_official
 
 python train_eval.py \
   --dataset PoseLift \
-  --data_dir ../shopformer/data/PoseLift/Pickle_files \
+  --data_dir ../data/PoseLift/Pickle_files \
   --model_save_dir ../artifacts/stg_nf/poselift_runs \
   --epochs 50 \
   --seg_len 24 \
@@ -138,7 +138,7 @@ Compare directly against Shopformer_2's best: `checkpoints/20251226_152230` — 
 | `stg_nf_official/utils/scoring_utils.py` | Existing AUC-ROC evaluation — no changes needed |
 | `stg_nf_official/train_eval.py` | Training entry point — minimal changes to accept PoseLift |
 | `stg_nf_official/args.py` | Add PoseLift dataset registration |
-| `shopformer_2/data/poselift_dataset.py` | Reference for pickle loading logic |
+| `datasets/poselift_shopformer.py` | Reference for pickle loading logic |
 | `WORKLOG.md` | Log every run |
 
 ---

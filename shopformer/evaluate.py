@@ -19,8 +19,11 @@ import numpy as np
 import torch
 import matplotlib.pyplot as plt
 
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
 from models.shopformer import Shopformer, build_shopformer
-from data.poselift_dataset import PoseLiftDataset, PoseLiftDataModule
+from datasets.poselift_shopformer import PoseLiftDataset, PoseLiftDataModule
 from utils.config import load_config
 from utils.device import get_device, setup_mps_environment
 from utils.metrics import (

@@ -148,7 +148,7 @@ def get_default_config() -> Dict[str, Any]:
             }
         },
         'data': {
-            'data_dir': '../shopformer/data/PoseLift',
+            'data_dir': '../data/PoseLift',
             'stride': 12,
             'normalize': True,
             'augmentation': {

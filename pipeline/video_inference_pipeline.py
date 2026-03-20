@@ -716,8 +716,8 @@ def main() -> None:
 
     parser.add_argument("--video", type=str, default=None, help="Single video path for inference.")
     parser.add_argument("--run_sinth_samples", action="store_true",
-                        help="Run one video from dataset/sinth/Normal and one from dataset/sinth/Shoplifting.")
-    parser.add_argument("--sinth_root", type=str, default="dataset/sinth",
+                        help="Run one video from data/sinth/Normal and one from data/sinth/Shoplifting.")
+    parser.add_argument("--sinth_root", type=str, default="data/sinth",
                         help="Root folder containing Normal/ and Shoplifting/ mp4 files.")
 
     parser.add_argument("--exports_root", type=str, default="stg_nf_official/exports")
