@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 77;
+	objectVersion = 63;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -74,7 +74,7 @@
 		2E6D1FA6D0F7A8E00623E82F /* DetectionToggleUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetectionToggleUITests.swift; sourceTree = "<group>"; };
 		4B11EFCE5F2D8339E76887AE /* OnboardingUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingUITests.swift; sourceTree = "<group>"; };
 		51C5939E25CEBBB78EB12E7C /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
-		620A741B88EFC23F02912327 /* STGNFModel.mlpackage */ = {isa = PBXFileReference; path = STGNFModel.mlpackage; sourceTree = "<group>"; };
+		620A741B88EFC23F02912327 /* STGNFModel.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; path = STGNFModel.mlpackage; sourceTree = "<group>"; };
 		6359123FEAC1B25977609A49 /* PoseNormalizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoseNormalizerTests.swift; sourceTree = "<group>"; };
 		648057EC4BCBB3707A35C50D /* ShopliftDetectApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopliftDetectApp.swift; sourceTree = "<group>"; };
 		6A8AFAAE12C2D54FD880DCE6 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
@@ -91,7 +91,7 @@
 		93AC2E43E9753F33558320AF /* DetectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetectionViewModel.swift; sourceTree = "<group>"; };
 		95AAB046AEBB41FF0A6400F0 /* FrameBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrameBuffer.swift; sourceTree = "<group>"; };
 		9AC92BE2C676E071B356AB39 /* CoreML.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreML.framework; path = System/Library/Frameworks/CoreML.framework; sourceTree = SDKROOT; };
-		A5C6B931B966482BBF5AFFF6 /* ShopliftDetect.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = ShopliftDetect.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A5C6B931B966482BBF5AFFF6 /* ShopliftDetect.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ShopliftDetect.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A7288FDA2CC4C844F197D2A8 /* AnomalyScorer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnomalyScorer.swift; sourceTree = "<group>"; };
 		BDF3957FC710022AF0EE000C /* KeypointConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeypointConverter.swift; sourceTree = "<group>"; };
 		C85226C93A0593B1940ED6DA /* PoseEstimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoseEstimator.swift; sourceTree = "<group>"; };
@@ -380,7 +380,6 @@
 			);
 			mainGroup = A1A5300727E7105447286583;
 			minimizedProjectReferenceProxies = 1;
-			preferredProjectObjectVersion = 77;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -475,6 +474,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -547,8 +547,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 599WAZ6282;
 				INFOPLIST_FILE = ShopliftDetect/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -556,6 +559,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.shopliftdetect.app;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
 				SWIFT_STRICT_CONCURRENCY = complete;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -566,6 +570,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -645,6 +650,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -661,6 +667,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -677,8 +684,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 599WAZ6282;
 				INFOPLIST_FILE = ShopliftDetect/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -686,6 +696,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.shopliftdetect.app;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
 				SWIFT_STRICT_CONCURRENCY = complete;
 				TARGETED_DEVICE_FAMILY = "1,2";

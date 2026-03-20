@@ -16,6 +16,10 @@ final class CameraSession: NSObject, ObservableObject {
     }
 
     func start() throws {
+        guard AVCaptureDevice.authorizationStatus(for: .video) == .authorized else {
+            throw CameraError.permissionDenied
+        }
+
         captureSession.beginConfiguration()
         captureSession.sessionPreset = .hd1920x1080
 
@@ -62,7 +66,16 @@ extension CameraSession: AVCaptureVideoDataOutputSampleBufferDelegate {
     }
 }
 
-enum CameraError: Error {
+enum CameraError: Error, LocalizedError {
+    case permissionDenied
     case deviceUnavailable
     case outputUnavailable
+
+    var errorDescription: String? {
+        switch self {
+        case .permissionDenied: "Camera access is required. Enable it in Settings → ShopliftDetect → Camera."
+        case .deviceUnavailable: "No camera device found."
+        case .outputUnavailable: "Could not configure camera output."
+        }
+    }
 }

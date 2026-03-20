@@ -6,7 +6,7 @@ protocol STGNFModelProtocol {
 
 /// Wraps the Xcode-generated STGNFModel class (auto-generated from STGNFModel.mlpackage).
 /// anomaly_score = -NLL (more negative = more anomalous).
-final class STGNFModelRunner: STGNFModelProtocol {
+final class STGNFModelRunner: STGNFModelProtocol, @unchecked Sendable {
     // STGNFModel is the Xcode-generated class from STGNFModel.mlpackage.
     private let coremlModel: STGNFModel
 

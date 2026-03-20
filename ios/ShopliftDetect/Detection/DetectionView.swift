@@ -4,6 +4,7 @@ import AVFoundation
 struct DetectionView: View {
     @Binding var isPresented: Bool
     @StateObject private var viewModel = DetectionViewModel()
+    @State private var startError: String?
 
     var body: some View {
         ZStack {
@@ -54,7 +55,19 @@ struct DetectionView: View {
             }
         }
         .onAppear {
-            try? viewModel.start()
+            do {
+                try viewModel.start()
+            } catch {
+                startError = error.localizedDescription
+            }
+        }
+        .alert("Camera Error", isPresented: Binding(
+            get: { startError != nil },
+            set: { if !$0 { startError = nil; isPresented = false } }
+        )) {
+            Button("OK") { isPresented = false }
+        } message: {
+            Text(startError ?? "")
         }
         .onDisappear {
             viewModel.stop()

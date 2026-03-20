@@ -71,7 +71,8 @@ final class FrameBufferTests: XCTestCase {
         // Append 48 frames concurrently — should not crash and buffer should be consistent.
         await withTaskGroup(of: Void.self) { group in
             for i in 0..<48 {
-                group.addTask { await buffer.append(self.makeSkeleton(i)) }
+                let skeleton = self.makeSkeleton(i)
+                group.addTask { await buffer.append(skeleton) }
             }
         }
         let count = await buffer.count
