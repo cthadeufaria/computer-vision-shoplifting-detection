@@ -7,12 +7,15 @@ final class CameraSession: NSObject, ObservableObject {
     private let captureSession = AVCaptureSession()
     private let videoOutput = AVCaptureVideoDataOutput()
     private let sessionQueue = DispatchQueue(label: "com.shopliftdetect.camera", qos: .userInitiated)
+    let previewLayer: AVCaptureVideoPreviewLayer
 
     private let frameSubject = PassthroughSubject<CVPixelBuffer, Never>()
     var framePublisher: AnyPublisher<CVPixelBuffer, Never> { frameSubject.eraseToAnyPublisher() }
-
-    var previewLayer: AVCaptureVideoPreviewLayer {
-        AVCaptureVideoPreviewLayer(session: captureSession)
+    
+    override init() {
+        previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
+        previewLayer.videoGravity = .resizeAspectFill
+        super.init()
     }
 
     func start() throws {
@@ -24,21 +27,25 @@ final class CameraSession: NSObject, ObservableObject {
         captureSession.sessionPreset = .hd1920x1080
 
         // Prefer back camera on iPhone; fall back to any available camera (Mac/simulator).
-        let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
-            ?? AVCaptureDevice.default(for: .video)
-        guard let device,
-              let input = try? AVCaptureDeviceInput(device: device),
-              captureSession.canAddInput(input) else {
-            throw CameraError.deviceUnavailable
+        if captureSession.inputs.isEmpty {
+            let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
+                ?? AVCaptureDevice.default(for: .video)
+            guard let device,
+                  let input = try? AVCaptureDeviceInput(device: device),
+                  captureSession.canAddInput(input) else {
+                throw CameraError.deviceUnavailable
+            }
+            captureSession.addInput(input)
         }
-        captureSession.addInput(input)
 
-        videoOutput.setSampleBufferDelegate(self, queue: sessionQueue)
-        videoOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA]
-        guard captureSession.canAddOutput(videoOutput) else {
-            throw CameraError.outputUnavailable
+        if captureSession.outputs.isEmpty {
+            videoOutput.setSampleBufferDelegate(self, queue: sessionQueue)
+            videoOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA]
+            guard captureSession.canAddOutput(videoOutput) else {
+                throw CameraError.outputUnavailable
+            }
+            captureSession.addOutput(videoOutput)
         }
-        captureSession.addOutput(videoOutput)
         captureSession.commitConfiguration()
 
         sessionQueue.async { [captureSession] in

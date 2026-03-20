@@ -21,6 +21,11 @@ final class DetectionViewModel: ObservableObject {
 
     var previewLayer: AVCaptureVideoPreviewLayer { cameraSession.previewLayer }
 
+    func enablePreviewTestMode() {
+        detectionState = .warmingUp(framesCollected: 0, framesNeeded: FrameBuffer.capacity)
+        skeletons = []
+    }
+
     func start() throws {
         modelRunner = try? STGNFModelRunner()
         try cameraSession.start()

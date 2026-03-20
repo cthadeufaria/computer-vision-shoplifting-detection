@@ -13,16 +13,28 @@ struct HomeView: View {
                 Text("ShopliftDetect")
                     .font(.largeTitle.bold())
                 Spacer()
-                Button("Start Detection") {
-                    viewModel.isDetectionActive = true
+                VStack(spacing: 16) {
+                    Button("Start Detection") {
+                        viewModel.isDetectionActive = true
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.large)
+                    .accessibilityIdentifier("startDetectionButton")
+
+                    Button("Pose Preview") {
+                        viewModel.isPosePreviewActive = true
+                    }
+                    .buttonStyle(.bordered)
+                    .controlSize(.large)
+                    .accessibilityIdentifier("posePreviewButton")
                 }
-                .buttonStyle(.borderedProminent)
-                .controlSize(.large)
-                .accessibilityIdentifier("startDetectionButton")
                 Spacer()
             }
             .fullScreenCover(isPresented: $viewModel.isDetectionActive) {
                 DetectionView(isPresented: $viewModel.isDetectionActive)
+            }
+            .fullScreenCover(isPresented: $viewModel.isPosePreviewActive) {
+                PosePreviewView(isPresented: $viewModel.isPosePreviewActive)
             }
         }
     }

@@ -14,6 +14,8 @@
 		0DEED99990BA277A68317081 /* CameraPreviewLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E2A485136553B90AE794311 /* CameraPreviewLayer.swift */; };
 		0F8282AD009EEE25F428B7FC /* CoreML.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9AC92BE2C676E071B356AB39 /* CoreML.framework */; };
 		1312FBC1DDFA68BDF67EC314 /* PoseSkeleton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F15ED481F24B75C9E334547 /* PoseSkeleton.swift */; };
+		1A2B3C4D5E6F708192A3B4C5 /* PosePreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F708192A3B4C6 /* PosePreviewView.swift */; };
+		1A2B3C4D5E6F708192A3B4C7 /* PosePreviewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F708192A3B4C8 /* PosePreviewViewModel.swift */; };
 		2A071CD34E7093D0CEB8441B /* DetectionToggleUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E6D1FA6D0F7A8E00623E82F /* DetectionToggleUITests.swift */; };
 		2BFCB07522099205C76EF61E /* AnomalyScorerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB508AB28F692C8E67200488 /* AnomalyScorerTests.swift */; };
 		3C188E165B06B39148F32D6C /* STGNFModel.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = 620A741B88EFC23F02912327 /* STGNFModel.mlpackage */; };
@@ -68,6 +70,8 @@
 		15E5E3912E926DFB3710F673 /* ScoreCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreCardView.swift; sourceTree = "<group>"; };
 		1A2C8C8B573D1E5E5EAE3CFB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		1FED0F88656AC32EDB70B4DB /* ShopliftDetectTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = ShopliftDetectTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		1A2B3C4D5E6F708192A3B4C6 /* PosePreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PosePreviewView.swift; sourceTree = "<group>"; };
+		1A2B3C4D5E6F708192A3B4C8 /* PosePreviewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PosePreviewViewModel.swift; sourceTree = "<group>"; };
 		249367B62D95A41113BDB920 /* AnomalyResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnomalyResult.swift; sourceTree = "<group>"; };
 		25D5301C4F4C3ABD7105E291 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		2714C5D423374F287CE5F395 /* OnboardingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewModel.swift; sourceTree = "<group>"; };
@@ -209,6 +213,8 @@
 			children = (
 				7985B0A3EC9581878A041372 /* DetectionView.swift */,
 				93AC2E43E9753F33558320AF /* DetectionViewModel.swift */,
+				1A2B3C4D5E6F708192A3B4C6 /* PosePreviewView.swift */,
+				1A2B3C4D5E6F708192A3B4C8 /* PosePreviewViewModel.swift */,
 				15E5E3912E926DFB3710F673 /* ScoreCardView.swift */,
 				ECD88A9A310D02C00E0C1A5F /* SkeletonOverlayView.swift */,
 			);
@@ -436,6 +442,8 @@
 				3E326D2585B76869CFA75F4B /* OnboardingViewModel.swift in Sources */,
 				9D00705BA6BB93EE1688B391 /* PoseEstimator.swift in Sources */,
 				81806DED9B8439A5A98D13A5 /* PoseNormalizer.swift in Sources */,
+				1A2B3C4D5E6F708192A3B4C5 /* PosePreviewView.swift in Sources */,
+				1A2B3C4D5E6F708192A3B4C7 /* PosePreviewViewModel.swift in Sources */,
 				1312FBC1DDFA68BDF67EC314 /* PoseSkeleton.swift in Sources */,
 				3C188E165B06B39148F32D6C /* STGNFModel.mlpackage in Sources */,
 				E967A48E368AD5243B82EB45 /* STGNFModelWrapper.swift in Sources */,
