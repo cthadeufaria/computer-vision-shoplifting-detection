@@ -61,7 +61,7 @@ final class FrameBufferTests: XCTestCase {
         for i in 0..<24 { await buffer.append(makeSkeleton(i)) }
         let window = await buffer.currentWindow()
         XCTAssertNotNil(window)
-        let normalizer = PoseNormalizer(videoWidth: 640, videoHeight: 480)
+        let normalizer = PoseNormalizer()
         let array = try normalizer.normalize(window!)
         XCTAssertEqual(array.shape, [1, 2, 24, 18])
     }

@@ -42,15 +42,11 @@ final class PosePreviewViewModel: ObservableObject {
         guard let (currentFrameIndex, estimator, converter) = snapshot else { return }
         guard let observations = try? estimator.detectPoses(in: pixelBuffer) else { return }
 
-        let width = CGFloat(CVPixelBufferGetWidth(pixelBuffer))
-        let height = CGFloat(CVPixelBufferGetHeight(pixelBuffer))
-        let previewSize = CGSize(width: width, height: height)
         let now = CMTime(seconds: Date().timeIntervalSince1970, preferredTimescale: 600)
 
         let currentSkeletons = observations.compactMap { observation in
             try? converter.convert(
                 observation,
-                previewSize: previewSize,
                 frameIndex: currentFrameIndex,
                 timestamp: now
             )

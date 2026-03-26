@@ -6,6 +6,6 @@ struct PoseSkeleton: Sendable {
     let frameIndex: Int
     let timestamp: CMTime
 
-    /// Bounding box in pixel coordinates, used for IoU-based person tracking.
+    /// Bounding box in normalized coordinates (0–1), used for IoU-based person tracking.
     let boundingBox: CGRect
 }

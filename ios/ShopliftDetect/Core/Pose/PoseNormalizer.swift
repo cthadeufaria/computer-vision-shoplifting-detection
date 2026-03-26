@@ -2,11 +2,12 @@ import CoreML
 
 /// Normalizes a 24-frame pose window and converts to MLMultiArray [1, 2, 24, 18].
 /// Exact port of data_utils.py:normalize_pose (live branch).
+///
+/// Expects keypoints in normalized coordinates (0–1). KeypointConverter produces
+/// this directly from Vision, matching the Python pipeline which divides by vid_res first.
 struct PoseNormalizer {
-    let videoWidth: Float
-    let videoHeight: Float
 
-    /// - Parameter window: 24 PoseSkeleton frames, each with 18 keypoints.
+    /// - Parameter window: 24 PoseSkeleton frames, each with 18 keypoints in 0–1 coords.
     /// - Returns: MLMultiArray of shape [1, 2, 24, 18] (Float32), conf channel dropped.
     func normalize(_ window: [PoseSkeleton]) throws -> MLMultiArray {
         precondition(window.count == 24, "Window must contain exactly 24 frames")
@@ -14,15 +15,15 @@ struct PoseNormalizer {
         let numFrames = 24
         let numJoints = 18
 
-        // Step 1: copy xy into [24, 18, 2], dividing by resolution.
+        // Step 1: copy xy into [24, 18, 2]. Coords are already 0–1; no division needed.
         var xy = [[[Float]]](
             repeating: [[Float]](repeating: [Float](repeating: 0, count: 2), count: numJoints),
             count: numFrames
         )
         for (f, skeleton) in window.enumerated() {
             for (j, kp) in skeleton.keypoints.enumerated() {
-                xy[f][j][0] = kp.x / videoWidth
-                xy[f][j][1] = kp.y / videoHeight
+                xy[f][j][0] = kp.x
+                xy[f][j][1] = kp.y
             }
         }
 

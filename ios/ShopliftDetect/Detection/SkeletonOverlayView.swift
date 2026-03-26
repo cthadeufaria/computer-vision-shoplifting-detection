@@ -15,20 +15,30 @@ struct SkeletonOverlayView: View {
     ]
 
     var body: some View {
-        Canvas { context, _ in
+        // Canvas provides its own size in points. Keypoints are in normalized (0–1) space,
+        // so multiply by size to get the correct screen position regardless of device.
+        Canvas { context, size in
             for skeleton in skeletons {
                 let kps = skeleton.keypoints
                 for (a, b) in Self.bones {
                     guard a < kps.count, b < kps.count,
                           kps[a].confidence > 0.3, kps[b].confidence > 0.3 else { continue }
                     let path = Path { p in
-                        p.move(to: CGPoint(x: CGFloat(kps[a].x), y: CGFloat(kps[a].y)))
-                        p.addLine(to: CGPoint(x: CGFloat(kps[b].x), y: CGFloat(kps[b].y)))
+                        p.move(to: CGPoint(
+                            x: CGFloat(kps[a].x) * size.width,
+                            y: CGFloat(kps[a].y) * size.height
+                        ))
+                        p.addLine(to: CGPoint(
+                            x: CGFloat(kps[b].x) * size.width,
+                            y: CGFloat(kps[b].y) * size.height
+                        ))
                     }
                     context.stroke(path, with: .color(.green.opacity(0.8)), lineWidth: 2)
                 }
                 for kp in kps where kp.confidence > 0.3 {
-                    let rect = CGRect(x: CGFloat(kp.x) - 3, y: CGFloat(kp.y) - 3, width: 6, height: 6)
+                    let cx = CGFloat(kp.x) * size.width
+                    let cy = CGFloat(kp.y) * size.height
+                    let rect = CGRect(x: cx - 3, y: cy - 3, width: 6, height: 6)
                     context.fill(Path(ellipseIn: rect), with: .color(.yellow))
                 }
             }

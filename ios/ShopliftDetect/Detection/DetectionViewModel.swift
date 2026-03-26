@@ -61,17 +61,15 @@ final class DetectionViewModel: ObservableObject {
         // Vision: runs on cooperative thread pool (NOT main thread).
         guard let observations = try? estimator.detectPoses(in: pixelBuffer) else { return }
 
-        let width = CGFloat(CVPixelBufferGetWidth(pixelBuffer))
-        let height = CGFloat(CVPixelBufferGetHeight(pixelBuffer))
-        let previewSize = CGSize(width: width, height: height)
         let now = CMTime(seconds: Date().timeIntervalSince1970, preferredTimescale: 600)
 
         var currentSkeletons: [PoseSkeleton] = []
 
         for observation in observations {
             guard let skeleton = try? converter.convert(
-                observation, previewSize: previewSize,
-                frameIndex: currentFrameIndex, timestamp: now
+                observation,
+                frameIndex: currentFrameIndex,
+                timestamp: now
             ) else { continue }
             currentSkeletons.append(skeleton)
 
@@ -87,7 +85,7 @@ final class DetectionViewModel: ObservableObject {
             await buffer.append(skeleton)
 
             if await buffer.isReady, let window = await buffer.currentWindow() {
-                let normalizer = PoseNormalizer(videoWidth: Float(width), videoHeight: Float(height))
+                let normalizer = PoseNormalizer()
                 // CoreML: also on cooperative thread pool (NOT main thread).
                 if let mlArray = try? normalizer.normalize(window),
                    let runner,

@@ -41,15 +41,18 @@ struct KeypointConverter {
         )
     }
 
-    /// Converts a pose observation to an 18-keypoint skeleton in pixel coordinates.
+    /// Converts a pose observation to an 18-keypoint skeleton in normalized coordinates (0–1).
+    ///
+    /// Vision already delivers points in normalized space with (0,0) at bottom-left.
+    /// This method flips y so (0,0) is top-left (UIKit/SwiftUI convention) and reindexes
+    /// to COCO18/OpenPose order. No pixel dimensions are needed.
+    ///
     /// - Parameters:
     ///   - observation: Vision pose observation.
-    ///   - previewSize: Pixel dimensions of the camera preview (width × height).
     ///   - frameIndex: Current frame counter.
     ///   - timestamp: Current frame timestamp.
     func convert(
         _ observation: VNHumanBodyPoseObservation,
-        previewSize: CGSize,
         frameIndex: Int,
         timestamp: CMTime
     ) throws -> PoseSkeleton {
@@ -58,18 +61,22 @@ struct KeypointConverter {
         for (i, jointName) in Self.coco17Joints.enumerated() {
             if let point = try? observation.recognizedPoint(jointName), point.confidence > 0 {
                 // Vision gives (0,0)=bottom-left in normalized coords; flip y for UIKit.
-                let px = Float(point.location.x) * Float(previewSize.width)
-                let py = Float(1.0 - point.location.y) * Float(previewSize.height)
-                coco17[i] = Keypoint(x: px, y: py, confidence: Float(point.confidence))
+                coco17[i] = Keypoint(
+                    x: Float(point.location.x),
+                    y: Float(1.0 - point.location.y),
+                    confidence: Float(point.confidence)
+                )
             }
         }
 
         // Build neck: use Vision's neck joint if confidence >= 0.3, else average shoulders.
         let neckKeypoint: Keypoint
         if let neckPoint = try? observation.recognizedPoint(.neck), neckPoint.confidence >= 0.3 {
-            let px = Float(neckPoint.location.x) * Float(previewSize.width)
-            let py = Float(1.0 - neckPoint.location.y) * Float(previewSize.height)
-            neckKeypoint = Keypoint(x: px, y: py, confidence: Float(neckPoint.confidence))
+            neckKeypoint = Keypoint(
+                x: Float(neckPoint.location.x),
+                y: Float(1.0 - neckPoint.location.y),
+                confidence: Float(neckPoint.confidence)
+            )
         } else {
             let ls = coco17[5]
             let rs = coco17[6]
@@ -81,10 +88,10 @@ struct KeypointConverter {
         }
 
         // coco18: append neck at index 17, then reorder via oppOrder.
-        var coco18Raw = coco17 + [neckKeypoint]  // indices 0..17
+        let coco18Raw = coco17 + [neckKeypoint]  // indices 0..17
         let reordered = Self.oppOrder.map { coco18Raw[$0] }
 
-        // Bounding box from all non-zero-confidence keypoints.
+        // Bounding box in normalized (0–1) space.
         let valid = reordered.filter { $0.confidence > 0 }
         let bbox: CGRect
         if valid.isEmpty {
