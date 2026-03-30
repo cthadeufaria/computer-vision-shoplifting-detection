@@ -3,7 +3,6 @@ import AVFoundation
 import Combine
 import CoreMedia
 import UIKit
-import Vision
 
 @MainActor
 final class PosePreviewViewModel: ObservableObject {
@@ -74,15 +73,15 @@ final class PosePreviewViewModel: ObservableObject {
             )
         }
 
-        // Extract all debug values from observations here (nonisolated), before crossing to MainActor.
-        // VNHumanBodyPoseObservation is not Sendable, so only plain value types cross the boundary.
+        // Extract all debug values before crossing to MainActor (only plain value types cross the boundary).
         let personCount = observations.count
         var rawNose: CGPoint? = nil
         var flippedNose: CGPoint? = nil
-        if let first = observations.first,
-           let nose = try? first.recognizedPoint(.nose), nose.confidence > 0.1 {
-            rawNose = nose.location                                          // Vision: (0,0)=bottom-left
-            flippedNose = CGPoint(x: nose.location.x, y: 1 - nose.location.y) // UIKit: (0,0)=top-left
+        // Keypoint index 0 is nose in COCO18 order (KeypointConverter oppOrder[0] = 0).
+        // Coordinates are UIKit-normalized (y-flipped from Vision), so invert y to recover Vision coords.
+        if let kp = currentSkeletons.first?.keypoints.first, kp.confidence > 0.1 {
+            flippedNose = CGPoint(x: CGFloat(kp.x), y: CGFloat(kp.y))
+            rawNose     = CGPoint(x: CGFloat(kp.x), y: 1 - CGFloat(kp.y))
         }
 
         await MainActor.run { [weak self] in

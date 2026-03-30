@@ -10,56 +10,18 @@ struct DetectionView: View {
 
     var body: some View {
         ZStack {
-            // Layer 1: camera preview
             CameraPreviewLayer(previewLayer: viewModel.previewLayer)
                 .ignoresSafeArea()
-
-            // Layer 2: skeleton overlay
             SkeletonOverlayView(skeletons: viewModel.skeletons, previewLayer: viewModel.previewLayer)
                 .ignoresSafeArea()
-
-            // Layer 3: score card (top-right)
-            VStack {
-                HStack {
-                    Spacer()
-                    ScoreCardView(state: viewModel.detectionState)
-                        .rotationEffect(rotation.angle)
-                        .padding()
-                }
-                Spacer()
-            }
-
-            // Layer 4: warmup indicator (centered)
-            if case .warmingUp(let collected, let needed) = viewModel.detectionState {
-                Text("Collecting frames \(collected)/\(needed)")
-                    .font(.headline)
-                    .padding()
-                    .background(.ultraThinMaterial)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
-                    .accessibilityIdentifier("warmupIndicator")
-                    .rotationEffect(rotation.angle)
-            }
-
-            // Layer 5: dismiss button (top-left)
-            VStack {
-                HStack {
-                    Button {
-                        viewModel.stop()
-                        isPresented = false
-                    } label: {
-                        Image(systemName: "xmark.circle.fill")
-                            .font(.title)
-                            .foregroundStyle(.white)
-                    }
-                    .accessibilityIdentifier("xmark.circle.fill")
-                    .rotationEffect(rotation.angle)
-                    .padding()
-                    Spacer()
-                }
-                Spacer()
+            DetectionScoreCardOverlay(state: viewModel.detectionState, rotation: rotation.angle)
+            WarmupIndicatorView(state: viewModel.detectionState, rotation: rotation.angle)
+            DetectionDismissButton(rotation: rotation.angle) {
+                viewModel.stop()
+                isPresented = false
             }
         }
-        .onAppear {
+        .task {
             if isPreviewUITest {
                 viewModel.enablePreviewTestMode()
                 return

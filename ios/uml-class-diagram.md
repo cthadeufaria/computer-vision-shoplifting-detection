@@ -33,10 +33,35 @@ classDiagram
         -isPreviewUITest : Bool
         -rotation : DeviceRotation
     }
+    class DetectionScoreCardOverlay {
+        <<View>>
+        +state : DetectionState
+        +rotation : Angle
+    }
+    class WarmupIndicatorView {
+        <<View>>
+        +state : DetectionState
+        +rotation : Angle
+    }
+    class DetectionDismissButton {
+        <<View>>
+        +rotation : Angle
+        +action : () → Void
+    }
     class PosePreviewView {
         <<View>>
         -startError : String?
         -rotation : DeviceRotation
+    }
+    class PosePreviewTopBar {
+        <<View>>
+        +skeletonCount : Int
+        +rotation : Angle
+        +onDismiss : () → Void
+    }
+    class PoseDebugOverlay {
+        <<View>>
+        +debugInfo : String
     }
     class SkeletonOverlayView {
         <<View>>
@@ -251,13 +276,18 @@ classDiagram
     OnboardingView --> OnboardingPageView : contains pages
 
     %% ─── View composition ────────────────────────────────────────────────────
-    DetectionView  --> SkeletonOverlayView : renders
-    DetectionView  --> ScoreCardView       : renders
-    DetectionView  --> CameraPreviewLayer  : renders
-    DetectionView  --> DeviceRotation      : @ObservedObject
-    PosePreviewView --> SkeletonOverlayView : renders
-    PosePreviewView --> CameraPreviewLayer  : renders
-    PosePreviewView --> DeviceRotation      : @ObservedObject
+    DetectionView  --> CameraPreviewLayer        : renders
+    DetectionView  --> SkeletonOverlayView       : renders
+    DetectionView  --> DetectionScoreCardOverlay : renders
+    DetectionView  --> WarmupIndicatorView       : renders
+    DetectionView  --> DetectionDismissButton    : renders
+    DetectionView  --> DeviceRotation            : @ObservedObject
+    DetectionScoreCardOverlay --> ScoreCardView  : renders
+    PosePreviewView --> CameraPreviewLayer   : renders
+    PosePreviewView --> SkeletonOverlayView  : renders
+    PosePreviewView --> PosePreviewTopBar    : renders
+    PosePreviewView --> PoseDebugOverlay     : renders
+    PosePreviewView --> DeviceRotation       : @ObservedObject
 
     %% ─── ViewModel → Service protocol dependencies ───────────────────────────
     DetectionViewModel  ..> CameraSessionProtocol   : injects

@@ -10,54 +10,15 @@ struct PosePreviewView: View {
         ZStack {
             CameraPreviewLayer(previewLayer: viewModel.previewLayer)
                 .ignoresSafeArea()
-
             SkeletonOverlayView(skeletons: viewModel.skeletons, previewLayer: viewModel.previewLayer)
                 .ignoresSafeArea()
-
-            VStack {
-                HStack {
-                    Button {
-                        viewModel.stop()
-                        isPresented = false
-                    } label: {
-                        Image(systemName: "xmark.circle.fill")
-                            .font(.title)
-                            .foregroundStyle(.white)
-                    }
-                    .accessibilityIdentifier("posePreviewDismissButton")
-                    .rotationEffect(rotation.angle)
-                    .padding()
-
-                    Spacer()
-
-                    Text("Poses: \(viewModel.skeletons.count)")
-                        .font(.caption.bold())
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 8)
-                        .background(.ultraThinMaterial)
-                        .clipShape(Capsule())
-                        .accessibilityIdentifier("posePreviewCount")
-                        .rotationEffect(rotation.angle)
-                        .padding()
-                }
-
-                Spacer()
-
-                // Debug overlay — remove once pose alignment is verified.
-                if !viewModel.debugInfo.isEmpty {
-                    Text(viewModel.debugInfo)
-                        .font(.system(size: 11, design: .monospaced))
-                        .foregroundStyle(.white)
-                        .padding(8)
-                        .background(Color.black.opacity(0.65))
-                        .clipShape(RoundedRectangle(cornerRadius: 8))
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.horizontal, 12)
-                        .padding(.bottom, 12)
-                }
+            PosePreviewTopBar(skeletonCount: viewModel.skeletons.count, rotation: rotation.angle) {
+                viewModel.stop()
+                isPresented = false
             }
+            PoseDebugOverlay(debugInfo: viewModel.debugInfo)
         }
-        .onAppear {
+        .task {
             do {
                 try viewModel.start()
             } catch {

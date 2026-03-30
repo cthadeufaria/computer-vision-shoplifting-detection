@@ -68,7 +68,7 @@ sequenceDiagram
     HV->>HVM: isDetectionActive = true
     HV->>DV: fullScreenCover presents DetectionView
 
-    DV->>DVM: start() [.onAppear]
+    DV->>DVM: start() [.task]
     DVM->>MR: init() — load STGNFModel.mlpackage
     DVM->>CS: start()
     CS->>CS: configure AVCaptureSession (1080p, back camera)
@@ -146,7 +146,7 @@ sequenceDiagram
     HV->>HVM: isPosePreviewActive = true
     HV->>PV: fullScreenCover presents PosePreviewView
 
-    PV->>PVM: start() [.onAppear]
+    PV->>PVM: start() [.task]
     PVM->>CS: start()
     CS->>CS: configure AVCaptureSession (1080p, back camera)
     CS->>CS: videoRotationAngle = 90° (portrait buffer)
