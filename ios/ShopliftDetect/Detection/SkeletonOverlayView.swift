@@ -10,14 +10,21 @@ struct SkeletonOverlayView: View {
     /// account for the layer's videoGravity (resizeAspectFill cropping).
     let previewLayer: AVCaptureVideoPreviewLayer
 
-    // COCO18 bone pairs (indices into the 18-keypoint array).
+    // COCO18 bone pairs. Joint indices after oppOrder reindexing:
+    //  0 nose   1 neck   2 rShoulder  3 rElbow  4 rWrist
+    //  5 lShoulder  6 lElbow  7 lWrist
+    //  8 rHip   9 rKnee  10 rAnkle
+    // 11 lHip  12 lKnee  13 lAnkle
+    // 14 rEye  15 lEye   16 rEar  17 lEar
     private static let bones: [(Int, Int)] = [
-        (0, 1), (1, 2), (2, 3), (3, 4),       // head chain
-        (1, 5), (5, 6), (6, 7),                // left arm
-        (1, 8), (8, 9), (9, 10),               // right arm
-        (1, 11), (11, 12), (12, 13),           // left leg
-        (1, 14), (14, 15), (15, 16),           // right leg
-        (11, 14)                               // hip cross
+        (0, 1),                                // nose–neck
+        (0, 14), (14, 16),                     // nose–rightEye–rightEar
+        (0, 15), (15, 17),                     // nose–leftEye–leftEar
+        (1, 2), (2, 3), (3, 4),               // right arm
+        (1, 5), (5, 6), (6, 7),               // left arm
+        (1, 8), (8, 9), (9, 10),              // right leg
+        (1, 11), (11, 12), (12, 13),          // left leg
+        (8, 11),                               // hip cross
     ]
 
     var body: some View {
