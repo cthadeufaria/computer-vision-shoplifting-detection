@@ -25,6 +25,7 @@ struct SkeletonOverlayView: View {
         (1, 8), (8, 9), (9, 10),              // right leg
         (1, 11), (11, 12), (12, 13),          // left leg
         (8, 11),                               // hip cross
+        (2, 8), (5, 11),                       // torso sides: rShoulder–rHip, lShoulder–lHip
     ]
 
     var body: some View {
