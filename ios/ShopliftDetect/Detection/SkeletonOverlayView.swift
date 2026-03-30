@@ -22,8 +22,8 @@ struct SkeletonOverlayView: View {
         (0, 15), (15, 17),                     // nose–leftEye–leftEar
         (1, 2), (2, 3), (3, 4),               // right arm
         (1, 5), (5, 6), (6, 7),               // left arm
-        (1, 8), (8, 9), (9, 10),              // right leg
-        (1, 11), (11, 12), (12, 13),          // left leg
+        (8, 9), (9, 10),                       // right leg
+        (11, 12), (12, 13),                    // left leg
         (8, 11),                               // hip cross
         (2, 8), (5, 11),                       // torso sides: rShoulder–rHip, lShoulder–lHip
     ]
