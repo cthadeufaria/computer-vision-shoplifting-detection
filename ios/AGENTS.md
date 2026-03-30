@@ -50,7 +50,21 @@ final class DetectionViewModel: ObservableObject {
 
 **Every behaviour must have a test before or alongside the code.** Tests are not optional.
 
-**All tests must pass after every code edit.** Run the full test suite before committing. A change that breaks an existing test must not be merged until the test is fixed or intentionally updated.
+**All tests must pass after every code edit.**
+
+- **Before every commit** — run the unit test suite (`ShopliftDetectTests`). A commit must not be made if any unit test is failing.
+- **Before every PR** — run the full suite including UI tests (`ShopliftDetectUITests`). A PR must not be merged if any test is failing.
+
+```bash
+# Unit tests only (run before each commit)
+xcodebuild test -project ShopliftDetect.xcodeproj -scheme ShopliftDetect \
+  -destination 'platform=iOS Simulator,name=iPhone 17' \
+  -only-testing:ShopliftDetectTests
+
+# Full suite including UI tests (run before each PR)
+xcodebuild test -project ShopliftDetect.xcodeproj -scheme ShopliftDetect \
+  -destination 'platform=iOS Simulator,name=iPhone 17'
+```
 
 ### Coverage requirements
 
