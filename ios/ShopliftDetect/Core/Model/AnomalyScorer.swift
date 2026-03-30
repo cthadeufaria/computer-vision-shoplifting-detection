@@ -1,7 +1,11 @@
 import Foundation
 
-struct AnomalyScorer: Sendable {
-    var threshold: Float = -1.2
+struct AnomalyScorer: Sendable, AnomalyScorerProtocol {
+    var threshold: Float
+
+    init(threshold: Float = -1.2) {
+        self.threshold = threshold
+    }
 
     /// - Parameters:
     ///   - score: anomaly_score = -NLL from STG-NF (more negative = more anomalous).

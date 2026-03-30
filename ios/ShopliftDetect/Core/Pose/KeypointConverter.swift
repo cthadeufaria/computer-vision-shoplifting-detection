@@ -2,7 +2,7 @@ import Vision
 
 /// Converts VNHumanBodyPoseObservation (17 COCO keypoints) to COCO18 format
 /// using OpenPose reindexing (opp_order), matching Python's keypoints17_to_coco18().
-struct KeypointConverter {
+struct KeypointConverter: KeypointConverterProtocol {
     // Mirrors Python: opp_order = [0,17,6,8,10,5,7,9,12,14,16,11,13,15,2,1,4,3]
     static let oppOrder: [Int] = [0, 17, 6, 8, 10, 5, 7, 9, 12, 14, 16, 11, 13, 15, 2, 1, 4, 3]
 

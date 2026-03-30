@@ -1,19 +1,27 @@
 import SwiftUI
-import AVFoundation
 
 @MainActor
 final class OnboardingViewModel: ObservableObject {
     @Published var currentPage = 0
     let totalPages = 3
 
-    @AppStorage("onboardingComplete") var onboardingComplete = false
+    private let persistence: PersistenceServiceProtocol
+    private let permission: PermissionServiceProtocol
+
+    init(
+        persistence: PersistenceServiceProtocol = UserDefaultsPersistenceService(),
+        permission: PermissionServiceProtocol = AVPermissionService()
+    ) {
+        self.persistence = persistence
+        self.permission = permission
+    }
 
     func requestCameraPermission() async {
-        await AVCaptureDevice.requestAccess(for: .video)
-        onboardingComplete = true
+        await permission.requestCameraAccess()
+        persistence.onboardingComplete = true
     }
 
     func complete() {
-        onboardingComplete = true
+        persistence.onboardingComplete = true
     }
 }

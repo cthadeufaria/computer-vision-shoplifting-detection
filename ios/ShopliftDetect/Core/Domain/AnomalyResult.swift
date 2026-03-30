@@ -6,7 +6,7 @@ enum AnomalyLabel: Sendable, Equatable {
     case warmup
 }
 
-struct AnomalyResult: Sendable {
+struct AnomalyResult: Sendable, Equatable {
     let score: Float
     let label: AnomalyLabel
     let timestamp: Date

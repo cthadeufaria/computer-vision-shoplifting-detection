@@ -49,4 +49,15 @@ final class AnomalyScorerTests: XCTestCase {
         let result = scorer.classify(score: -2.0, isWarmup: false)
         XCTAssertNotEqual(result.label, .warmup)
     }
+
+    func test_init_customThreshold_treatsScoreBelowAsAnomaly() {
+        let sut = AnomalyScorer(threshold: -0.5)
+        XCTAssertEqual(sut.classify(score: -0.6, isWarmup: false).label, .anomaly)
+        XCTAssertEqual(sut.classify(score: 0.0, isWarmup: false).label, .normal)
+    }
+
+    func test_init_defaultThresholdIsNegative1Point2() {
+        let sut = AnomalyScorer()
+        XCTAssertEqual(sut.threshold, -1.2, accuracy: 1e-6)
+    }
 }

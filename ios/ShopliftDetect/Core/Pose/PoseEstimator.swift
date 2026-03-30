@@ -3,7 +3,7 @@ import CoreImage
 import UIKit
 
 /// Runs VNDetectHumanBodyPoseRequest on camera frames.
-final class PoseEstimator: @unchecked Sendable {
+final class PoseEstimator: @unchecked Sendable, PoseEstimatorProtocol {
     private let requestHandler = VNSequenceRequestHandler()
 
     func detectPoses(

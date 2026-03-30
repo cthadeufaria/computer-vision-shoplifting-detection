@@ -4,7 +4,7 @@ import UIKit
 
 /// Manages AVCaptureSession and publishes CVPixelBuffer frames.
 @MainActor
-final class CameraSession: NSObject, ObservableObject {
+final class CameraSession: NSObject, ObservableObject, CameraSessionProtocol {
     private let captureSession = AVCaptureSession()
     private let videoOutput = AVCaptureVideoDataOutput()
     private let sessionQueue = DispatchQueue(label: "com.shopliftdetect.camera", qos: .userInitiated)
