@@ -77,5 +77,6 @@ struct DetectionView: View {
         .onDisappear {
             viewModel.stop()
         }
+        .supportedInterfaceOrientations(.portrait)
     }
 }

@@ -72,5 +72,6 @@ struct PosePreviewView: View {
         .onDisappear {
             viewModel.stop()
         }
+        .supportedInterfaceOrientations(.portrait)
     }
 }

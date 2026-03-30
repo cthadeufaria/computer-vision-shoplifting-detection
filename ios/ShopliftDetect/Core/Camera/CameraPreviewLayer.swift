@@ -25,12 +25,6 @@ private final class PreviewContainerView: UIView {
         accessibilityIdentifier = "cameraPreview"
         backgroundColor = .black
         attachPreviewLayer()
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(orientationDidChange),
-            name: UIDevice.orientationDidChangeNotification,
-            object: nil
-        )
     }
 
     @available(*, unavailable)
@@ -41,7 +35,6 @@ private final class PreviewContainerView: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
         hostedPreviewLayer.frame = bounds
-        updatePreviewRotation()
     }
 
     func setPreviewLayer(_ previewLayer: AVCaptureVideoPreviewLayer) {
@@ -58,23 +51,10 @@ private final class PreviewContainerView: UIView {
         hostedPreviewLayer.removeFromSuperlayer()
         layer.addSublayer(hostedPreviewLayer)
         hostedPreviewLayer.frame = bounds
-        updatePreviewRotation()
-    }
-
-    @objc private func orientationDidChange() {
-        updatePreviewRotation()
-    }
-
-    private func updatePreviewRotation() {
-        let angle: CGFloat
-        switch UIDevice.current.orientation {
-        case .landscapeLeft:      angle = 0    // top of device on left  → natural landscape
-        case .landscapeRight:     angle = 180  // top of device on right → inverted landscape
-        case .portraitUpsideDown: angle = 270
-        default:                  angle = 90   // portrait and face-up/down: keep portrait
+        // Camera views are portrait-locked; fix the preview connection at 90°.
+        if let connection = hostedPreviewLayer.connection,
+           connection.isVideoRotationAngleSupported(90) {
+            connection.videoRotationAngle = 90
         }
-        guard let connection = hostedPreviewLayer.connection,
-              connection.isVideoRotationAngleSupported(angle) else { return }
-        connection.videoRotationAngle = angle
     }
 }
