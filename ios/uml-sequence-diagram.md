@@ -10,14 +10,16 @@ sequenceDiagram
     participant App  as ShopliftDetectApp
     participant OV   as OnboardingView
     participant OVM  as OnboardingViewModel
-    participant AVF  as AVCaptureDevice
+    participant PS   as AVPermissionService
+    participant PES  as UserDefaultsPersistenceService
     participant HV   as HomeView
 
     App->>App: read @AppStorage "onboardingComplete"
 
     alt first launch — not onboarded
         App->>OV: present OnboardingView
-        OV->>OVM: init (currentPage = 0, totalPages = 3)
+        OV->>OVM: init(persistence: PersistenceServiceProtocol, permission: PermissionServiceProtocol)
+        Note over OVM: currentPage = 0, totalPages = 3
 
         loop pages 0 → 2
             User->>OV: swipe / tap Next
@@ -26,11 +28,14 @@ sequenceDiagram
 
         User->>OV: tap "Allow Camera Access"
         OV->>OVM: requestCameraPermission()
-        OVM->>AVF: requestAccess(for: .video)
-        AVF-->>User: system permission dialog
-        User-->>AVF: Allow
-        AVF-->>OVM: access granted
-        OVM->>OVM: onboardingComplete = true
+        OVM->>PS: requestCameraAccess()
+        PS->>PS: AVCaptureDevice.requestAccess(for: .video)
+        PS-->>User: system permission dialog
+        User-->>PS: Allow
+        PS-->>OVM: access granted
+        OVM->>PES: onboardingComplete = true
+        PES->>PES: UserDefaults.set(true, forKey: "onboardingComplete")
+        PES-->>OVM: stored
         OVM-->>App: @AppStorage propagates
         App->>HV: replace scene with HomeView
 
@@ -53,6 +58,7 @@ sequenceDiagram
     participant CS  as CameraSession
     participant PE  as PoseEstimator
     participant KC  as KeypointConverter
+    participant TS  as TrackingService
     participant FB  as FrameBuffer
     participant PN  as PoseNormalizer
     participant MR  as STGNFModelRunner
@@ -66,6 +72,7 @@ sequenceDiagram
     DVM->>MR: init() — load STGNFModel.mlpackage
     DVM->>CS: start()
     CS->>CS: configure AVCaptureSession (1080p, back camera)
+    CS->>CS: videoRotationAngle = 90° (portrait buffer)
     CS-->>DVM: framePublisher ready
     DVM->>DVM: detectionState = .warmingUp(0, 24)
     DVM-->>DV: UI shows "Collecting frames 0/24"
@@ -74,23 +81,27 @@ sequenceDiagram
         CS-->>DVM: framePublisher.send(CVPixelBuffer)
         DVM->>DVM: Task { processFrame(pixelBuffer) }
 
-        DVM->>PE: detectPoses(pixelBuffer)
+        DVM->>PE: detectPoses(pixelBuffer, deviceOrientation)
+        PE->>PE: imageOrientation(pixelBuffer, deviceOrientation)
         PE->>PE: VNDetectHumanBodyPoseRequest
         PE-->>DVM: [VNHumanBodyPoseObservation]
 
         loop per detected person
             DVM->>KC: convert(observation, frameIndex, timestamp)
-            Note over KC: Vision 0–1 coords + y-flip → PoseSkeleton
-            KC-->>DVM: PoseSkeleton (18 kps, 0–1 normalized)
+            Note over KC: Vision (0–1, bottom-left) + y-flip → PoseSkeleton (0–1, top-left)
+            Note over KC: COCO17 → COCO18 via neck synthesis + oppOrder reindex
+            KC-->>DVM: PoseSkeleton (18 kps, normalized)
 
-            DVM->>DVM: matchTrack(skeleton) via IoU → trackID
-            DVM->>FB: append(skeleton)
+            DVM->>TS: matchTrack(skeleton) via IoU (threshold 0.3)
+            TS->>TS: computeIoU(lastBBox[id], skeleton.boundingBox)
+            TS-->>DVM: trackID (UUID string)
+            DVM->>FB: append(skeleton)  [actor: trackBuffers[trackID]]
 
             alt FrameBuffer has 24 frames
                 DVM->>FB: currentWindow()
                 FB-->>DVM: [PoseSkeleton] × 24
                 DVM->>PN: normalize(window)
-                Note over PN: mean-centre + std(y) normalise → MLMultiArray [1,2,24,18]
+                Note over PN: subtract spatial mean, divide by std(y) → MLMultiArray [1,2,24,18]
                 PN-->>DVM: MLMultiArray
                 DVM->>MR: runInference(mlArray)
                 MR-->>DVM: anomaly_score = –NLL (Float)
@@ -104,7 +115,7 @@ sequenceDiagram
 
         DVM->>DVM: skeletons = currentSkeletons [MainActor]
         DVM-->>DV: @Published skeletons, detectionState updated
-        DV-->>DV: SkeletonOverlayView redraws (Canvas × size)
+        DV-->>DV: SkeletonOverlayView redraws (layerPointConverted coords)
         DV-->>DV: ScoreCardView redraws
     end
 
@@ -137,23 +148,28 @@ sequenceDiagram
 
     PV->>PVM: start() [.onAppear]
     PVM->>CS: start()
+    CS->>CS: configure AVCaptureSession (1080p, back camera)
+    CS->>CS: videoRotationAngle = 90° (portrait buffer)
     CS-->>PVM: framePublisher ready
 
     loop every camera frame
         CS-->>PVM: framePublisher.send(CVPixelBuffer)
         PVM->>PVM: Task { processFrame(pixelBuffer) }
-        PVM->>PE: detectPoses(pixelBuffer)
+        PVM->>PE: detectPoses(pixelBuffer, deviceOrientation)
+        PE->>PE: imageOrientation(pixelBuffer, deviceOrientation)
         PE-->>PVM: [VNHumanBodyPoseObservation]
 
         loop per person
             PVM->>KC: convert(observation, frameIndex, timestamp)
+            Note over KC: COCO17 → COCO18, y-flip → normalized PoseSkeleton
             KC-->>PVM: PoseSkeleton (18 kps, 0–1 normalized)
         end
 
         PVM->>PVM: skeletons = currentSkeletons [MainActor]
-        PVM-->>PV: @Published skeletons updated
+        PVM->>PVM: debugInfo = orientation + nose position
+        PVM-->>PV: @Published skeletons, debugInfo updated
         PV-->>PV: SkeletonOverlayView redraws
-        Note over PV: Shows skeleton count badge
+        Note over PV: Shows skeleton count badge + debug overlay
     end
 
     User->>PV: tap ✕ dismiss

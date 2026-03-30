@@ -8,9 +8,10 @@ classDiagram
         -onboardingComplete : Bool
         +body : Scene
     }
-    class AppEnvironment {
-        <<MainActor, singleton>>
-        +shared : AppEnvironment
+    class DeviceRotation {
+        <<MainActor, ObservableObject, singleton>>
+        +shared : DeviceRotation$
+        +angle : Angle
     }
 
     %% ─── Views ───────────────────────────────────────────────────────────────
@@ -30,14 +31,17 @@ classDiagram
         <<View>>
         -startError : String?
         -isPreviewUITest : Bool
+        -rotation : DeviceRotation
     }
     class PosePreviewView {
         <<View>>
         -startError : String?
+        -rotation : DeviceRotation
     }
     class SkeletonOverlayView {
         <<View>>
         +skeletons : [PoseSkeleton]
+        +previewLayer : AVCaptureVideoPreviewLayer
     }
     class ScoreCardView {
         <<View>>
@@ -58,7 +62,8 @@ classDiagram
         <<MainActor, ObservableObject>>
         +currentPage : Int
         +totalPages : Int
-        +onboardingComplete : Bool
+        -persistence : PersistenceServiceProtocol
+        -permission : PermissionServiceProtocol
         +requestCameraPermission() async
         +complete()
     }
@@ -67,23 +72,67 @@ classDiagram
         +detectionState : DetectionState
         +skeletons : [PoseSkeleton]
         +previewLayer : AVCaptureVideoPreviewLayer
+        -camera : CameraSessionProtocol
+        -estimator : PoseEstimatorProtocol
+        -converter : KeypointConverterProtocol
+        -scorer : AnomalyScorerProtocol
+        -tracking : TrackingServiceProtocol
         +start() throws
         +stop()
         +enablePreviewTestMode()
-        -matchTrack(PoseSkeleton) String
-        -computeIoU(CGRect, CGRect) CGFloat
         -processFrame(CVPixelBuffer) async
     }
     class PosePreviewViewModel {
         <<MainActor, ObservableObject>>
         +skeletons : [PoseSkeleton]
+        +debugInfo : String
         +previewLayer : AVCaptureVideoPreviewLayer
+        -camera : CameraSessionProtocol
+        -estimator : PoseEstimatorProtocol
+        -converter : KeypointConverterProtocol
         +start() throws
         +stop()
         -processFrame(CVPixelBuffer) async
     }
 
-    %% ─── Services ────────────────────────────────────────────────────────────
+    %% ─── Service Protocols ───────────────────────────────────────────────────
+    class CameraSessionProtocol {
+        <<protocol, MainActor>>
+        +framePublisher : AnyPublisher~CVPixelBuffer~
+        +previewLayer : AVCaptureVideoPreviewLayer
+        +start() throws
+        +stop()
+    }
+    class PoseEstimatorProtocol {
+        <<protocol, Sendable>>
+        +detectPoses(CVPixelBuffer, UIDeviceOrientation) [VNHumanBodyPoseObservation]
+    }
+    class KeypointConverterProtocol {
+        <<protocol, Sendable>>
+        +convert(VNHumanBodyPoseObservation, Int, CMTime) PoseSkeleton
+    }
+    class AnomalyScorerProtocol {
+        <<protocol>>
+        +classify(Float, Bool) AnomalyResult
+    }
+    class STGNFModelProtocol {
+        <<protocol>>
+        +runInference(MLMultiArray) Float
+    }
+    class PermissionServiceProtocol {
+        <<protocol, MainActor>>
+        +requestCameraAccess() async
+    }
+    class PersistenceServiceProtocol {
+        <<protocol, MainActor>>
+        +onboardingComplete : Bool
+    }
+    class TrackingServiceProtocol {
+        <<protocol, MainActor>>
+        +matchTrack(PoseSkeleton) String
+    }
+
+    %% ─── Service Implementations ─────────────────────────────────────────────
     class CameraSession {
         <<MainActor, NSObject>>
         +previewLayer : AVCaptureVideoPreviewLayer
@@ -92,8 +141,9 @@ classDiagram
         +stop()
     }
     class PoseEstimator {
-        <<class, Sendable>>
-        +detectPoses(CVPixelBuffer) [VNHumanBodyPoseObservation]
+        <<class, unchecked Sendable>>
+        +detectPoses(CVPixelBuffer, UIDeviceOrientation) [VNHumanBodyPoseObservation]
+        +imageOrientation(CVPixelBuffer, UIDeviceOrientation) CGImagePropertyOrientation$
     }
     class KeypointConverter {
         <<struct>>
@@ -122,15 +172,25 @@ classDiagram
         +reset()
     }
     class STGNFModelRunner {
-        <<class, Sendable>>
+        <<class, unchecked Sendable>>
         +runInference(MLMultiArray) Float
     }
-    class STGNFModelProtocol {
-        <<protocol>>
-        +runInference(MLMultiArray) Float
+    class TrackingService {
+        <<MainActor>>
+        -iouThreshold : CGFloat = 0.3
+        +matchTrack(PoseSkeleton) String
+        -computeIoU(CGRect, CGRect) CGFloat
+    }
+    class AVPermissionService {
+        <<final class>>
+        +requestCameraAccess() async
+    }
+    class UserDefaultsPersistenceService {
+        <<final class>>
+        +onboardingComplete : Bool
     }
 
-    %% ─── Domain models ───────────────────────────────────────────────────────
+    %% ─── Domain Models ───────────────────────────────────────────────────────
     class Keypoint {
         <<struct, Sendable>>
         +x : Float
@@ -163,6 +223,17 @@ classDiagram
         running(latestResult)
         error(reason)
     }
+    class CameraError {
+        <<enumeration, Error>>
+        permissionDenied
+        deviceUnavailable
+        outputUnavailable
+    }
+    class STGNFModelError {
+        <<enumeration, Error>>
+        modelNotFound
+        outputMissing
+    }
 
     %% ─── App → View routing ──────────────────────────────────────────────────
     ShopliftDetectApp --> HomeView       : if onboarded
@@ -183,20 +254,36 @@ classDiagram
     DetectionView  --> SkeletonOverlayView : renders
     DetectionView  --> ScoreCardView       : renders
     DetectionView  --> CameraPreviewLayer  : renders
+    DetectionView  --> DeviceRotation      : @ObservedObject
     PosePreviewView --> SkeletonOverlayView : renders
     PosePreviewView --> CameraPreviewLayer  : renders
+    PosePreviewView --> DeviceRotation      : @ObservedObject
 
-    %% ─── ViewModel → Service ownership ──────────────────────────────────────
-    DetectionViewModel  *-- CameraSession     : owns
-    DetectionViewModel  *-- PoseEstimator     : owns
-    DetectionViewModel  *-- KeypointConverter : owns
-    DetectionViewModel  *-- AnomalyScorer     : owns
-    DetectionViewModel  *-- STGNFModelRunner  : owns (lazy)
-    DetectionViewModel "1" *-- "0..*" FrameBuffer : trackBuffers[trackID]
+    %% ─── ViewModel → Service protocol dependencies ───────────────────────────
+    DetectionViewModel  ..> CameraSessionProtocol   : injects
+    DetectionViewModel  ..> PoseEstimatorProtocol   : injects
+    DetectionViewModel  ..> KeypointConverterProtocol : injects
+    DetectionViewModel  ..> AnomalyScorerProtocol   : injects
+    DetectionViewModel  ..> TrackingServiceProtocol : injects
+    DetectionViewModel  *-- STGNFModelRunner        : owns (lazy)
+    DetectionViewModel "1" *-- "0..*" FrameBuffer   : trackBuffers[trackID]
 
-    PosePreviewViewModel *-- CameraSession     : owns
-    PosePreviewViewModel *-- PoseEstimator     : owns
-    PosePreviewViewModel *-- KeypointConverter : owns
+    PosePreviewViewModel ..> CameraSessionProtocol    : injects
+    PosePreviewViewModel ..> PoseEstimatorProtocol    : injects
+    PosePreviewViewModel ..> KeypointConverterProtocol : injects
+
+    OnboardingViewModel ..> PersistenceServiceProtocol : injects
+    OnboardingViewModel ..> PermissionServiceProtocol  : injects
+
+    %% ─── Protocol conformance ────────────────────────────────────────────────
+    CameraSession              ..|> CameraSessionProtocol
+    PoseEstimator              ..|> PoseEstimatorProtocol
+    KeypointConverter          ..|> KeypointConverterProtocol
+    AnomalyScorer              ..|> AnomalyScorerProtocol
+    STGNFModelRunner           ..|> STGNFModelProtocol
+    TrackingService            ..|> TrackingServiceProtocol
+    AVPermissionService        ..|> PermissionServiceProtocol
+    UserDefaultsPersistenceService ..|> PersistenceServiceProtocol
 
     %% ─── Service → Domain ────────────────────────────────────────────────────
     KeypointConverter ..> PoseSkeleton  : produces
@@ -207,7 +294,4 @@ classDiagram
     FrameBuffer        *-- PoseSkeleton  : rolling window
     PoseNormalizer     ..> PoseSkeleton  : consumes
     DetectionViewModel ..> PoseNormalizer : uses per window
-
-    %% ─── Protocol conformance ────────────────────────────────────────────────
-    STGNFModelRunner ..|> STGNFModelProtocol
 ```

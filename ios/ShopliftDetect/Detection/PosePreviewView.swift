@@ -3,6 +3,7 @@ import SwiftUI
 struct PosePreviewView: View {
     @Binding var isPresented: Bool
     @StateObject private var viewModel = PosePreviewViewModel()
+    @ObservedObject private var rotation = DeviceRotation.shared
     @State private var startError: String?
 
     var body: some View {
@@ -24,6 +25,7 @@ struct PosePreviewView: View {
                             .foregroundStyle(.white)
                     }
                     .accessibilityIdentifier("posePreviewDismissButton")
+                    .rotationEffect(rotation.angle)
                     .padding()
 
                     Spacer()
@@ -35,6 +37,7 @@ struct PosePreviewView: View {
                         .background(.ultraThinMaterial)
                         .clipShape(Capsule())
                         .accessibilityIdentifier("posePreviewCount")
+                        .rotationEffect(rotation.angle)
                         .padding()
                 }
 
@@ -48,9 +51,9 @@ struct PosePreviewView: View {
                         .padding(8)
                         .background(Color.black.opacity(0.65))
                         .clipShape(RoundedRectangle(cornerRadius: 8))
+                        .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.horizontal, 12)
                         .padding(.bottom, 12)
-                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
             }
         }

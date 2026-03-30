@@ -4,6 +4,7 @@ import AVFoundation
 struct DetectionView: View {
     @Binding var isPresented: Bool
     @StateObject private var viewModel = DetectionViewModel()
+    @ObservedObject private var rotation = DeviceRotation.shared
     @State private var startError: String?
     private let isPreviewUITest = ProcessInfo.processInfo.arguments.contains("--ui-test-detection-preview")
 
@@ -22,6 +23,7 @@ struct DetectionView: View {
                 HStack {
                     Spacer()
                     ScoreCardView(state: viewModel.detectionState)
+                        .rotationEffect(rotation.angle)
                         .padding()
                 }
                 Spacer()
@@ -35,6 +37,7 @@ struct DetectionView: View {
                     .background(.ultraThinMaterial)
                     .clipShape(RoundedRectangle(cornerRadius: 12))
                     .accessibilityIdentifier("warmupIndicator")
+                    .rotationEffect(rotation.angle)
             }
 
             // Layer 5: dismiss button (top-left)
@@ -49,6 +52,7 @@ struct DetectionView: View {
                             .foregroundStyle(.white)
                     }
                     .accessibilityIdentifier("xmark.circle.fill")
+                    .rotationEffect(rotation.angle)
                     .padding()
                     Spacer()
                 }

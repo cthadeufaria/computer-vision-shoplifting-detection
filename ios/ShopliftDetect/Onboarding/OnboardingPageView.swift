@@ -4,7 +4,6 @@ struct OnboardingPageView: View {
     let title: String
     let description: String
     let systemImage: String
-
     var body: some View {
         VStack(spacing: 24) {
             Image(systemName: systemImage)
