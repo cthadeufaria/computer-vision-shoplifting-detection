@@ -50,6 +50,8 @@ final class DetectionViewModel: ObservableObject {
 
 **Every behaviour must have a test before or alongside the code.** Tests are not optional.
 
+**All tests must pass after every code edit.** Run the full test suite before committing. A change that breaks an existing test must not be merged until the test is fixed or intentionally updated.
+
 ### Coverage requirements
 
 | Layer | Required tests |
