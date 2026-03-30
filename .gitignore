@@ -233,3 +233,6 @@ artifacts/stg_nf/**
 
 # OS files
 .DS_Store
+
+# Xcode user-specific state
+**/*.xcuserstate
