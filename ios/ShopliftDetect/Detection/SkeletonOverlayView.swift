@@ -22,10 +22,16 @@ struct SkeletonOverlayView: View {
 
     var body: some View {
         Canvas { context, size in
-            // Convert a keypoint from capture-device normalised space (0–1, top-left origin,
+            // Convert a keypoint from portrait normalised space (0–1, top-left origin,
             // matching what KeypointConverter produces) into Canvas points.
-            // layerPointConverted handles videoGravity (aspect-fill crop) and any rotation.
-            // We then re-normalise by the layer bounds so the result scales with the canvas.
+            //
+            // layerPointConverted expects landscape sensor coordinates (the physical sensor
+            // is always landscape on iPhone). The buffer is delivered portrait via a 90°CW
+            // rotation on the connection, so we invert that rotation here:
+            //   sensor_x = kp.y
+            //   sensor_y = 1 - kp.x
+            // layerPointConverted then handles videoGravity (aspect-fill crop).
+            // We re-normalise by the layer bounds so the result scales with the canvas.
             func pt(_ kp: Keypoint) -> CGPoint {
                 let lw = previewLayer.bounds.width
                 let lh = previewLayer.bounds.height
@@ -33,7 +39,7 @@ struct SkeletonOverlayView: View {
                     return CGPoint(x: CGFloat(kp.x) * size.width, y: CGFloat(kp.y) * size.height)
                 }
                 let layerPt = previewLayer.layerPointConverted(
-                    fromCaptureDevicePoint: CGPoint(x: Double(kp.x), y: Double(kp.y))
+                    fromCaptureDevicePoint: CGPoint(x: Double(kp.y), y: Double(1.0 - kp.x))
                 )
                 return CGPoint(x: layerPt.x / lw * size.width, y: layerPt.y / lh * size.height)
             }

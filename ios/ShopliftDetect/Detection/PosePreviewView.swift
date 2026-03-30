@@ -39,6 +39,19 @@ struct PosePreviewView: View {
                 }
 
                 Spacer()
+
+                // Debug overlay — remove once pose alignment is verified.
+                if !viewModel.debugInfo.isEmpty {
+                    Text(viewModel.debugInfo)
+                        .font(.system(size: 11, design: .monospaced))
+                        .foregroundStyle(.white)
+                        .padding(8)
+                        .background(Color.black.opacity(0.65))
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                        .padding(.horizontal, 12)
+                        .padding(.bottom, 12)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
             }
         }
         .onAppear {

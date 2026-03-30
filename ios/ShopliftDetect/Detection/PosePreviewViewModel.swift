@@ -3,10 +3,12 @@ import AVFoundation
 import Combine
 import CoreMedia
 import UIKit
+import Vision
 
 @MainActor
 final class PosePreviewViewModel: ObservableObject {
     @Published var skeletons: [PoseSkeleton] = []
+    @Published var debugInfo: String = ""
 
     private let camera: CameraSessionProtocol
     private let estimator: any PoseEstimatorProtocol
@@ -52,6 +54,13 @@ final class PosePreviewViewModel: ObservableObject {
                     UIDevice.current.orientation)
         }
         guard let (currentFrameIndex, est, conv, deviceOrientation) = snapshot else { return }
+
+        // Capture buffer dimensions before detection — tells us which orientation branch is taken.
+        let bufW = CVPixelBufferGetWidth(pixelBuffer)
+        let bufH = CVPixelBufferGetHeight(pixelBuffer)
+        let chosenOrientation = PoseEstimator.imageOrientation(for: pixelBuffer,
+                                                               deviceOrientation: deviceOrientation)
+
         guard let observations = try? est.detectPoses(in: pixelBuffer,
                                                       deviceOrientation: deviceOrientation) else { return }
 
@@ -65,10 +74,58 @@ final class PosePreviewViewModel: ObservableObject {
             )
         }
 
+        // Extract all debug values from observations here (nonisolated), before crossing to MainActor.
+        // VNHumanBodyPoseObservation is not Sendable, so only plain value types cross the boundary.
+        let personCount = observations.count
+        var rawNose: CGPoint? = nil
+        var flippedNose: CGPoint? = nil
+        if let first = observations.first,
+           let nose = try? first.recognizedPoint(.nose), nose.confidence > 0.1 {
+            rawNose = nose.location                                          // Vision: (0,0)=bottom-left
+            flippedNose = CGPoint(x: nose.location.x, y: 1 - nose.location.y) // UIKit: (0,0)=top-left
+        }
+
         await MainActor.run { [weak self] in
             guard let self else { return }
             skeletons = currentSkeletons
             frameIndex += 1
+
+            let orientLabel: String
+            switch chosenOrientation {
+            case .up:    orientLabel = ".up (portrait, no rotation)"
+            case .down:  orientLabel = ".down (portrait upside-down)"
+            case .right: orientLabel = ".right (landscape→portrait, 90°CCW)"
+            case .left:  orientLabel = ".left (landscape→portrait, 90°CW)"
+            default:     orientLabel = "other(\(chosenOrientation.rawValue))"
+            }
+
+            var lines = [
+                "Buffer: \(bufW)×\(bufH) (\(bufH > bufW ? "portrait" : "landscape"))",
+                "DeviceOrient: \(deviceOrientation.debugName)",
+                "VisionOrient: \(orientLabel)",
+                "Persons: \(personCount)",
+            ]
+            if let rn = rawNose, let fn = flippedNose {
+                lines.append(String(format: "Nose raw (Vision): (%.3f, %.3f)", rn.x, rn.y))
+                lines.append(String(format: "Nose flipped (UIKit): (%.3f, %.3f)", fn.x, fn.y))
+            } else {
+                lines.append("Nose: not detected")
+            }
+            debugInfo = lines.joined(separator: "\n")
+        }
+    }
+}
+
+private extension UIDeviceOrientation {
+    var debugName: String {
+        switch self {
+        case .portrait:            return "portrait"
+        case .portraitUpsideDown:  return "portraitUpsideDown"
+        case .landscapeLeft:       return "landscapeLeft"
+        case .landscapeRight:      return "landscapeRight"
+        case .faceUp:              return "faceUp"
+        case .faceDown:            return "faceDown"
+        default:                   return "unknown"
         }
     }
 }

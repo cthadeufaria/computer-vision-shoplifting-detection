@@ -46,6 +46,14 @@ final class CameraSession: NSObject, ObservableObject, CameraSessionProtocol {
                 throw CameraError.outputUnavailable
             }
             captureSession.addOutput(videoOutput)
+
+            // Rotate buffer to portrait so Vision receives an upright image and can use
+            // .up orientation (no rotation math). This also aligns layerPointConverted's
+            // coordinate space with Vision's output, so skeleton overlay requires no inversion.
+            if let connection = videoOutput.connection(with: .video),
+               connection.isVideoRotationAngleSupported(90) {
+                connection.videoRotationAngle = 90
+            }
         }
         captureSession.commitConfiguration()
 
