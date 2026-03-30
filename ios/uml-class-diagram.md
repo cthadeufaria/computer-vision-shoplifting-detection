@@ -25,7 +25,7 @@ classDiagram
         <<View>>
         +title : String
         +description : String
-        +imageName : String
+        +systemImage : String
     }
     class DetectionView {
         <<View>>
@@ -273,7 +273,7 @@ classDiagram
     %% ─── View navigation ─────────────────────────────────────────────────────
     HomeView --> DetectionView   : fullScreenCover
     HomeView --> PosePreviewView : fullScreenCover
-    OnboardingView --> OnboardingPageView : contains pages
+    OnboardingView --> OnboardingPageView : uses (pages 1–2 and inner page 3)
 
     %% ─── View composition ────────────────────────────────────────────────────
     DetectionView  --> CameraPreviewLayer        : renders
