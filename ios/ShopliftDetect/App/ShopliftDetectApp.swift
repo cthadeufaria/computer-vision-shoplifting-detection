@@ -2,7 +2,6 @@ import SwiftUI
 
 @main
 struct ShopliftDetectApp: App {
-    @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     @AppStorage("onboardingComplete") private var onboardingComplete = false
 
     init() {

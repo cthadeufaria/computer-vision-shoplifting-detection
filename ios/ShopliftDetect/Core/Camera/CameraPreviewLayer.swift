@@ -51,10 +51,5 @@ private final class PreviewContainerView: UIView {
         hostedPreviewLayer.removeFromSuperlayer()
         layer.addSublayer(hostedPreviewLayer)
         hostedPreviewLayer.frame = bounds
-        // Camera views are portrait-locked; fix the preview connection at 90°.
-        if let connection = hostedPreviewLayer.connection,
-           connection.isVideoRotationAngleSupported(90) {
-            connection.videoRotationAngle = 90
-        }
     }
 }

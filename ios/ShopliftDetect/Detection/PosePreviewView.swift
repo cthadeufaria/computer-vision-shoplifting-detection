@@ -69,9 +69,7 @@ struct PosePreviewView: View {
         } message: {
             Text(startError ?? "")
         }
-        .onAppear  { OrientationLock.shared.cameraActive = true  }
         .onDisappear {
-            OrientationLock.shared.cameraActive = false
             viewModel.stop()
         }
     }
