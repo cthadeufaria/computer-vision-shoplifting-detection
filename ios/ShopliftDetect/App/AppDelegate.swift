@@ -6,7 +6,15 @@ import UIKit
 final class OrientationLock {
     static let shared = OrientationLock()
     private init() {}
-    var cameraActive = false
+    var cameraActive = false {
+        didSet {
+            // Force UIKit to re-query supportedInterfaceOrientationsFor on the next cycle.
+            UIApplication.shared.connectedScenes
+                .compactMap { $0 as? UIWindowScene }
+                .compactMap { $0.keyWindow?.rootViewController }
+                .forEach { $0.setNeedsUpdateOfSupportedInterfaceOrientations() }
+        }
+    }
 }
 
 final class AppDelegate: NSObject, UIApplicationDelegate {
