@@ -68,8 +68,8 @@ private final class PreviewContainerView: UIView {
     private func updatePreviewRotation() {
         let angle: CGFloat
         switch UIDevice.current.orientation {
-        case .landscapeRight:     angle = 0
-        case .landscapeLeft:      angle = 180
+        case .landscapeLeft:      angle = 0    // top of device on left  → natural landscape
+        case .landscapeRight:     angle = 180  // top of device on right → inverted landscape
         case .portraitUpsideDown: angle = 270
         default:                  angle = 90   // portrait and face-up/down: keep portrait
         }
