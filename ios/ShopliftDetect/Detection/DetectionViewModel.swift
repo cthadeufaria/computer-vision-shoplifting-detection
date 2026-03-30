@@ -2,6 +2,7 @@ import SwiftUI
 import AVFoundation
 import Combine
 import CoreMedia
+import UIKit
 
 @MainActor
 final class DetectionViewModel: ObservableObject {
@@ -52,14 +53,16 @@ final class DetectionViewModel: ObservableObject {
     // never on the main thread. MainActor state is accessed via await MainActor.run.
     nonisolated private func processFrame(_ pixelBuffer: CVPixelBuffer) async {
         // Snapshot the Sendable objects we need off MainActor.
-        let snapshot: (Int, PoseEstimator, KeypointConverter, AnomalyScorer, STGNFModelRunner?)? = await MainActor.run { [weak self] in
+        let snapshot: (Int, PoseEstimator, KeypointConverter, AnomalyScorer, STGNFModelRunner?, UIDeviceOrientation)? = await MainActor.run { [weak self] in
             guard let self else { return nil }
-            return (self.frameIndex, self.poseEstimator, self.keypointConverter, self.anomalyScorer, self.modelRunner)
+            return (self.frameIndex, self.poseEstimator, self.keypointConverter, self.anomalyScorer,
+                    self.modelRunner, UIDevice.current.orientation)
         }
-        guard let (currentFrameIndex, estimator, converter, scorer, runner) = snapshot else { return }
+        guard let (currentFrameIndex, estimator, converter, scorer, runner, deviceOrientation) = snapshot else { return }
 
         // Vision: runs on cooperative thread pool (NOT main thread).
-        guard let observations = try? estimator.detectPoses(in: pixelBuffer) else { return }
+        guard let observations = try? estimator.detectPoses(in: pixelBuffer,
+                                                            deviceOrientation: deviceOrientation) else { return }
 
         let now = CMTime(seconds: Date().timeIntervalSince1970, preferredTimescale: 600)
 

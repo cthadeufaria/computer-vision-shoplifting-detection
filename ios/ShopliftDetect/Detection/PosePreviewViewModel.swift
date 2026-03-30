@@ -2,6 +2,7 @@ import SwiftUI
 import AVFoundation
 import Combine
 import CoreMedia
+import UIKit
 
 @MainActor
 final class PosePreviewViewModel: ObservableObject {
@@ -35,12 +36,14 @@ final class PosePreviewViewModel: ObservableObject {
     }
 
     nonisolated private func processFrame(_ pixelBuffer: CVPixelBuffer) async {
-        let snapshot: (Int, PoseEstimator, KeypointConverter)? = await MainActor.run { [weak self] in
+        let snapshot: (Int, PoseEstimator, KeypointConverter, UIDeviceOrientation)? = await MainActor.run { [weak self] in
             guard let self else { return nil }
-            return (self.frameIndex, self.poseEstimator, self.keypointConverter)
+            return (self.frameIndex, self.poseEstimator, self.keypointConverter,
+                    UIDevice.current.orientation)
         }
-        guard let (currentFrameIndex, estimator, converter) = snapshot else { return }
-        guard let observations = try? estimator.detectPoses(in: pixelBuffer) else { return }
+        guard let (currentFrameIndex, estimator, converter, deviceOrientation) = snapshot else { return }
+        guard let observations = try? estimator.detectPoses(in: pixelBuffer,
+                                                            deviceOrientation: deviceOrientation) else { return }
 
         let now = CMTime(seconds: Date().timeIntervalSince1970, preferredTimescale: 600)
 

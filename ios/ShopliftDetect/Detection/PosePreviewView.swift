@@ -10,7 +10,7 @@ struct PosePreviewView: View {
             CameraPreviewLayer(previewLayer: viewModel.previewLayer)
                 .ignoresSafeArea()
 
-            SkeletonOverlayView(skeletons: viewModel.skeletons)
+            SkeletonOverlayView(skeletons: viewModel.skeletons, previewLayer: viewModel.previewLayer)
                 .ignoresSafeArea()
 
             VStack {

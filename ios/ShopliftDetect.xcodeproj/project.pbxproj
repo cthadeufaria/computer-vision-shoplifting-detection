@@ -10,6 +10,7 @@
 		00155CF16FC07AFBE62B63EB /* DetectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7985B0A3EC9581878A041372 /* DetectionView.swift */; };
 		06EE120FC2E576C9642345E8 /* KeypointConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDF3957FC710022AF0EE000C /* KeypointConverter.swift */; };
 		07DC45D1E4B2797FA38CF458 /* KeypointConverterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7DDBF2108E2B3F0BDC679F5 /* KeypointConverterTests.swift */; };
+		F4A5B6C7D8E9F0A1B2C3D4E5 /* KeypointConverterIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3F4A5B6C7D8E9F0A1B2C3D4 /* KeypointConverterIntegrationTests.swift */; };
 		0ABFDDAEDB66A48E8CE420FE /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51C5939E25CEBBB78EB12E7C /* AVFoundation.framework */; };
 		0DEED99990BA277A68317081 /* CameraPreviewLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E2A485136553B90AE794311 /* CameraPreviewLayer.swift */; };
 		0F8282AD009EEE25F428B7FC /* CoreML.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9AC92BE2C676E071B356AB39 /* CoreML.framework */; };
@@ -103,6 +104,7 @@
 		CB508AB28F692C8E67200488 /* AnomalyScorerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnomalyScorerTests.swift; sourceTree = "<group>"; };
 		D40079FA6D8EAF200771AA98 /* PoseNormalizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoseNormalizer.swift; sourceTree = "<group>"; };
 		D7DDBF2108E2B3F0BDC679F5 /* KeypointConverterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeypointConverterTests.swift; sourceTree = "<group>"; };
+		E3F4A5B6C7D8E9F0A1B2C3D4 /* KeypointConverterIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeypointConverterIntegrationTests.swift; sourceTree = "<group>"; };
 		ECD88A9A310D02C00E0C1A5F /* SkeletonOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkeletonOverlayView.swift; sourceTree = "<group>"; };
 		F24C2D68A487CA54A3F1E0E5 /* STGNFModelWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = STGNFModelWrapper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -163,6 +165,7 @@
 			isa = PBXGroup;
 			children = (
 				D7DDBF2108E2B3F0BDC679F5 /* KeypointConverterTests.swift */,
+				E3F4A5B6C7D8E9F0A1B2C3D4 /* KeypointConverterIntegrationTests.swift */,
 				6359123FEAC1B25977609A49 /* PoseNormalizerTests.swift */,
 			);
 			path = Pose;
@@ -415,6 +418,7 @@
 				2BFCB07522099205C76EF61E /* AnomalyScorerTests.swift in Sources */,
 				FC5BA15712B60F01553E1DFE /* FrameBufferTests.swift in Sources */,
 				07DC45D1E4B2797FA38CF458 /* KeypointConverterTests.swift in Sources */,
+				F4A5B6C7D8E9F0A1B2C3D4E5 /* KeypointConverterIntegrationTests.swift in Sources */,
 				D6A9E36B61C44C17FEBD8D60 /* PoseNormalizerTests.swift in Sources */,
 				C140F8966D82ADD07406BF0A /* STGNFModelIntegrationTests.swift in Sources */,
 			);

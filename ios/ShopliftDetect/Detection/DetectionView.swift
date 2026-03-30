@@ -14,7 +14,7 @@ struct DetectionView: View {
                 .ignoresSafeArea()
 
             // Layer 2: skeleton overlay
-            SkeletonOverlayView(skeletons: viewModel.skeletons)
+            SkeletonOverlayView(skeletons: viewModel.skeletons, previewLayer: viewModel.previewLayer)
                 .ignoresSafeArea()
 
             // Layer 3: score card (top-right)

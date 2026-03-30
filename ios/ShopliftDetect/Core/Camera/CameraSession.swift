@@ -1,5 +1,6 @@
 @preconcurrency import AVFoundation
 import Combine
+import UIKit
 
 /// Manages AVCaptureSession and publishes CVPixelBuffer frames.
 @MainActor
@@ -51,9 +52,12 @@ final class CameraSession: NSObject, ObservableObject {
         sessionQueue.async { [captureSession] in
             captureSession.startRunning()
         }
+        // Required for UIDevice.current.orientation to reflect device rotation.
+        UIDevice.current.beginGeneratingDeviceOrientationNotifications()
     }
 
     func stop() {
+        UIDevice.current.endGeneratingDeviceOrientationNotifications()
         sessionQueue.async { [captureSession] in
             captureSession.stopRunning()
         }
