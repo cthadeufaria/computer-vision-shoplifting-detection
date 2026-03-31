@@ -35,13 +35,14 @@ from dataset import PoseSegDataset
 
 class _Float32PoseSegDataset(torch.utils.data.Dataset):
     """
-    Thin wrapper around PoseSegDataset that casts every numpy array in the
-    returned item to float32.
+    Thin wrapper around PoseSegDataset that converts every numpy array to a
+    float32 torch.Tensor, matching the output format of PoseLiftDataset.
 
-    PoseSegDataset.labels defaults to np.ones(...) which is float64, and
-    normalize_pose can produce float64 when dividing float32 data by an int64
-    norm_factor.  MPS (Apple Silicon) rejects float64 tensors, so we cast
-    before the DataLoader collates items into batches.
+    PoseSegDataset returns numpy arrays; PoseLiftDataset returns tensors.
+    When the shuffled DataLoader builds a batch that mixes both, PyTorch's
+    default collate picks the type of the first element (Tensor) and crashes
+    on any ndarray it encounters.  Converting here keeps all items as tensors
+    and avoids MPS float64 rejection in the same pass.
     """
 
     def __init__(self, dataset: PoseSegDataset):
@@ -56,9 +57,9 @@ class _Float32PoseSegDataset(torch.utils.data.Dataset):
         out = []
         for x in item:
             if isinstance(x, np.ndarray):
-                out.append(x.astype(np.float32))
+                out.append(torch.from_numpy(x.astype(np.float32)))
             elif isinstance(x, np.floating):  # numpy scalar (e.g. labels[i] from np.ones)
-                out.append(np.float32(x))
+                out.append(torch.tensor(float(x), dtype=torch.float32))
             else:
                 out.append(x)
         return out
