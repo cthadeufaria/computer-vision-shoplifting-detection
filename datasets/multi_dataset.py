@@ -33,6 +33,37 @@ from datasets.poselift_stgnf import PoseLiftDataset
 from dataset import PoseSegDataset
 
 
+class _Float32PoseSegDataset(torch.utils.data.Dataset):
+    """
+    Thin wrapper around PoseSegDataset that casts every numpy array in the
+    returned item to float32.
+
+    PoseSegDataset.labels defaults to np.ones(...) which is float64, and
+    normalize_pose can produce float64 when dividing float32 data by an int64
+    norm_factor.  MPS (Apple Silicon) rejects float64 tensors, so we cast
+    before the DataLoader collates items into batches.
+    """
+
+    def __init__(self, dataset: PoseSegDataset):
+        self._ds = dataset
+        self.metadata = dataset.metadata
+
+    def __len__(self) -> int:
+        return len(self._ds)
+
+    def __getitem__(self, idx):
+        item = self._ds[idx]
+        out = []
+        for x in item:
+            if isinstance(x, np.ndarray):
+                out.append(x.astype(np.float32))
+            elif isinstance(x, np.floating):  # numpy scalar (e.g. labels[i] from np.ones)
+                out.append(np.float32(x))
+            else:
+                out.append(x)
+        return out
+
+
 class MultiDataset(torch.utils.data.ConcatDataset):
     """
     Concatenation of multiple pose datasets for multi-source STG-NF training.
@@ -133,15 +164,17 @@ def build_multi_train_dataset(args) -> MultiDataset:
     if os.path.isdir(st_dir) and os.listdir(st_dir):
         print(f"[MultiDataset] Loading ShanghaiTech from {st_dir} ...")
         datasets.append(
-            PoseSegDataset(
-                path_to_json_dir=st_dir,
-                normalize_pose_segs=True,
-                seg_len=args.seg_len,
-                seg_stride=args.seg_stride,
-                trans_list=None,       # disable aug multiplier to keep dataset sizes comparable
-                dataset="ShanghaiTech",
-                vid_res=[856, 480],
-                train_seg_conf_th=0.0,
+            _Float32PoseSegDataset(
+                PoseSegDataset(
+                    path_to_json_dir=st_dir,
+                    normalize_pose_segs=True,
+                    seg_len=args.seg_len,
+                    seg_stride=args.seg_stride,
+                    trans_list=None,       # disable aug multiplier to keep dataset sizes comparable
+                    dataset="ShanghaiTech",
+                    vid_res=[856, 480],
+                    train_seg_conf_th=0.0,
+                )
             )
         )
         print(f"[MultiDataset]   ShanghaiTech: {len(datasets[-1])} segments")
@@ -153,15 +186,17 @@ def build_multi_train_dataset(args) -> MultiDataset:
     if os.path.isdir(ub_dir) and os.listdir(ub_dir):
         print(f"[MultiDataset] Loading UBnormal from {ub_dir} ...")
         datasets.append(
-            PoseSegDataset(
-                path_to_json_dir=ub_dir,
-                normalize_pose_segs=True,
-                seg_len=args.seg_len,
-                seg_stride=args.seg_stride,
-                trans_list=None,
-                dataset="UBnormal",
-                vid_res=[1280, 720],
-                train_seg_conf_th=0.0,
+            _Float32PoseSegDataset(
+                PoseSegDataset(
+                    path_to_json_dir=ub_dir,
+                    normalize_pose_segs=True,
+                    seg_len=args.seg_len,
+                    seg_stride=args.seg_stride,
+                    trans_list=None,
+                    dataset="UBnormal",
+                    vid_res=[1280, 720],
+                    train_seg_conf_th=0.0,
+                )
             )
         )
         print(f"[MultiDataset]   UBnormal: {len(datasets[-1])} segments")
