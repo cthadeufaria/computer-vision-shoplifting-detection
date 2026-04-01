@@ -172,8 +172,8 @@ class STGNFInferencer:
         eval_metrics = None
         frame_scores = None
         if not no_gt:
-            auc, frame_scores = score_dataset(seg_scores, dataset["test"].metadata, args=base_args)
-            eval_metrics = {"auc_roc": float(auc)}
+            auc_roc, auc_pr, eer, frame_scores = score_dataset(seg_scores, dataset["test"].metadata, args=base_args)
+            eval_metrics = {"auc_roc": float(auc_roc), "auc_pr": float(auc_pr), "eer": float(eer)}
 
         # Save artifacts.
         run_dir = out_root / base_args.dataset / self.export_dir.name
