@@ -30,15 +30,17 @@ ios/
 │   │   ├── StreamProtocol.swift         # length-prefixed binary framing over TCP
 │   │   └── PairingSession.swift         # one active peer connection, observable state
 │   ├── Supervisor/
-│   │   ├── SupervisorView.swift         # LazyVGrid of CameraFeedTileView
+│   │   ├── SupervisorView.swift         # device list: one row per connected camera device
 │   │   ├── SupervisorViewModel.swift    # manages multiple PairingSession instances
-│   │   └── CameraFeedTileView.swift     # renders incoming JPEG frames + score overlay
+│   │   ├── DeviceRowView.swift          # list row: device name + status + last-frame thumbnail
+│   │   └── CameraFeedDetailView.swift   # full-screen feed for a selected device + overlay toggles
 │   ├── Home/
-│   │   ├── HomeView.swift               # "Start Detection" toggle button
-│   │   └── HomeViewModel.swift
+│   │   ├── CameraHomeView.swift         # camera role: status bar (streaming indicator) only
+│   │   ├── SupervisorHomeView.swift     # supervisor role: wraps SupervisorView
+│   │   └── HomeViewModel.swift          # routes to correct home based on persisted DeviceRole
 │   ├── Detection/
-│   │   ├── DetectionView.swift          # ZStack: camera + skeleton + score cards
-│   │   ├── DetectionViewModel.swift     # full pipeline orchestration
+│   │   ├── DetectionView.swift          # ZStack: camera + skeleton + score cards + mode toolbar
+│   │   ├── DetectionViewModel.swift     # mode-gated pipeline orchestration
 │   │   ├── SkeletonOverlayView.swift    # Canvas-based bone drawing
 │   │   └── ScoreCardView.swift          # score + GOOD/ANOMALY badge
 │   ├── Core/
@@ -57,7 +59,8 @@ ios/
 │   │       ├── Keypoint.swift
 │   │       ├── PoseSkeleton.swift
 │   │       ├── AnomalyResult.swift
-│   │       └── DetectionState.swift
+│   │       ├── DetectionState.swift
+│   │       └── ViewOverlayOptions.swift     # poseEstimationEnabled + anomalyDetectionEnabled
 │   └── Resources/
 │       ├── Assets.xcassets
 │       ├── STGNFModel.mlpackage/        # CoreML model (bundled)
@@ -70,6 +73,8 @@ ios/
 │   │   ├── FrameBufferTests.swift
 │   │   ├── AnomalyScorerTests.swift
 │   │   └── STGNFModelIntegrationTests.swift
+│   ├── Detection/
+│   │   └── OverlayToggleTests.swift      # pose/anomaly toggle gating, pipeline enable/disable
 │   ├── Networking/
 │   │   ├── PairingServiceTests.swift     # loopback connect/disconnect
 │   │   └── StreamProtocolTests.swift     # frame encode/decode + TCP fragmentation
@@ -79,6 +84,7 @@ ios/
 └── ShopliftDetectUITests/
     ├── OnboardingUITests.swift
     ├── RoleSelectionUITests.swift        # role picker + QR display/scan flows
+    ├── OverlayToggleUITests.swift         # pose + anomaly toggle buttons in DetectionView
     └── DetectionToggleUITests.swift
 
 scripts/
@@ -273,6 +279,13 @@ enum DetectionState: Sendable {
     case running(latestResult: AnomalyResult)
     case error(reason: String)
 }
+
+// ViewOverlayOptions.swift — independent pipeline + display toggles
+// These drive both what processing runs and what is shown on screen.
+struct ViewOverlayOptions: Sendable {
+    var poseEstimationEnabled: Bool = true   // runs VNDetectHumanBodyPoseRequest + shows skeleton
+    var anomalyDetectionEnabled: Bool = true // runs CoreML + shows score cards; ignored when poseEstimationEnabled=false
+}
 ```
 
 ---
@@ -337,16 +350,30 @@ struct AnomalyScorer {
 
 ## Step 6: Detection Pipeline (DetectionViewModel)
 
+The pipeline is toggle-gated — `DetectionViewModel` runs only the stages enabled by `overlayOptions`:
+
 ```
 CameraSession.pixelBufferPublisher (30fps Combine stream)
-  → PoseEstimator.detectPose(pixelBuffer)   // VNDetectHumanBodyPoseRequest
-  → for each person: KeypointConverter.convert(observation, previewSize, frameIndex)
-  → per-person FrameBuffer.append(skeleton)  // keyed by bounding-box IoU tracking
-  → if buffer.isReady: PoseNormalizer.normalize(buffer.currentWindow()!)
-  → STGNFModel.runInference(mlArray)
-  → AnomalyScorer.classify(score, isWarmup: false)
-  → @MainActor publish detectionState + skeletons
+  │
+  ├─[always] encode JPEG frame (10fps on streaming path)
+  │          → if pairingSession active: send VideoFrame (0x02)
+  │
+  └─[overlayOptions.poseEstimationEnabled]
+      → PoseEstimator.detectPose(pixelBuffer)   // VNDetectHumanBodyPoseRequest
+      → for each person: KeypointConverter.convert(observation, previewSize)
+      → per-person FrameBuffer.append(skeleton)
+      → @MainActor publish skeletons (SkeletonOverlayView)
+      → if pairingSession active: send PoseResult (0x03)
+      │
+      └─[overlayOptions.anomalyDetectionEnabled]
+          → if buffer.isReady: PoseNormalizer.normalize(buffer.currentWindow()!)
+          → STGNFModel.runInference(mlArray)
+          → AnomalyScorer.classify(score, isWarmup: false)
+          → @MainActor publish detectionState (ScoreCardView)
+          → if pairingSession active: send DetectionResult (0x04)
 ```
+
+`DetectionViewModel` exposes `@Published var overlayOptions: ViewOverlayOptions`. Toggling `poseEstimationEnabled` off also disables anomaly detection and resets `FrameBuffer`. Toggling `anomalyDetectionEnabled` alone resets `FrameBuffer` without stopping pose estimation.
 
 Multi-person: maintain `[String: FrameBuffer]` keyed by IoU-matched bounding-box track IDs (mirrors Python `SimpleIoUTracker` with `iou_threshold=0.3`, `max_missing=6`).
 
@@ -354,14 +381,32 @@ Multi-person: maintain `[String: FrameBuffer]` keyed by IoU-matched bounding-box
 
 ## Step 7: UI Assembly
 
-- **OnboardingView**: 3-page `TabView` (Welcome, How It Works, Camera Permission) — UserDefaults gate; skipped on second launch
-- **HomeView**: single "Start Detection" button → presents `DetectionView` full-screen
+- **OnboardingView**: 4-page `TabView` (Welcome / Role Selection / How It Works / Camera Permission) — UserDefaults gate; skipped on second launch
+- **`ShopliftDetectApp` root routing** (role-based, no shared HomeView):
+  - Camera role → `CameraHomeView` (full-screen `DetectionView` + thin status bar at top)
+  - Supervisor role → `SupervisorHomeView` (`NavigationStack` rooted at `SupervisorView`)
 - **DetectionView** ZStack layers (bottom to top):
-  1. `CameraPreviewLayer` (full screen)
-  2. `SkeletonOverlayView` (Canvas, draws 17 bones connecting OpenPose18 joints)
-  3. `ScoreCardView` per tracked person (top-right area): score + **GOOD** (green) / **ANOMALY** (red) / **Warming up X/24** (gray)
-  4. `WarmupIndicatorView` (centered, shown only during warmup)
-  5. Dismiss button (top-left)
+  1. `CameraPreviewLayer` (full screen) — always visible
+  2. `SkeletonOverlayView` (Canvas, draws 17 bones) — visible only when `overlayOptions.poseEstimationEnabled`
+  3. `ScoreCardView` per tracked person — visible only when `overlayOptions.anomalyDetectionEnabled`
+  4. `WarmupIndicatorView` (centered) — visible only during warmup when anomaly detection is on
+  5. Overlay toggle buttons (bottom-right corner): two icon toggles — **Pose** (person icon) and **Anomaly** (shield icon) — tap to enable/disable each layer independently
+  6. Dismiss button (top-left)
+
+**Toggle behaviour:**
+
+| Pose toggle | Anomaly toggle | Pipeline runs | Skeleton shown | Scores shown |
+|-------------|----------------|---------------|----------------|--------------|
+| off | off | Camera only | No | No |
+| on | off | Camera + Vision | Yes | No |
+| on | on | Full pipeline | Yes | Yes |
+| off | on | Camera only (anomaly forced off) | No | No |
+
+Turning pose off automatically forces anomaly off and resets `FrameBuffer`. Turning anomaly on automatically enables pose.
+
+**`CameraFeedDetailView` overlay controls:**
+
+`CameraFeedDetailView` shows the same two toggle buttons (Pose / Anomaly). They control display only on the supervisor side — the camera device's pipeline is unaffected. Toggles are greyed out if the camera device hasn't sent the corresponding data type (e.g. camera is running with pose disabled).
 
 ---
 
@@ -404,8 +449,9 @@ Multi-person: maintain `[String: FrameBuffer]` keyed by IoU-matched bounding-box
 1. **Unit tests:** `Cmd+U` in Xcode — all 43 unit + integration tests pass
 2. **UI tests:** Run on simulator (onboarding/toggle) + device (camera tests)
 3. **Numeric fidelity:** `STGNFModelIntegrationTests.testCoreMLMatchesPythonNLLWithin1e3` passes
-4. **Device smoke test:** Open app on real iPhone → complete onboarding → tap Start Detection → walk in front of camera → skeleton overlay appears → score card shows "Warming up" for ~0.8 seconds → then GOOD/ANOMALY label appears in real time
-5. **Domain mismatch note:** With the ShanghaiTech model, normal retail footage may trigger ANOMALY — this is expected and documented in the UI with a "Threshold calibration needed" note
+4. **Device smoke test (camera role):** Open app on real iPhone → complete onboarding → select Smart Camera → camera view opens immediately → walk in front of camera → skeleton overlay appears → score card shows "Warming up" for ~0.8 seconds → then GOOD/ANOMALY label appears in real time
+5. **Two-device smoke test:** iPhone (camera role) shows QR → iPad (supervisor role) scans it → iPad `SupervisorView` shows iPhone as a row → tap row → `CameraFeedDetailView` opens full-screen with live feed and overlays from the iPhone
+6. **Domain mismatch note:** With the ShanghaiTech model, normal retail footage may trigger ANOMALY — this is expected and documented in the UI with a "Threshold calibration needed" note
 
 ---
 
@@ -468,8 +514,8 @@ Swift / SwiftUI         → render UI
 
 At onboarding, the user selects one of two roles:
 
-- **Smart Camera Device** — runs the full detection pipeline (camera → pose → STG-NF → anomaly score) and streams annotated frames + detection results to any connected supervisory device.
-- **Supervisory Device** — receives video + detection data from one or more linked camera devices and displays them in a multi-feed grid. Does not run inference locally.
+- **Smart Camera Device** — runs the full detection pipeline (camera → pose → STG-NF → anomaly score) and streams frames + results to any connected supervisory device. The camera feed is the entire UI — there is no other screen.
+- **Supervisory Device** — receives streams from one or more linked camera devices. Shows a device list on the main screen; the user taps a device to view its feed full-screen. Does not run inference locally.
 
 Devices are linked over local Wi-Fi only (no Bluetooth, no internet). Pairing is initiated with a QR code handshake.
 
@@ -516,8 +562,8 @@ Role is persisted in `UserDefaults` (`deviceRole: "camera" | "supervisor"`). Aft
 
 **After onboarding:**
 
-- **Camera role** → `HomeView` routes directly to `DetectionView` with an added "Streaming" status indicator (green dot when a supervisor is connected, gray when standalone)
-- **Supervisor role** → `HomeView` shows a camera-feed grid (`SupervisorView`) with placeholder tiles for each linked camera device; tapping a tile expands it full-screen
+- **Camera role** → app goes directly to `DetectionView` (full-screen camera). A small status bar at the top shows: device name + streaming indicator (green dot = supervisor connected, gray = standalone). There is no other screen for this role.
+- **Supervisor role** → app shows `SupervisorView`: a scrollable `List` of connected camera devices. Each row (`DeviceRowView`) shows device name, connection status badge, and a small thumbnail of the last received frame. Tapping a row pushes `CameraFeedDetailView` full-screen for that device.
 
 ---
 
@@ -535,9 +581,13 @@ ios/ShopliftDetect/
 │   ├── StreamProtocol.swift             # NEW — framed binary protocol over TCP
 │   └── PairingSession.swift             # NEW — one active peer, observable state
 ├── Supervisor/
-│   ├── SupervisorView.swift             # NEW — grid of CameraFeedTileView
+│   ├── SupervisorView.swift             # NEW — device list (one row per connected camera)
 │   ├── SupervisorViewModel.swift        # NEW — manages multiple PairingSession instances
-│   └── CameraFeedTileView.swift         # NEW — renders incoming MJPEG frames + overlay
+│   ├── DeviceRowView.swift              # NEW — list row: name + status + thumbnail
+│   └── CameraFeedDetailView.swift       # NEW — full-screen feed for selected device + overlay toggles
+├── Home/
+│   ├── CameraHomeView.swift             # NEW — thin wrapper: status bar + DetectionView
+│   └── SupervisorHomeView.swift         # NEW — thin wrapper: NavigationStack + SupervisorView
 └── Detection/
     └── DetectionViewModel.swift         # MODIFIED — adds frame-streaming output path
 ```
@@ -554,15 +604,17 @@ All messages are length-prefixed frames over a single persistent TCP connection:
 
 Payload is either:
 
-| Type byte | Name | Contents |
-|-----------|------|----------|
-| `0x01` | Handshake | JSON: `{"role","name","appVersion"}` |
-| `0x02` | VideoFrame | JPEG-compressed frame (quality 0.5, ~30 KB) + 8-byte timestamp |
-| `0x03` | DetectionResult | JSON: `{"timestamp","persons":[{"trackId","score","label","keypoints":[]}]}` |
-| `0x04` | Heartbeat | 4-byte sequence number |
-| `0x05` | Disconnect | empty body — graceful teardown |
+| Type byte | Name | Sent in modes | Contents |
+|-----------|------|---------------|----------|
+| `0x01` | Handshake | always | JSON: `{"role","name","appVersion","poseEnabled","anomalyEnabled"}` |
+| `0x02` | VideoFrame | always | JPEG-compressed frame (quality 0.5, ~30 KB) + 8-byte timestamp |
+| `0x03` | PoseResult | pose on | JSON: `{"timestamp","persons":[{"trackId","keypoints":[]}]}` |
+| `0x04` | DetectionResult | anomaly on | JSON: `{"timestamp","persons":[{"trackId","score","label"}]}` |
+| `0x05` | OverlaySync | always | 2-byte bitmask: bit0=poseEnabled, bit1=anomalyEnabled — supervisor greys out unavailable toggles |
+| `0x06` | Heartbeat | always | 4-byte sequence number |
+| `0x07` | Disconnect | always | empty body — graceful teardown |
 
-Frame rate: camera device sends `0x02` + `0x03` at ~10 fps (not 30 fps) to stay within LAN bandwidth without congestion. Keyframe at 10 fps is sufficient for supervisory monitoring.
+Frame rate: camera device sends `0x02` at ~10 fps always. `0x03`/`0x04` are sent only when the respective pipeline stage is running. `OverlaySync` is sent whenever the camera device's toggles change.
 
 ---
 
@@ -605,13 +657,21 @@ Uses `VNDetectBarcodesRequest` as an alternative if the deployment target drops 
 
 ### `SupervisorView`
 
-`LazyVGrid` of `CameraFeedTileView` cells, one per connected camera device. Each tile shows:
-- Live JPEG frame (rendered via `Image(uiImage:)`, updated on `0x02` frames)
-- Person score overlay (rendered from `0x03` DetectionResult messages)
-- Device name label
-- Connection quality indicator (heartbeat latency)
+Scrollable `List` of `DeviceRowView` rows, one per connected camera device. Each row shows:
+- Device name
+- Connection status badge (Connected / Reconnecting / Disconnected)
+- Small thumbnail (`Image(uiImage:)`) updated from the last received `0x02` VideoFrame
 
-Tap on a tile → full-screen `CameraFeedDetailView` (same layers as `DetectionView` but reading from network rather than local camera).
+Tap a row → `NavigationStack` pushes `CameraFeedDetailView` for that device.
+
+### `CameraFeedDetailView`
+
+Full-screen view for a single selected camera device. Same ZStack layer structure as `DetectionView` but driven by network data rather than a local camera:
+1. `NetworkFrameView` — renders incoming JPEG frames full-screen
+2. `SkeletonOverlayView` — drawn from `0x03` PoseResult keypoints (hidden if pose toggle off or no data)
+3. `ScoreCardView` — drawn from `0x04` DetectionResult (hidden if anomaly toggle off or no data)
+4. Overlay toggle buttons (bottom-right) — same Pose / Anomaly toggles as `DetectionView`; greyed out when the camera device hasn't sent that data type
+5. Back button (top-left) → returns to device list
 
 ---
 
@@ -647,6 +707,26 @@ func testTappingDeviceRoleShowsQRScanner()       // supervisor = "device" card
 func testRolePersistedAfterOnboardingComplete()
 ```
 
+#### `OverlayToggleTests` (6 unit tests)
+
+```swift
+func testDefaultOptionsHaveBothTogglesOn()
+func testDisablingPoseStopsPoseEstimatorCalls()       // PoseEstimator mock receives no calls
+func testDisablingPoseAlsoDisablesAnomalyDetection()  // STGNFModel mock receives no calls
+func testEnablingAnomalyAlsoEnablesPose()
+func testFrameBufferResetWhenAnomalyToggled()
+func testOverlaySyncFrameSentOnToggleChange()         // OverlaySync (0x05) emitted to PairingSession
+```
+
+#### `OverlayToggleUITests` (4 tests)
+
+```swift
+func testDetectionViewHasPoseAndAnomalyToggleButtons()
+func testDisablingPoseHidesSkeletonAndScoreCards()
+func testDisablingAnomalyOnlyHidesScoreCards()
+func testEnablingAnomalyWhenPoseOffEnablesBothLayers()
+```
+
 ---
 
 ### Updated Implementation Order
@@ -659,10 +739,12 @@ Append to the existing table:
 | 17 | `QRCodeDisplayView.swift` | Valid `sdlink://` QR generated; scannable by iOS Camera app |
 | 18 | `QRScannerView.swift` | Parses `sdlink://` payload; rejects invalid payloads |
 | 19 | `PairingService.swift` + `StreamProtocol.swift` | `PairingServiceTests` + `StreamProtocolTests` all pass on loopback |
-| 20 | `DetectionViewModel` stream output | Camera device sends frames + results over `PairingSession` at 10 fps |
-| 21 | `SupervisorView` + `SupervisorViewModel` | Supervisor receives and renders frames from camera device on LAN |
-| 22 | `RoleSelectionUITests` | All 4 role-selection UI tests pass |
-| 23 | Full regression incl. networking | All unit + integration + UI + networking tests pass; two-device smoke test on real LAN |
+| 20 | `ViewOverlayOptions` domain type | — |
+| 21 | Toggle-gated `DetectionViewModel` + toggle buttons in `DetectionView` | `OverlayToggleTests` pass; manual test: toggling pose/anomaly enables/disables overlays live |
+| 22 | `DetectionViewModel` stream output (toggle-aware) | Camera sends `PoseResult`/`DetectionResult` only when respective toggle is on; `OverlaySync` sent on change |
+| 23 | `SupervisorView` + `SupervisorViewModel` | Supervisor renders frames; overlay toggles grey out when camera hasn't sent that data |
+| 24 | `RoleSelectionUITests` + `OverlayToggleUITests` | All 8 UI tests pass |
+| 25 | Full regression incl. networking + overlays | All unit + integration + UI + networking tests pass; two-device smoke test on real LAN with both toggles in all combinations |
 
 **Two-device smoke test:** iPhone (camera role) + iPad (supervisor role) on the same Wi-Fi. Camera device shows QR → iPad scans it → both show "Connected" → iPad displays live feed with score overlay from iPhone's camera.
 
