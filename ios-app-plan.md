@@ -18,9 +18,21 @@ ios/
 │   │   ├── ShopliftDetectApp.swift      # @main, routes Onboarding ↔ Home
 │   │   └── AppEnvironment.swift
 │   ├── Onboarding/
-│   │   ├── OnboardingView.swift         # 3-page TabView: Welcome / How It Works / Camera Permission
+│   │   ├── OnboardingView.swift         # 4-page TabView: Welcome / Role Selection / How It Works / Camera Permission
 │   │   ├── OnboardingPageView.swift
-│   │   └── OnboardingViewModel.swift
+│   │   ├── OnboardingViewModel.swift
+│   │   ├── RoleSelectionView.swift      # two-card picker (Smart Camera / Supervisory Device)
+│   │   ├── QRCodeDisplayView.swift      # CIQRCodeGenerator display (camera role)
+│   │   └── QRScannerView.swift          # AVCaptureSession QR scanner (supervisor role)
+│   ├── Networking/
+│   │   ├── DeviceRole.swift             # enum DeviceRole + UserDefaults persistence
+│   │   ├── PairingService.swift         # NWListener (camera) / NWConnection (supervisor)
+│   │   ├── StreamProtocol.swift         # length-prefixed binary framing over TCP
+│   │   └── PairingSession.swift         # one active peer connection, observable state
+│   ├── Supervisor/
+│   │   ├── SupervisorView.swift         # LazyVGrid of CameraFeedTileView
+│   │   ├── SupervisorViewModel.swift    # manages multiple PairingSession instances
+│   │   └── CameraFeedTileView.swift     # renders incoming JPEG frames + score overlay
 │   ├── Home/
 │   │   ├── HomeView.swift               # "Start Detection" toggle button
 │   │   └── HomeViewModel.swift
@@ -58,11 +70,15 @@ ios/
 │   │   ├── FrameBufferTests.swift
 │   │   ├── AnomalyScorerTests.swift
 │   │   └── STGNFModelIntegrationTests.swift
+│   ├── Networking/
+│   │   ├── PairingServiceTests.swift     # loopback connect/disconnect
+│   │   └── StreamProtocolTests.swift     # frame encode/decode + TCP fragmentation
 │   └── Fixtures/
 │       ├── coco17_sample.json            # raw 17-kp input + expected 18-kp output
 │       └── normal_pose_window.json       # 24-frame input + expected normalized output
 └── ShopliftDetectUITests/
     ├── OnboardingUITests.swift
+    ├── RoleSelectionUITests.swift        # role picker + QR display/scan flows
     └── DetectionToggleUITests.swift
 
 scripts/
@@ -87,7 +103,7 @@ open ShopliftDetect.xcodeproj
 - `ShopliftDetectTests` — XCTest unit tests, links ShopliftDetect target
 - `ShopliftDetectUITests` — XCUITest UI tests
 
-`Info.plist` must include `NSCameraUsageDescription`.
+`Info.plist` must include `NSCameraUsageDescription` and `NSLocalNetworkUsageDescription` (required for `Network.framework` peer connections on iOS 14+). Add `NSBonjourServices` entry `_sdlink._tcp` if Bonjour discovery is used later.
 
 ---
 
@@ -443,6 +459,212 @@ Swift / SwiftUI         → render UI
 **Trigger for this upgrade:** when the preprocessing pipeline expands beyond the POC scope — specifically when adding multi-person IoU tracking, Kalman filtering per track, or temporal score windowing. At that point, migrate `KeypointConverter`, `PoseNormalizer`, `FrameBuffer`, and `AnomalyScorer` to a Rust crate (`ios/ShopliftDetectCore/`) while keeping all Swift UI and CoreML call sites unchanged.
 
 **For the POC:** Swift + CoreML, full stop. The architecture is designed so the Swift types (`Keypoint`, `PoseSkeleton`, `AnomalyResult`) become the FFI boundary when the Rust migration happens — no UI or CoreML changes required.
+
+---
+
+## Device Roles & Local P2P Streaming
+
+### Overview
+
+At onboarding, the user selects one of two roles:
+
+- **Smart Camera Device** — runs the full detection pipeline (camera → pose → STG-NF → anomaly score) and streams annotated frames + detection results to any connected supervisory device.
+- **Supervisory Device** — receives video + detection data from one or more linked camera devices and displays them in a multi-feed grid. Does not run inference locally.
+
+Devices are linked over local Wi-Fi only (no Bluetooth, no internet). Pairing is initiated with a QR code handshake.
+
+---
+
+### Pairing Flow
+
+```
+Smart Camera Device                     Supervisory Device
+────────────────────────────────────    ────────────────────────────────────
+1. Start NWListener on TCP port 7890
+2. Get own LAN IP address               
+3. Encode "sdlink://192.168.x.x:7890"
+   into QR code                         
+4. Display QR code on screen            5. Show camera viewfinder
+                                        6. User scans QR code
+                                        7. Parse IP:port from payload
+                                        8. NWConnection.connect(host, port)
+9. Accept incoming NWConnection
+10. Exchange handshake JSON
+    {"role":"camera","name":"iPhone 15"}
+                                        {"role":"supervisor","name":"iPad Pro"}
+11. Begin streaming frames + results    11. Begin receiving + displaying
+```
+
+The QR code payload format: `sdlink://<LAN_IP>:<PORT>` (e.g. `sdlink://192.168.1.42:7890`).
+
+---
+
+### Onboarding Changes
+
+The existing 3-page onboarding gets a **role selection page inserted after Welcome (new page 2)**:
+
+**Page 2 — "Choose Your Role"**
+
+Two large tappable cards:
+
+| Card | Title | Subtitle | Action |
+|------|-------|----------|--------|
+| 📷 Smart Camera | "This device detects" | "Runs AI on live camera footage and streams to a supervisor" | Tap → shows full-screen QR code for pairing |
+| 🖥 Supervisory View | "This device monitors" | "Receives streams from one or more camera devices" | Tap → opens camera viewfinder to scan QR code |
+
+Role is persisted in `UserDefaults` (`deviceRole: "camera" | "supervisor"`). After role is confirmed (either QR shown or QR scanned successfully), onboarding advances to the camera-permission page (cameras need permission in both roles — camera role for detection, supervisor role for QR scanning).
+
+**After onboarding:**
+
+- **Camera role** → `HomeView` routes directly to `DetectionView` with an added "Streaming" status indicator (green dot when a supervisor is connected, gray when standalone)
+- **Supervisor role** → `HomeView` shows a camera-feed grid (`SupervisorView`) with placeholder tiles for each linked camera device; tapping a tile expands it full-screen
+
+---
+
+### New Repository Files
+
+```
+ios/ShopliftDetect/
+├── Onboarding/
+│   ├── RoleSelectionView.swift          # NEW — two-card picker
+│   ├── QRCodeDisplayView.swift          # NEW — shows CIQRCodeGenerator output
+│   └── QRScannerView.swift              # NEW — AVCaptureSession QR reader
+├── Networking/
+│   ├── DeviceRole.swift                 # NEW — enum + UserDefaults persistence
+│   ├── PairingService.swift             # NEW — NWListener (camera) / NWConnection (supervisor)
+│   ├── StreamProtocol.swift             # NEW — framed binary protocol over TCP
+│   └── PairingSession.swift             # NEW — one active peer, observable state
+├── Supervisor/
+│   ├── SupervisorView.swift             # NEW — grid of CameraFeedTileView
+│   ├── SupervisorViewModel.swift        # NEW — manages multiple PairingSession instances
+│   └── CameraFeedTileView.swift         # NEW — renders incoming MJPEG frames + overlay
+└── Detection/
+    └── DetectionViewModel.swift         # MODIFIED — adds frame-streaming output path
+```
+
+---
+
+### Network Protocol (`StreamProtocol`)
+
+All messages are length-prefixed frames over a single persistent TCP connection:
+
+```
+[4 bytes: payload length (big-endian UInt32)] [N bytes: payload]
+```
+
+Payload is either:
+
+| Type byte | Name | Contents |
+|-----------|------|----------|
+| `0x01` | Handshake | JSON: `{"role","name","appVersion"}` |
+| `0x02` | VideoFrame | JPEG-compressed frame (quality 0.5, ~30 KB) + 8-byte timestamp |
+| `0x03` | DetectionResult | JSON: `{"timestamp","persons":[{"trackId","score","label","keypoints":[]}]}` |
+| `0x04` | Heartbeat | 4-byte sequence number |
+| `0x05` | Disconnect | empty body — graceful teardown |
+
+Frame rate: camera device sends `0x02` + `0x03` at ~10 fps (not 30 fps) to stay within LAN bandwidth without congestion. Keyframe at 10 fps is sufficient for supervisory monitoring.
+
+---
+
+### `PairingService` (Network.framework)
+
+**Camera role (server side):**
+```swift
+actor PairingService {
+    private var listener: NWListener?
+    private(set) var connectedSession: PairingSession?
+
+    func startListening(port: UInt16 = 7890) throws -> String  // returns LAN IP
+    func stopListening()
+    func disconnectPeer()
+}
+```
+
+**Supervisor role (client side):**
+```swift
+    func connect(host: String, port: UInt16) async throws -> PairingSession
+```
+
+LAN IP discovery: enumerate `getifaddrs`, select the first `AF_INET` address on an interface named `en0` or `en1` (Wi-Fi). Fall back to showing "Connect to same Wi-Fi network" error if none found.
+
+---
+
+### `QRCodeDisplayView`
+
+Uses `CIFilter("CIQRCodeGenerator")` with the `sdlink://` URL as input string. Rendered via `Image(uiImage:)` with nearest-neighbor interpolation to avoid blurring. Displayed full-screen with a white border and instruction label: *"Show this to the supervisory device"*.
+
+---
+
+### `QRScannerView`
+
+`AVCaptureSession` with `AVCaptureMetadataOutput` filtered to `.qr`. Parsed payload must match `^sdlink://(\d{1,3}\.){3}\d{1,3}:\d{2,5}$`. On match, calls a closure `onScanned(host: String, port: UInt16)` — the scanner view is dismissed and `PairingService.connect` is called.
+
+Uses `VNDetectBarcodesRequest` as an alternative if the deployment target drops to a device without `AVCaptureMetadataOutput` support (edge case; keep AVFoundation as primary).
+
+---
+
+### `SupervisorView`
+
+`LazyVGrid` of `CameraFeedTileView` cells, one per connected camera device. Each tile shows:
+- Live JPEG frame (rendered via `Image(uiImage:)`, updated on `0x02` frames)
+- Person score overlay (rendered from `0x03` DetectionResult messages)
+- Device name label
+- Connection quality indicator (heartbeat latency)
+
+Tap on a tile → full-screen `CameraFeedDetailView` (same layers as `DetectionView` but reading from network rather than local camera).
+
+---
+
+### New Tests
+
+#### `PairingServiceTests` (6 tests)
+
+```swift
+func testListenerStartsAndReturnsLocalIP()
+func testQRPayloadParsesCorrectHostAndPort()
+func testQRPayloadRejectsInvalidScheme()
+func testClientConnectsToListenerOnLoopback()
+func testHandshakeExchangedAfterConnect()
+func testDisconnectSendsGracefulFrame()
+```
+
+#### `StreamProtocolTests` (5 tests)
+
+```swift
+func testFrameEncodingRoundtrip()
+func testLengthPrefixIsNetworkByteOrder()
+func testVideoFramePayloadPreservesJPEGBytes()
+func testDetectionResultJSONRoundtrip()
+func testPartialReadReassemblesFrame()           // simulates TCP fragmentation
+```
+
+#### `RoleSelectionUITests` (4 tests)
+
+```swift
+func testOnboardingShowsRoleSelectionPage()
+func testTappingCameraRoleShowsQRCode()
+func testTappingDeviceRoleShowsQRScanner()       // supervisor = "device" card
+func testRolePersistedAfterOnboardingComplete()
+```
+
+---
+
+### Updated Implementation Order
+
+Append to the existing table:
+
+| Step | Deliverable | Gate |
+|------|-------------|------|
+| 16 | `DeviceRole.swift` + `RoleSelectionView.swift` | Role picker appears in onboarding, persists to UserDefaults |
+| 17 | `QRCodeDisplayView.swift` | Valid `sdlink://` QR generated; scannable by iOS Camera app |
+| 18 | `QRScannerView.swift` | Parses `sdlink://` payload; rejects invalid payloads |
+| 19 | `PairingService.swift` + `StreamProtocol.swift` | `PairingServiceTests` + `StreamProtocolTests` all pass on loopback |
+| 20 | `DetectionViewModel` stream output | Camera device sends frames + results over `PairingSession` at 10 fps |
+| 21 | `SupervisorView` + `SupervisorViewModel` | Supervisor receives and renders frames from camera device on LAN |
+| 22 | `RoleSelectionUITests` | All 4 role-selection UI tests pass |
+| 23 | Full regression incl. networking | All unit + integration + UI + networking tests pass; two-device smoke test on real LAN |
+
+**Two-device smoke test:** iPhone (camera role) + iPad (supervisor role) on the same Wi-Fi. Camera device shows QR → iPad scans it → both show "Connected" → iPad displays live feed with score overlay from iPhone's camera.
 
 ---
 
