@@ -1,11 +1,37 @@
 <!--
 SYNC IMPACT REPORT
 ==================
+Version change: 1.1.0 → 1.1.1
+
+Amendment summary (v1.1.1 — alignment patch against ios-app-plan.md):
+
+  Fixed conflicts:
+  - Principle III + CoreML Conversion Gate: CoreML model MUST be compiled with
+    minimum_deployment_target=iOS15, not iOS17 as the plan's conversion script
+    currently specifies. Constitution now makes this explicit.
+  - Implementation Order Gate: updated step count from "Steps 1–23" to "Steps 1–25"
+    to reflect the networking additions (Steps 16–23) + final regression step.
+
+  Fixed misalignments:
+  - Numeric Fidelity (Principle V): added IoU tracker parameters (iou_threshold=0.3,
+    max_missing=6) from Python's SimpleIoUTracker — these must match exactly,
+    same class of fidelity concern as opp_order.
+
+  Closed gaps:
+  - Development Workflow: added Simulator vs On-Device test split rule.
+  - Principle III: added anomaly threshold default (-1.2) and UserDefaults-backed
+    calibration requirement, as flagged in plan's Known Issues section.
+
+  Deferred TODOs (carried forward):
+  - project.yml MUST be updated to `iphoneos_deployment_target: "15.0"` — currently
+    states iOS 17+. Constitution governs; plan is the non-conformant document.
+  - convert_stgnf_to_coreml.py MUST be updated: change
+    `minimum_deployment_target=coremltools.target.iOS17` →
+    `minimum_deployment_target=coremltools.target.iOS15`.
+
+Previous version (1.1.0) sync impact:
 Version change: 1.0.0 → 1.1.0
 Modified principles: VI — "Local-Only Privacy" renamed to "Privacy & Data Transmission"
-
-Added sections: N/A
-Removed sections: N/A
 
 Amendment summary (v1.1.0):
   - Principle VI relaxed from "frames must never leave local network" to
@@ -39,12 +65,9 @@ Templates requiring updates:
   ✅ .specify/templates/spec-template.md — requirements framing aligns with MVVM + TDD constraints
   ✅ .specify/templates/tasks-template.md — TDD task order (write test → fail → implement) aligns with Principle II
 
-Deferred TODOs:
-  - RATIFICATION_DATE is set to first authoring date (2026-04-08); confirm with team if a formal
-    ratification event occurred earlier.
-  - iOS 15 vs iOS 17: ../ios-app-plan.md specifies `iOS 17+` in project.yml but the user requirement
-    is iOS 15. This constitution sets iOS 15 as the governing minimum. The project.yml and plan MUST
-    be updated to reflect iOS 15 minimum deployment target.
+Files requiring manual follow-up:
+  ⚠ ../ios-app-plan.md — project.yml target must change from iOS 17+ to iOS 15+
+  ⚠ scripts/convert_stgnf_to_coreml.py — minimum_deployment_target must change from iOS17 to iOS15
 -->
 
 # ShopliftDetect Constitution
@@ -97,8 +120,12 @@ produce silently wrong anomaly scores that are impossible to catch via manual te
 
 ### III. iOS 15+ Compatibility & Performance
 
-The minimum deployment target is **iOS 15.0**. This is a hard constraint.
+The minimum deployment target is **iOS 15.0**. This is a hard constraint that governs
+all components: the Xcode project, the SwiftUI API surface, and the CoreML model.
 
+- `project.yml` MUST declare `iphoneos_deployment_target: "15.0"`.
+- `scripts/convert_stgnf_to_coreml.py` MUST use
+  `minimum_deployment_target=coremltools.target.iOS15` — NOT iOS17.
 - No API introduced after iOS 15.0 MUST be used unconditionally. Use `@available`
   guards with a working fallback for any iOS 16+ or iOS 17+ API.
 - SwiftUI features unavailable on iOS 15 MUST NOT be used (e.g., `NavigationStack`
@@ -111,6 +138,11 @@ The minimum deployment target is **iOS 15.0**. This is a hard constraint.
   MUST be minimized. Prefer pre-allocated buffers over per-frame heap allocation.
 - `FrameBuffer` MUST be a Swift `actor` to avoid lock contention on the main thread.
 - `MLMultiArray` backing buffers SHOULD be reused across inference calls where possible.
+- The anomaly score threshold MUST default to `-1.2` and MUST be persisted in
+  `UserDefaults` so it can be calibrated per deployment without a code change.
+  A Settings sheet MUST expose threshold adjustment before the app is considered
+  production-ready (the ShanghaiTech model may score normal retail footage as
+  anomalous at the default threshold).
 
 Rationale: The app targets security/retail deployments where hardware may be several
 years old. A performance regression that causes dropped frames or thermal throttling
@@ -150,6 +182,7 @@ implementation within defined tolerances:
 | `KeypointConverter` (COCO17→COCO18 reorder) | exact integer index match | `dataset.py:keypoints17_to_coco18` |
 | `PoseNormalizer` (mean/std normalization) | ≤ 1e-5 per element | `data_utils.py:normalize_pose` |
 | `STGNFModel` NLL output vs Python | ≤ 1e-3 absolute | Python inference on same seed |
+| `DetectionViewModel` IoU tracker | exact parameter match | `pipeline/video_inference_pipeline.py:SimpleIoUTracker` |
 
 The `opp_order` array `[0,17,6,8,10,5,7,9,12,14,16,11,13,15,2,1,4,3]` MUST be
 hard-coded exactly. Any deviation silently breaks the model input contract.
@@ -161,6 +194,11 @@ hard-coded exactly. Any deviation silently breaks the model input contract.
 4. Compute std on the y-column only (all 24×18 y values after subtraction).
 5. Divide both x and y by that scalar std.
 6. Transpose to shape `[1, 2, 24, 18]`, drop confidence channel → `MLMultiArray`.
+
+The multi-person IoU tracker MUST use `iou_threshold=0.3` and `max_missing=6`,
+matching `pipeline/video_inference_pipeline.py:SimpleIoUTracker` exactly.
+Any change to these values constitutes a numeric fidelity break and requires
+a new fixture set and explicit constitution amendment.
 
 Fixture tests in `ShopliftDetectTests/Fixtures/` are the authoritative numerical
 validation gate and MUST pass before any related implementation is merged.
@@ -237,17 +275,35 @@ SwiftLint MUST run as an Xcode build phase. The CI check (or pre-commit hook)
 MUST block merges if any SwiftLint violation is present.
 `.swiftlint.yml` lives at `ios/.swiftlint.yml` and is committed to the repository.
 
+### Simulator vs On-Device Test Constraints
+
+Not all tests can run on the simulator:
+
+| Test category | Runs on simulator | Runs on device |
+|---------------|:-----------------:|:--------------:|
+| Unit tests (XCTest: converters, normalizers, buffers, scorers, ViewModels) | ✅ | ✅ |
+| Integration tests (STGNFModelIntegrationTests — requires `.mlpackage`) | ✅ | ✅ |
+| Networking loopback tests (PairingServiceTests, StreamProtocolTests) | ✅ | ✅ |
+| UI tests (OnboardingUITests, RoleSelectionUITests, DetectionToggleUITests) | ✅ | ✅ |
+| Camera + live pose tests (CameraSession, real VNDetectHumanBodyPoseRequest) | ❌ | ✅ |
+| Two-device smoke test (LAN streaming, camera → supervisor) | ❌ | ✅ |
+
+Camera and live pose tests MUST run on a physical device. The two-device smoke test
+(iPhone camera role + iPad supervisor role on the same Wi-Fi) MUST be executed
+before any networking milestone is declared complete.
+
 ### Implementation Order Gate
 
-The implementation order defined in `../ios-app-plan.md` (Steps 1–23) is the
+The implementation order defined in `../ios-app-plan.md` (Steps 1–25) is the
 authoritative delivery sequence. No step MUST be started until its gate condition
 (compilation, test pass, manual device test) is satisfied.
 
 ### CoreML Conversion Gate
 
-`scripts/convert_stgnf_to_coreml.py` MUST produce an `.mlpackage` whose NLL output
-differs from Python by ≤ 0.01 on a random input before any Swift inference code is
-written. The conversion script output is the single source of truth for the model.
+`scripts/convert_stgnf_to_coreml.py` MUST produce an `.mlpackage` compiled with
+`minimum_deployment_target=coremltools.target.iOS15` whose NLL output differs from
+Python by ≤ 0.01 on a random input before any Swift inference code is written.
+The conversion script output is the single source of truth for the model.
 
 ### Multi-Device Tests
 
@@ -272,4 +328,4 @@ executed before any networking-related milestone is declared complete.
 - **Runtime guidance**: for agent-specific and workflow guidance see
   `.specify/integrations/claude.manifest.json` and the `.specify/templates/` directory.
 
-**Version**: 1.1.0 | **Ratified**: 2026-04-08 | **Last Amended**: 2026-04-08
+**Version**: 1.1.1 | **Ratified**: 2026-04-08 | **Last Amended**: 2026-04-08

@@ -105,7 +105,7 @@ open ShopliftDetect.xcodeproj
 ```
 
 **`project.yml` targets:**
-- `ShopliftDetect` — iOS 17+, SwiftUI, Swift 6
+- `ShopliftDetect` — iOS 15+, SwiftUI, Swift 6
 - `ShopliftDetectTests` — XCTest unit tests, links ShopliftDetect target
 - `ShopliftDetectUITests` — XCUITest UI tests
 
@@ -122,7 +122,7 @@ Key steps inside the script:
 2. Reconstruct `STG_NF` with hardcoded ShanghaiTech args: `pose_shape=(2,24,18)`, `K=8`, `L=1`, `R=3.0`, `flow_coupling='affine'`, `strategy='uniform'`
 3. Call `model.load_state_dict(state_dict, strict=False)` then `model.set_actnorm_init()` — critical; skipping this corrupts ActNorm
 4. Wrap in `STGNFWrapper(nn.Module)` that strips `label`/`score` params and returns `nll` as a 1D tensor
-5. `torch.jit.trace(wrapper, example_input=torch.zeros(1,2,24,18))` → then `coremltools.convert(..., minimum_deployment_target=iOS17, compute_precision=FLOAT32)`
+5. `torch.jit.trace(wrapper, example_input=torch.zeros(1,2,24,18))` → then `coremltools.convert(..., minimum_deployment_target=iOS15, compute_precision=FLOAT32)`
 6. Numeric verification: assert Python vs CoreML NLL diff < 0.01 on random input
 7. Save to `artifacts/stg_nf/coreml/STGNFModel.mlpackage`
 
