@@ -2,9 +2,17 @@ import SwiftUI
 
 struct PosePreviewView: View {
     @Binding var isPresented: Bool
-    @StateObject private var viewModel = PosePreviewViewModel()
+    @StateObject private var viewModel: PosePreviewViewModel
     @ObservedObject private var rotation = DeviceRotation.shared
     @State private var startError: String?
+
+    init(
+        isPresented: Binding<Bool>,
+        viewModel: @autoclosure @escaping () -> PosePreviewViewModel
+    ) {
+        _isPresented = isPresented
+        _viewModel = StateObject(wrappedValue: viewModel())
+    }
 
     var body: some View {
         ZStack {

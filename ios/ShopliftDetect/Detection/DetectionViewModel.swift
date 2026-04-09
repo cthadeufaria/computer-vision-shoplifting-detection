@@ -24,11 +24,11 @@ final class DetectionViewModel: ObservableObject {
     var previewLayer: AVCaptureVideoPreviewLayer { camera.previewLayer }
 
     init(
-        camera: CameraSessionProtocol = CameraSession(),
-        estimator: any PoseEstimatorProtocol = PoseEstimator(),
-        converter: any KeypointConverterProtocol = KeypointConverter(),
-        scorer: any AnomalyScorerProtocol = AnomalyScorer(),
-        tracking: TrackingServiceProtocol = TrackingService()
+        camera: CameraSessionProtocol,
+        estimator: any PoseEstimatorProtocol,
+        converter: any KeypointConverterProtocol,
+        scorer: any AnomalyScorerProtocol,
+        tracking: TrackingServiceProtocol
     ) {
         self.camera = camera
         self.estimator = estimator
@@ -62,6 +62,7 @@ final class DetectionViewModel: ObservableObject {
         trackBuffers.removeAll()
         frameIndex = 0
         detectionState = .idle
+        skeletons = []
     }
 
     // nonisolated so Vision and CoreML run on the cooperative thread pool,

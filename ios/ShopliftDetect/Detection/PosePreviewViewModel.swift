@@ -18,9 +18,9 @@ final class PosePreviewViewModel: ObservableObject {
     var previewLayer: AVCaptureVideoPreviewLayer { camera.previewLayer }
 
     init(
-        camera: CameraSessionProtocol = CameraSession(),
-        estimator: any PoseEstimatorProtocol = PoseEstimator(),
-        converter: any KeypointConverterProtocol = KeypointConverter()
+        camera: CameraSessionProtocol,
+        estimator: any PoseEstimatorProtocol,
+        converter: any KeypointConverterProtocol
     ) {
         self.camera = camera
         self.estimator = estimator

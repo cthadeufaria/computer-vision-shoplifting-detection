@@ -2,24 +2,28 @@ import SwiftUI
 
 @main
 struct ShopliftDetectApp: App {
-    @AppStorage("onboardingComplete") private var onboardingComplete = false
+    @StateObject private var appEnvironment: AppEnvironment
 
     init() {
-        let args = CommandLine.arguments
-        if args.contains("--reset-onboarding") {
-            UserDefaults.standard.set(false, forKey: "onboardingComplete")
-        } else if args.contains("--skip-onboarding") {
-            UserDefaults.standard.set(true, forKey: "onboardingComplete")
-        }
+        let arguments = CommandLine.arguments
+        let permissionService: PermissionServiceProtocol = arguments.contains("--ui-test-camera-authorized")
+            ? UITestPermissionService()
+            : AVPermissionService()
+        let environment = AppEnvironment(permissionService: permissionService)
+        environment.applyLaunchArguments(arguments)
+        _appEnvironment = StateObject(wrappedValue: environment)
     }
 
     var body: some Scene {
         WindowGroup {
-            if onboardingComplete {
-                HomeView()
-            } else {
-                OnboardingView()
+            Group {
+                if appEnvironment.onboardingComplete {
+                    HomeView(viewModel: appEnvironment.makeHomeViewModel())
+                } else {
+                    OnboardingView(viewModel: appEnvironment.makeOnboardingViewModel())
+                }
             }
+            .environmentObject(appEnvironment)
         }
     }
 }

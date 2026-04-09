@@ -3,10 +3,18 @@ import AVFoundation
 
 struct DetectionView: View {
     @Binding var isPresented: Bool
-    @StateObject private var viewModel = DetectionViewModel()
+    @StateObject private var viewModel: DetectionViewModel
     @ObservedObject private var rotation = DeviceRotation.shared
     @State private var startError: String?
     private let isPreviewUITest = ProcessInfo.processInfo.arguments.contains("--ui-test-detection-preview")
+
+    init(
+        isPresented: Binding<Bool>,
+        viewModel: @autoclosure @escaping () -> DetectionViewModel
+    ) {
+        _isPresented = isPresented
+        _viewModel = StateObject(wrappedValue: viewModel())
+    }
 
     var body: some View {
         ZStack {

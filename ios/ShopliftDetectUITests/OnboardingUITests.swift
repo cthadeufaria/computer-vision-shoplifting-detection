@@ -8,8 +8,7 @@ final class OnboardingUITests: XCTestCase {
         super.setUp()
         continueAfterFailure = false
         app = XCUIApplication()
-        // Reset onboarding state for each test.
-        app.launchArguments = ["--reset-onboarding"]
+        app.launchArguments = ["--reset-onboarding", "--ui-test-camera-authorized"]
         app.launch()
     }
 
@@ -27,25 +26,37 @@ final class OnboardingUITests: XCTestCase {
     func testThirdScreenHasPermissionCTA() {
         app.buttons["nextButton"].tap()
         app.buttons["nextButton"].tap()
-        XCTAssertTrue(app.buttons["grantCameraAccessButton"].waitForExistence(timeout: 3))
+        XCTAssertTrue(app.buttons["cameraRoleButton"].waitForExistence(timeout: 3))
     }
 
-    func testCanCompleteOnboardingFlow() {
+    func testCanCompleteCameraOnboardingFlow() {
         app.buttons["nextButton"].tap()
+        app.buttons["nextButton"].tap()
+        app.buttons["cameraRoleButton"].tap()
         app.buttons["nextButton"].tap()
         app.buttons["grantCameraAccessButton"].tap()
-        // After granting permission (or dismissing permission dialog), Home screen should appear.
+
         XCTAssertTrue(app.buttons["startDetectionButton"].waitForExistence(timeout: 5))
+    }
+
+    func testSupervisorRoleRoutesToSupervisorHome() {
+        app.buttons["nextButton"].tap()
+        app.buttons["nextButton"].tap()
+        app.buttons["supervisorRoleButton"].tap()
+        app.buttons["nextButton"].tap()
+        app.buttons["grantCameraAccessButton"].tap()
+
+        XCTAssertTrue(app.staticTexts["supervisorHomeTitle"].waitForExistence(timeout: 5))
     }
 
     func testOnboardingSkippedOnSecondLaunch() {
-        // Complete onboarding first.
         app.buttons["nextButton"].tap()
+        app.buttons["nextButton"].tap()
+        app.buttons["cameraRoleButton"].tap()
         app.buttons["nextButton"].tap()
         app.buttons["grantCameraAccessButton"].tap()
         XCTAssertTrue(app.buttons["startDetectionButton"].waitForExistence(timeout: 5))
 
-        // Relaunch without reset — should go straight to Home.
         app.terminate()
         app.launchArguments = []
         app.launch()

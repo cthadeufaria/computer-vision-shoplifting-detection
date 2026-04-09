@@ -1,7 +1,12 @@
 import SwiftUI
 
 struct OnboardingView: View {
-    @StateObject private var viewModel = OnboardingViewModel()
+    @EnvironmentObject private var appEnvironment: AppEnvironment
+    @StateObject private var viewModel: OnboardingViewModel
+
+    init(viewModel: @autoclosure @escaping () -> OnboardingViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel())
+    }
 
     var body: some View {
         TabView(selection: $viewModel.currentPage) {
@@ -19,32 +24,50 @@ struct OnboardingView: View {
             )
             .tag(1)
 
+            RoleSelectionView(
+                selectedRole: viewModel.selectedRole,
+                onSelect: viewModel.selectRole
+            )
+            .tag(2)
+
             VStack(spacing: 24) {
                 OnboardingPageView(
-                    title: "Camera Access",
-                    description: "Grant camera access so the app can analyse poses locally on your device.",
+                    title: viewModel.selectedRoleTitle(),
+                    description: viewModel.permissionSummaryText(),
                     systemImage: "camera.fill"
                 )
 
                 Button("Grant Camera Access") {
-                    Task { await viewModel.requestCameraPermission() }
+                    Task {
+                        await viewModel.completeAfterPermissions()
+                        appEnvironment.refreshOnboardingState()
+                    }
                 }
                 .buttonStyle(.borderedProminent)
                 .accessibilityIdentifier("grantCameraAccessButton")
             }
-            .tag(2)
+            .tag(3)
         }
         .tabViewStyle(.page(indexDisplayMode: .always))
         .animation(.easeInOut, value: viewModel.currentPage)
         .overlay(alignment: .bottomTrailing) {
-            if viewModel.currentPage < 2 {
+            if viewModel.currentPage < viewModel.totalPages - 1 {
                 Button("Next") {
-                    withAnimation { viewModel.currentPage += 1 }
+                    withAnimation { viewModel.nextPage() }
                 }
                 .buttonStyle(.bordered)
+                .disabled(!viewModel.canAdvance)
                 .padding()
                 .accessibilityIdentifier("nextButton")
             }
+        }
+        .alert("Setup Incomplete", isPresented: Binding(
+            get: { viewModel.errorMessage != nil },
+            set: { if !$0 { viewModel.errorMessage = nil } }
+        )) {
+            Button("OK") {}
+        } message: {
+            Text(viewModel.errorMessage ?? "")
         }
     }
 }
