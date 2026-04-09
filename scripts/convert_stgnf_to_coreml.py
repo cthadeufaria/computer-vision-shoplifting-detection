@@ -42,9 +42,17 @@ sys.path.insert(0, STG_NF_DIR)
 from models.STG_NF.model_pose import STG_NF  # noqa: E402
 
 # ---------------------------------------------------------------------------
-# Constants (from the ShanghaiTech_85_9 checkpoint's saved args)
+# Constants (from the latest Multi Apr01_1416 checkpoint requested for iOS)
 # ---------------------------------------------------------------------------
-CHECKPOINT = os.path.join(REPO_ROOT, "stg_nf_official", "checkpoints", "ShanghaiTech_85_9.tar")
+CHECKPOINT = os.path.join(
+    REPO_ROOT,
+    "artifacts",
+    "stg_nf",
+    "multi_runs",
+    "Multi",
+    "Apr01_1416",
+    "Apr01_1419__checkpoint.pth.tar",
+)
 OUTPUT_DIR = os.path.join(REPO_ROOT, "artifacts", "stg_nf", "coreml")
 OUTPUT_PATH = os.path.join(OUTPUT_DIR, "STGNFModel.mlpackage")
 ONNX_TMP_PATH = os.path.join(OUTPUT_DIR, "STGNFModel.onnx")
@@ -267,7 +275,7 @@ def convert_to_coreml(exported_program) -> None:
         exported_program,
         inputs=[ct.TensorType(name="pose_window", shape=input_shape)],
         outputs=[ct.TensorType(name="nll_score")],
-        minimum_deployment_target=ct.target.iOS17,
+        minimum_deployment_target=ct.target.iOS15,
         compute_precision=ct.precision.FLOAT32,
         compute_units=ct.ComputeUnit.ALL,
     )
@@ -325,7 +333,7 @@ def main():
 
     print("\n✓ Done.")
     print(f"  Model saved to: {OUTPUT_PATH}")
-    print(f"\nNext step — copy into Xcode project:")
+    print(f"\nNext step - copy into Xcode project:")
     print(f"  cp -r {OUTPUT_PATH} ios/ShopliftDetect/Resources/")
 
 

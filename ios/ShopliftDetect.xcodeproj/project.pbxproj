@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 63;
+	objectVersion = 77;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -19,53 +19,73 @@
 		1C6BF23D3F3F5BE99E162EFC /* CameraSessionProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4192C56AFA85F7502C1AB2EA /* CameraSessionProtocol.swift */; };
 		23C4A2B80DC1EAF7990A1D08 /* MockPermissionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A31C1A4351D53D17D0F9CFD2 /* MockPermissionService.swift */; };
 		2A071CD34E7093D0CEB8441B /* DetectionToggleUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E6D1FA6D0F7A8E00623E82F /* DetectionToggleUITests.swift */; };
+		2BF2ECEA782D7233E6A30B5B /* DetectionResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61FF0EA3C4628DDF5A83C028 /* DetectionResult.swift */; };
 		2BFCB07522099205C76EF61E /* AnomalyScorerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB508AB28F692C8E67200488 /* AnomalyScorerTests.swift */; };
 		2FCA059696264B0E2F3D99A4 /* MockKeypointConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32EEC6755ED82DE9FBC19024 /* MockKeypointConverter.swift */; };
 		311A24CFE08CF64CA39C124D /* CameraSessionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE11F6104EAD80C980FDDA61 /* CameraSessionTests.swift */; };
 		367BE7174E543BD4C4B1F501 /* PoseEstimatorProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83366A53E606CCF8FC090D32 /* PoseEstimatorProtocol.swift */; };
+		3B2BEFF3B2D0D564806CC643 /* PairingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F5B1579E81E5BE137DA61EC /* PairingService.swift */; };
 		3C188E165B06B39148F32D6C /* STGNFModel.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = 620A741B88EFC23F02912327 /* STGNFModel.mlpackage */; };
 		3E129B111ACD5798B4644CCC /* KeypointConverterIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C6B3285AFA96FAA9ADA2382 /* KeypointConverterIntegrationTests.swift */; };
 		3E326D2585B76869CFA75F4B /* OnboardingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2714C5D423374F287CE5F395 /* OnboardingViewModel.swift */; };
+		40A2C48995EEDE3AE84D9447 /* MockPairingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22842F9D22A1C3E7A417D962 /* MockPairingService.swift */; };
 		423FC5A8C54DF55356F4F7C8 /* MockAnomalyScorer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9E017CFBB36B20DD7561FF /* MockAnomalyScorer.swift */; };
+		43E53A4D7A00B762C42C52E0 /* SettingsServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB98D4D57B41EACC38B6134 /* SettingsServiceProtocol.swift */; };
 		4508A2B6584BF497594AAC94 /* AnomalyResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 249367B62D95A41113BDB920 /* AnomalyResult.swift */; };
 		4A359BE27193D29472625C30 /* SkeletonOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECD88A9A310D02C00E0C1A5F /* SkeletonOverlayView.swift */; };
+		4C1476677899BA22E69C69B3 /* StreamingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 053B1BFDA7B8CB908021B62E /* StreamingService.swift */; };
+		4D8B5728E12D7A6031D571F1 /* MockSettingsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFAA76CF546AC6E2F9580367 /* MockSettingsService.swift */; };
+		5007933E1B7DB553C4D86E0A /* Network.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA97462F60DAD30AAD14B6D6 /* Network.framework */; };
 		51235204A164E24941833554 /* FrameBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95AAB046AEBB41FF0A6400F0 /* FrameBuffer.swift */; };
 		561AA654376488728FDF969B /* TrackingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0828A11398EE3F6DA884304 /* TrackingService.swift */; };
 		59003C12C31EBD2CE13E76C5 /* Keypoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAF3461C5C3E78E4AF8240CE /* Keypoint.swift */; };
 		5AA1F183476C5A8AC6A547F8 /* MockTrackingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1BAD7D39C5B0A1C1462BFE /* MockTrackingService.swift */; };
+		5EC140FC9D3B87DF625F6705 /* VideoFrame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BA8C505644282FAF4A416CA /* VideoFrame.swift */; };
+		5F70E6D16B88B72408195DE2 /* PairingToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BBE1AF51B54951C34A4EC18 /* PairingToken.swift */; };
 		69183E574A283293AC9D3847 /* MockCameraSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10ECE3A6450316B458630F35 /* MockCameraSession.swift */; };
 		696D98DB463589C8F2D1A3DC /* ScoreCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15E5E3912E926DFB3710F673 /* ScoreCardView.swift */; };
 		6F32C99A15A2976AF88BF37B /* PosePreviewViewComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 457B0F7D35D18944BB4A086D /* PosePreviewViewComponents.swift */; };
+		733C5716C44CD230C94D8B3A /* SupervisorHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF9DE054FD4956403008759B /* SupervisorHomeView.swift */; };
 		738525DA0A87F14848D03A26 /* ShopliftDetectApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 648057EC4BCBB3707A35C50D /* ShopliftDetectApp.swift */; };
 		75E4F306495CA025EB6C1637 /* AnomalyScorer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7288FDA2CC4C844F197D2A8 /* AnomalyScorer.swift */; };
+		7F09F2C814038463FD5A8387 /* HomeViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90C9190FF3FF863461FD511 /* HomeViewModelTests.swift */; };
 		81806DED9B8439A5A98D13A5 /* PoseNormalizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D40079FA6D8EAF200771AA98 /* PoseNormalizer.swift */; };
 		82DD183A4D60F6103BFF6AC4 /* DetectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93AC2E43E9753F33558320AF /* DetectionViewModel.swift */; };
 		85FA16C1074B41BE2956E37F /* PosePreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE4A6735DC5F2093E1FBDAF3 /* PosePreviewView.swift */; };
 		867398575C9F8900706478C9 /* AnomalyScorerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3665258CD935CFD2D4A66DC1 /* AnomalyScorerProtocol.swift */; };
+		916A492661238EB6460F8E9C /* DeviceRole.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61D757002FF71DA72DCAA366 /* DeviceRole.swift */; };
 		9298E15E653DB3342CC1C9E1 /* OnboardingViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF9FADEB5D096C4747549160 /* OnboardingViewModelTests.swift */; };
 		96C671E3B830EF931CACED9C /* CameraSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F77590CAC647FE3631EEA9 /* CameraSession.swift */; };
 		970A93F575DFE7D9566DEF77 /* PermissionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902D43916E7DB68D564F0DB5 /* PermissionService.swift */; };
 		9D00705BA6BB93EE1688B391 /* PoseEstimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C85226C93A0593B1940ED6DA /* PoseEstimator.swift */; };
 		9EF510A933F1443DA5702723 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87421E424E4EFC067EDD8AC6 /* HomeViewModel.swift */; };
 		A01D378AAD00C8FEC2F37A30 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25D5301C4F4C3ABD7105E291 /* OnboardingView.swift */; };
+		A19229D1EF5D3A76EE9F1F27 /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09C0F403D7BCC49383AA2AD3 /* AppEnvironment.swift */; };
 		A9E77A59852CE92510511410 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 762285DBF2AB8D9E04BCE294 /* Assets.xcassets */; };
+		B71C9490CA5F371507FA3F8B /* PairingServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A3F7F7A5389E65D5F32C305 /* PairingServiceProtocol.swift */; };
 		B9444843780044A78CD1A0D9 /* OnboardingUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B11EFCE5F2D8339E76887AE /* OnboardingUITests.swift */; };
+		BA97139C11FD34511D784819 /* RoleSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A3422CBFAC03A05E563A92D /* RoleSelectionView.swift */; };
 		BC2BA3658705EE42EEA4F1F1 /* TrackingServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05606BE937B22BD74B823F11 /* TrackingServiceTests.swift */; };
 		BD48DF6ACC8FAF22D38738EC /* Vision.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0E9B0084CBFBE2A48B2DC3D7 /* Vision.framework */; };
+		BD6E4CD0735779B6CC80F37D /* StreamingServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08D909E655B93CE35CF4CB91 /* StreamingServiceProtocol.swift */; };
 		BD82AECE6DE04DF1DA1DAB40 /* PosePreviewViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47F850CF30D4D4A4A2C99C8C /* PosePreviewViewModelTests.swift */; };
 		C140F8966D82ADD07406BF0A /* STGNFModelIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E88D8F710FB2EBAFDEDD8A7 /* STGNFModelIntegrationTests.swift */; };
 		C17E4FFA64B07D7E8C06F57F /* OnboardingPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F9215CA01A3F8B5DFDA1BE0 /* OnboardingPageView.swift */; };
 		CB766BC652B2912BC5DE3A37 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A8AFAAE12C2D54FD880DCE6 /* HomeView.swift */; };
 		CD7DC3BA79F222BE3235A154 /* PosePreviewUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A1735B989A90DC500574871 /* PosePreviewUITests.swift */; };
 		CE94C7B41D4F015A88581B99 /* PosePreviewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 993D9B73D46AFE2B91C41AE6 /* PosePreviewViewModel.swift */; };
+		D62223626FE5131877DF71AE /* SettingsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E873C6F28925306A918DA20 /* SettingsService.swift */; };
 		D6A9E36B61C44C17FEBD8D60 /* PoseNormalizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6359123FEAC1B25977609A49 /* PoseNormalizerTests.swift */; };
 		D968AABCE97646897844D64C /* MockPersistenceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 564F9160A110D72DADE7579D /* MockPersistenceService.swift */; };
 		E21B6D500B27111267DA8992 /* DetectionState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B902C55BFA1157F4D892DF3 /* DetectionState.swift */; };
 		E967A48E368AD5243B82EB45 /* STGNFModelWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = F24C2D68A487CA54A3F1E0E5 /* STGNFModelWrapper.swift */; };
+		EF57BFCA6F8B0D606756C05D /* MockStreamingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54A40D9814815CD7DCA408CA /* MockStreamingService.swift */; };
+		EFBEB9B325EA3FF4E87E9A68 /* ConnectionState.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5120E21029ABF13D228D42 /* ConnectionState.swift */; };
 		F145E4829145C2D81B4BF85C /* MockPoseEstimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AA818872EE8E8EB5714B4AF /* MockPoseEstimator.swift */; };
 		F1A0A0438990E3C8DC7D9CD6 /* DeviceRotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAC584F33E12ED8B1B0F803 /* DeviceRotation.swift */; };
 		F2602EB896DDBDF3D63AA689 /* KeypointConverterProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C791B337B16BFC1052CCF0 /* KeypointConverterProtocol.swift */; };
 		F6692701DF42D45B9269FF93 /* DetectionViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2479F254F4372AE319BC5B20 /* DetectionViewModelTests.swift */; };
+		F7334E370FBDDFAEE264F525 /* PairingSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F0D1C97F48FFD0F8728C418 /* PairingSession.swift */; };
 		FC5BA15712B60F01553E1DFE /* FrameBufferTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08B0B5E64E637835B936739B /* FrameBufferTests.swift */; };
 /* End PBXBuildFile section */
 
@@ -87,14 +107,21 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		053B1BFDA7B8CB908021B62E /* StreamingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamingService.swift; sourceTree = "<group>"; };
 		05606BE937B22BD74B823F11 /* TrackingServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingServiceTests.swift; sourceTree = "<group>"; };
 		062A240A59066E1731D6F0B4 /* DetectionViewComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetectionViewComponents.swift; sourceTree = "<group>"; };
 		08B0B5E64E637835B936739B /* FrameBufferTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrameBufferTests.swift; sourceTree = "<group>"; };
+		08D909E655B93CE35CF4CB91 /* StreamingServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamingServiceProtocol.swift; sourceTree = "<group>"; };
+		09C0F403D7BCC49383AA2AD3 /* AppEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvironment.swift; sourceTree = "<group>"; };
+		0A3F7F7A5389E65D5F32C305 /* PairingServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PairingServiceProtocol.swift; sourceTree = "<group>"; };
 		0E9B0084CBFBE2A48B2DC3D7 /* Vision.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Vision.framework; path = System/Library/Frameworks/Vision.framework; sourceTree = SDKROOT; };
+		0F5B1579E81E5BE137DA61EC /* PairingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PairingService.swift; sourceTree = "<group>"; };
 		10ECE3A6450316B458630F35 /* MockCameraSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCameraSession.swift; sourceTree = "<group>"; };
 		15E5E3912E926DFB3710F673 /* ScoreCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreCardView.swift; sourceTree = "<group>"; };
 		1A2C8C8B573D1E5E5EAE3CFB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		1F0D1C97F48FFD0F8728C418 /* PairingSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PairingSession.swift; sourceTree = "<group>"; };
 		1FED0F88656AC32EDB70B4DB /* ShopliftDetectTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = ShopliftDetectTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		22842F9D22A1C3E7A417D962 /* MockPairingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPairingService.swift; sourceTree = "<group>"; };
 		2479F254F4372AE319BC5B20 /* DetectionViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetectionViewModelTests.swift; sourceTree = "<group>"; };
 		249367B62D95A41113BDB920 /* AnomalyResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnomalyResult.swift; sourceTree = "<group>"; };
 		25D5301C4F4C3ABD7105E291 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
@@ -103,23 +130,31 @@
 		32EEC6755ED82DE9FBC19024 /* MockKeypointConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockKeypointConverter.swift; sourceTree = "<group>"; };
 		3665258CD935CFD2D4A66DC1 /* AnomalyScorerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnomalyScorerProtocol.swift; sourceTree = "<group>"; };
 		38C791B337B16BFC1052CCF0 /* KeypointConverterProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeypointConverterProtocol.swift; sourceTree = "<group>"; };
+		3DB98D4D57B41EACC38B6134 /* SettingsServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsServiceProtocol.swift; sourceTree = "<group>"; };
 		4192C56AFA85F7502C1AB2EA /* CameraSessionProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraSessionProtocol.swift; sourceTree = "<group>"; };
 		457B0F7D35D18944BB4A086D /* PosePreviewViewComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PosePreviewViewComponents.swift; sourceTree = "<group>"; };
 		47F850CF30D4D4A4A2C99C8C /* PosePreviewViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PosePreviewViewModelTests.swift; sourceTree = "<group>"; };
 		4B11EFCE5F2D8339E76887AE /* OnboardingUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingUITests.swift; sourceTree = "<group>"; };
 		51C5939E25CEBBB78EB12E7C /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		54A40D9814815CD7DCA408CA /* MockStreamingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockStreamingService.swift; sourceTree = "<group>"; };
 		564F9160A110D72DADE7579D /* MockPersistenceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPersistenceService.swift; sourceTree = "<group>"; };
 		5A1735B989A90DC500574871 /* PosePreviewUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PosePreviewUITests.swift; sourceTree = "<group>"; };
-		620A741B88EFC23F02912327 /* STGNFModel.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; path = STGNFModel.mlpackage; sourceTree = "<group>"; };
+		61D757002FF71DA72DCAA366 /* DeviceRole.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceRole.swift; sourceTree = "<group>"; };
+		61FF0EA3C4628DDF5A83C028 /* DetectionResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetectionResult.swift; sourceTree = "<group>"; };
+		620A741B88EFC23F02912327 /* STGNFModel.mlpackage */ = {isa = PBXFileReference; path = STGNFModel.mlpackage; sourceTree = "<group>"; };
 		6359123FEAC1B25977609A49 /* PoseNormalizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoseNormalizerTests.swift; sourceTree = "<group>"; };
 		648057EC4BCBB3707A35C50D /* ShopliftDetectApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopliftDetectApp.swift; sourceTree = "<group>"; };
+		6A3422CBFAC03A05E563A92D /* RoleSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoleSelectionView.swift; sourceTree = "<group>"; };
 		6A8AFAAE12C2D54FD880DCE6 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		6B902C55BFA1157F4D892DF3 /* DetectionState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetectionState.swift; sourceTree = "<group>"; };
+		6BA8C505644282FAF4A416CA /* VideoFrame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoFrame.swift; sourceTree = "<group>"; };
 		6E2A485136553B90AE794311 /* CameraPreviewLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPreviewLayer.swift; sourceTree = "<group>"; };
 		6E88D8F710FB2EBAFDEDD8A7 /* STGNFModelIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = STGNFModelIntegrationTests.swift; sourceTree = "<group>"; };
 		6F9215CA01A3F8B5DFDA1BE0 /* OnboardingPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPageView.swift; sourceTree = "<group>"; };
 		762285DBF2AB8D9E04BCE294 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7985B0A3EC9581878A041372 /* DetectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetectionView.swift; sourceTree = "<group>"; };
+		7BBE1AF51B54951C34A4EC18 /* PairingToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PairingToken.swift; sourceTree = "<group>"; };
+		7E873C6F28925306A918DA20 /* SettingsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsService.swift; sourceTree = "<group>"; };
 		7F15ED481F24B75C9E334547 /* PoseSkeleton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoseSkeleton.swift; sourceTree = "<group>"; };
 		83366A53E606CCF8FC090D32 /* PoseEstimatorProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoseEstimatorProtocol.swift; sourceTree = "<group>"; };
 		86CE3585F4029C772E8F8B2F /* ShopliftDetectUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = ShopliftDetectUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -133,7 +168,7 @@
 		9AA818872EE8E8EB5714B4AF /* MockPoseEstimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPoseEstimator.swift; sourceTree = "<group>"; };
 		9AC92BE2C676E071B356AB39 /* CoreML.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreML.framework; path = System/Library/Frameworks/CoreML.framework; sourceTree = SDKROOT; };
 		A31C1A4351D53D17D0F9CFD2 /* MockPermissionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPermissionService.swift; sourceTree = "<group>"; };
-		A5C6B931B966482BBF5AFFF6 /* ShopliftDetect.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ShopliftDetect.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A5C6B931B966482BBF5AFFF6 /* ShopliftDetect.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = ShopliftDetect.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A7288FDA2CC4C844F197D2A8 /* AnomalyScorer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnomalyScorer.swift; sourceTree = "<group>"; };
 		A953C6BD7B0F8564C038EBE7 /* PersistenceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceService.swift; sourceTree = "<group>"; };
 		AAAC584F33E12ED8B1B0F803 /* DeviceRotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceRotation.swift; sourceTree = "<group>"; };
@@ -142,15 +177,20 @@
 		BDF3957FC710022AF0EE000C /* KeypointConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeypointConverter.swift; sourceTree = "<group>"; };
 		BE4A6735DC5F2093E1FBDAF3 /* PosePreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PosePreviewView.swift; sourceTree = "<group>"; };
 		C85226C93A0593B1940ED6DA /* PoseEstimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoseEstimator.swift; sourceTree = "<group>"; };
+		CA97462F60DAD30AAD14B6D6 /* Network.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Network.framework; path = System/Library/Frameworks/Network.framework; sourceTree = SDKROOT; };
 		CAF3461C5C3E78E4AF8240CE /* Keypoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keypoint.swift; sourceTree = "<group>"; };
 		CB508AB28F692C8E67200488 /* AnomalyScorerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnomalyScorerTests.swift; sourceTree = "<group>"; };
 		CF9FADEB5D096C4747549160 /* OnboardingViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewModelTests.swift; sourceTree = "<group>"; };
 		D0828A11398EE3F6DA884304 /* TrackingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingService.swift; sourceTree = "<group>"; };
 		D40079FA6D8EAF200771AA98 /* PoseNormalizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoseNormalizer.swift; sourceTree = "<group>"; };
 		D7DDBF2108E2B3F0BDC679F5 /* KeypointConverterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeypointConverterTests.swift; sourceTree = "<group>"; };
+		DFAA76CF546AC6E2F9580367 /* MockSettingsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockSettingsService.swift; sourceTree = "<group>"; };
+		E90C9190FF3FF863461FD511 /* HomeViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModelTests.swift; sourceTree = "<group>"; };
+		EA5120E21029ABF13D228D42 /* ConnectionState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionState.swift; sourceTree = "<group>"; };
 		ECD88A9A310D02C00E0C1A5F /* SkeletonOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkeletonOverlayView.swift; sourceTree = "<group>"; };
 		F24C2D68A487CA54A3F1E0E5 /* STGNFModelWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = STGNFModelWrapper.swift; sourceTree = "<group>"; };
 		FE11F6104EAD80C980FDDA61 /* CameraSessionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraSessionTests.swift; sourceTree = "<group>"; };
+		FF9DE054FD4956403008759B /* SupervisorHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupervisorHomeView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -161,6 +201,7 @@
 				BD48DF6ACC8FAF22D38738EC /* Vision.framework in Frameworks */,
 				0ABFDDAEDB66A48E8CE420FE /* AVFoundation.framework in Frameworks */,
 				0F8282AD009EEE25F428B7FC /* CoreML.framework in Frameworks */,
+				5007933E1B7DB553C4D86E0A /* Network.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -191,6 +232,7 @@
 			children = (
 				6A8AFAAE12C2D54FD880DCE6 /* HomeView.swift */,
 				87421E424E4EFC067EDD8AC6 /* HomeViewModel.swift */,
+				FF9DE054FD4956403008759B /* SupervisorHomeView.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -228,6 +270,7 @@
 			children = (
 				902D43916E7DB68D564F0DB5 /* PermissionService.swift */,
 				A953C6BD7B0F8564C038EBE7 /* PersistenceService.swift */,
+				7E873C6F28925306A918DA20 /* SettingsService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -248,7 +291,10 @@
 				3665258CD935CFD2D4A66DC1 /* AnomalyScorerProtocol.swift */,
 				4192C56AFA85F7502C1AB2EA /* CameraSessionProtocol.swift */,
 				38C791B337B16BFC1052CCF0 /* KeypointConverterProtocol.swift */,
+				0A3F7F7A5389E65D5F32C305 /* PairingServiceProtocol.swift */,
 				83366A53E606CCF8FC090D32 /* PoseEstimatorProtocol.swift */,
+				3DB98D4D57B41EACC38B6134 /* SettingsServiceProtocol.swift */,
+				08D909E655B93CE35CF4CB91 /* StreamingServiceProtocol.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -280,15 +326,33 @@
 			path = Camera;
 			sourceTree = "<group>";
 		};
+		66D8856784E0BFE7A2F97D03 /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				EA5120E21029ABF13D228D42 /* ConnectionState.swift */,
+				61FF0EA3C4628DDF5A83C028 /* DetectionResult.swift */,
+				61D757002FF71DA72DCAA366 /* DeviceRole.swift */,
+				0F5B1579E81E5BE137DA61EC /* PairingService.swift */,
+				1F0D1C97F48FFD0F8728C418 /* PairingSession.swift */,
+				7BBE1AF51B54951C34A4EC18 /* PairingToken.swift */,
+				053B1BFDA7B8CB908021B62E /* StreamingService.swift */,
+				6BA8C505644282FAF4A416CA /* VideoFrame.swift */,
+			);
+			path = Networking;
+			sourceTree = "<group>";
+		};
 		6BB0E141AAAB7325AE64DEAB /* Mocks */ = {
 			isa = PBXGroup;
 			children = (
 				AC9E017CFBB36B20DD7561FF /* MockAnomalyScorer.swift */,
 				10ECE3A6450316B458630F35 /* MockCameraSession.swift */,
 				32EEC6755ED82DE9FBC19024 /* MockKeypointConverter.swift */,
+				22842F9D22A1C3E7A417D962 /* MockPairingService.swift */,
 				A31C1A4351D53D17D0F9CFD2 /* MockPermissionService.swift */,
 				564F9160A110D72DADE7579D /* MockPersistenceService.swift */,
 				9AA818872EE8E8EB5714B4AF /* MockPoseEstimator.swift */,
+				DFAA76CF546AC6E2F9580367 /* MockSettingsService.swift */,
+				54A40D9814815CD7DCA408CA /* MockStreamingService.swift */,
 				AE1BAD7D39C5B0A1C1462BFE /* MockTrackingService.swift */,
 			);
 			path = Mocks;
@@ -307,6 +371,7 @@
 		8D5FC7A05AA78DCA0EDDCC6C /* App */ = {
 			isa = PBXGroup;
 			children = (
+				09C0F403D7BCC49383AA2AD3 /* AppEnvironment.swift */,
 				648057EC4BCBB3707A35C50D /* ShopliftDetectApp.swift */,
 			);
 			path = App;
@@ -370,6 +435,7 @@
 				9E51473B605241ED2C9001F4 /* Core */,
 				987B37ABFF6C433B6E1D7B7E /* Detection */,
 				14764B2FAF4AD4E4C150403D /* Home */,
+				66D8856784E0BFE7A2F97D03 /* Networking */,
 				E5EBB4C849525701BC441ACF /* Onboarding */,
 				1568235A53F54B3C9A2F1FDA /* Resources */,
 			);
@@ -391,9 +457,18 @@
 			children = (
 				51C5939E25CEBBB78EB12E7C /* AVFoundation.framework */,
 				9AC92BE2C676E071B356AB39 /* CoreML.framework */,
+				CA97462F60DAD30AAD14B6D6 /* Network.framework */,
 				0E9B0084CBFBE2A48B2DC3D7 /* Vision.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		DE5FCDCF6BE9EF7DF7D5273D /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				E90C9190FF3FF863461FD511 /* HomeViewModelTests.swift */,
+			);
+			path = Home;
 			sourceTree = "<group>";
 		};
 		E5EBB4C849525701BC441ACF /* Onboarding */ = {
@@ -402,6 +477,7 @@
 				6F9215CA01A3F8B5DFDA1BE0 /* OnboardingPageView.swift */,
 				25D5301C4F4C3ABD7105E291 /* OnboardingView.swift */,
 				2714C5D423374F287CE5F395 /* OnboardingViewModel.swift */,
+				6A3422CBFAC03A05E563A92D /* RoleSelectionView.swift */,
 			);
 			path = Onboarding;
 			sourceTree = "<group>";
@@ -411,6 +487,7 @@
 			children = (
 				5C8FB00BD61DE46DC9F88046 /* Camera */,
 				01420816C953885D33E3E2D1 /* Detection */,
+				DE5FCDCF6BE9EF7DF7D5273D /* Home */,
 				6BB0E141AAAB7325AE64DEAB /* Mocks */,
 				94F30B0A7EC7AA75A5BD6F3C /* Model */,
 				393BA68F37C85E7518F7ECA9 /* Onboarding */,
@@ -511,6 +588,7 @@
 			);
 			mainGroup = A1A5300727E7105447286583;
 			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -541,14 +619,18 @@
 				311A24CFE08CF64CA39C124D /* CameraSessionTests.swift in Sources */,
 				F6692701DF42D45B9269FF93 /* DetectionViewModelTests.swift in Sources */,
 				FC5BA15712B60F01553E1DFE /* FrameBufferTests.swift in Sources */,
+				7F09F2C814038463FD5A8387 /* HomeViewModelTests.swift in Sources */,
 				3E129B111ACD5798B4644CCC /* KeypointConverterIntegrationTests.swift in Sources */,
 				07DC45D1E4B2797FA38CF458 /* KeypointConverterTests.swift in Sources */,
 				423FC5A8C54DF55356F4F7C8 /* MockAnomalyScorer.swift in Sources */,
 				69183E574A283293AC9D3847 /* MockCameraSession.swift in Sources */,
 				2FCA059696264B0E2F3D99A4 /* MockKeypointConverter.swift in Sources */,
+				40A2C48995EEDE3AE84D9447 /* MockPairingService.swift in Sources */,
 				23C4A2B80DC1EAF7990A1D08 /* MockPermissionService.swift in Sources */,
 				D968AABCE97646897844D64C /* MockPersistenceService.swift in Sources */,
 				F145E4829145C2D81B4BF85C /* MockPoseEstimator.swift in Sources */,
+				4D8B5728E12D7A6031D571F1 /* MockSettingsService.swift in Sources */,
+				EF57BFCA6F8B0D606756C05D /* MockStreamingService.swift in Sources */,
 				5AA1F183476C5A8AC6A547F8 /* MockTrackingService.swift in Sources */,
 				9298E15E653DB3342CC1C9E1 /* OnboardingViewModelTests.swift in Sources */,
 				D6A9E36B61C44C17FEBD8D60 /* PoseNormalizerTests.swift in Sources */,
@@ -565,13 +647,17 @@
 				4508A2B6584BF497594AAC94 /* AnomalyResult.swift in Sources */,
 				75E4F306495CA025EB6C1637 /* AnomalyScorer.swift in Sources */,
 				867398575C9F8900706478C9 /* AnomalyScorerProtocol.swift in Sources */,
+				A19229D1EF5D3A76EE9F1F27 /* AppEnvironment.swift in Sources */,
 				0DEED99990BA277A68317081 /* CameraPreviewLayer.swift in Sources */,
 				96C671E3B830EF931CACED9C /* CameraSession.swift in Sources */,
 				1C6BF23D3F3F5BE99E162EFC /* CameraSessionProtocol.swift in Sources */,
+				EFBEB9B325EA3FF4E87E9A68 /* ConnectionState.swift in Sources */,
+				2BF2ECEA782D7233E6A30B5B /* DetectionResult.swift in Sources */,
 				E21B6D500B27111267DA8992 /* DetectionState.swift in Sources */,
 				00155CF16FC07AFBE62B63EB /* DetectionView.swift in Sources */,
 				164C1E3688B92033956EEC52 /* DetectionViewComponents.swift in Sources */,
 				82DD183A4D60F6103BFF6AC4 /* DetectionViewModel.swift in Sources */,
+				916A492661238EB6460F8E9C /* DeviceRole.swift in Sources */,
 				F1A0A0438990E3C8DC7D9CD6 /* DeviceRotation.swift in Sources */,
 				51235204A164E24941833554 /* FrameBuffer.swift in Sources */,
 				CB766BC652B2912BC5DE3A37 /* HomeView.swift in Sources */,
@@ -582,6 +668,10 @@
 				C17E4FFA64B07D7E8C06F57F /* OnboardingPageView.swift in Sources */,
 				A01D378AAD00C8FEC2F37A30 /* OnboardingView.swift in Sources */,
 				3E326D2585B76869CFA75F4B /* OnboardingViewModel.swift in Sources */,
+				3B2BEFF3B2D0D564806CC643 /* PairingService.swift in Sources */,
+				B71C9490CA5F371507FA3F8B /* PairingServiceProtocol.swift in Sources */,
+				F7334E370FBDDFAEE264F525 /* PairingSession.swift in Sources */,
+				5F70E6D16B88B72408195DE2 /* PairingToken.swift in Sources */,
 				970A93F575DFE7D9566DEF77 /* PermissionService.swift in Sources */,
 				13A6424321C1D7DCFF601708 /* PersistenceService.swift in Sources */,
 				9D00705BA6BB93EE1688B391 /* PoseEstimator.swift in Sources */,
@@ -591,12 +681,19 @@
 				6F32C99A15A2976AF88BF37B /* PosePreviewViewComponents.swift in Sources */,
 				CE94C7B41D4F015A88581B99 /* PosePreviewViewModel.swift in Sources */,
 				1312FBC1DDFA68BDF67EC314 /* PoseSkeleton.swift in Sources */,
+				BA97139C11FD34511D784819 /* RoleSelectionView.swift in Sources */,
 				3C188E165B06B39148F32D6C /* STGNFModel.mlpackage in Sources */,
 				E967A48E368AD5243B82EB45 /* STGNFModelWrapper.swift in Sources */,
 				696D98DB463589C8F2D1A3DC /* ScoreCardView.swift in Sources */,
+				D62223626FE5131877DF71AE /* SettingsService.swift in Sources */,
+				43E53A4D7A00B762C42C52E0 /* SettingsServiceProtocol.swift in Sources */,
 				738525DA0A87F14848D03A26 /* ShopliftDetectApp.swift in Sources */,
 				4A359BE27193D29472625C30 /* SkeletonOverlayView.swift in Sources */,
+				4C1476677899BA22E69C69B3 /* StreamingService.swift in Sources */,
+				BD6E4CD0735779B6CC80F37D /* StreamingServiceProtocol.swift in Sources */,
+				733C5716C44CD230C94D8B3A /* SupervisorHomeView.swift in Sources */,
 				561AA654376488728FDF969B /* TrackingService.swift in Sources */,
+				5EC140FC9D3B87DF625F6705 /* VideoFrame.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -688,7 +785,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -704,10 +801,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGNING_REQUIRED = NO;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "-";
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 599WAZ6282;
 				INFOPLIST_FILE = ShopliftDetect/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -715,7 +810,6 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.shopliftdetect.app;
-				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
 				SWIFT_STRICT_CONCURRENCY = complete;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -790,7 +884,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -841,10 +935,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGNING_REQUIRED = NO;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "-";
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 599WAZ6282;
 				INFOPLIST_FILE = ShopliftDetect/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -852,7 +944,6 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.shopliftdetect.app;
-				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
 				SWIFT_STRICT_CONCURRENCY = complete;
 				TARGETED_DEVICE_FAMILY = "1,2";

@@ -24,40 +24,44 @@ final class CameraSession: NSObject, ObservableObject, CameraSessionProtocol {
             throw CameraError.permissionDenied
         }
 
-        captureSession.beginConfiguration()
-        captureSession.sessionPreset = .hd1920x1080
+        try sessionQueue.sync {
+            captureSession.beginConfiguration()
+            defer { captureSession.commitConfiguration() }
 
-        // Prefer back camera on iPhone; fall back to any available camera (Mac/simulator).
-        if captureSession.inputs.isEmpty {
-            let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
-                ?? AVCaptureDevice.default(for: .video)
-            guard let device,
-                  let input = try? AVCaptureDeviceInput(device: device),
-                  captureSession.canAddInput(input) else {
-                throw CameraError.deviceUnavailable
+            captureSession.sessionPreset = .hd1920x1080
+
+            // Prefer back camera on iPhone; fall back to any available camera (Mac/simulator).
+            if captureSession.inputs.isEmpty {
+                let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
+                    ?? AVCaptureDevice.default(for: .video)
+                guard let device,
+                      let input = try? AVCaptureDeviceInput(device: device),
+                      captureSession.canAddInput(input) else {
+                    throw CameraError.deviceUnavailable
+                }
+                captureSession.addInput(input)
             }
-            captureSession.addInput(input)
-        }
 
-        if captureSession.outputs.isEmpty {
-            videoOutput.setSampleBufferDelegate(self, queue: sessionQueue)
-            videoOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA]
-            guard captureSession.canAddOutput(videoOutput) else {
-                throw CameraError.outputUnavailable
+            if captureSession.outputs.isEmpty {
+                videoOutput.setSampleBufferDelegate(self, queue: sessionQueue)
+                videoOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA]
+                guard captureSession.canAddOutput(videoOutput) else {
+                    throw CameraError.outputUnavailable
+                }
+                captureSession.addOutput(videoOutput)
+
+                // Rotate buffer to portrait so Vision receives an upright image and can use
+                // .up orientation (no rotation math). This also aligns layerPointConverted's
+                // coordinate space with Vision's output, so skeleton overlay requires no inversion.
+                if let connection = videoOutput.connection(with: .video) {
+                    if #available(iOS 17.0, *), connection.isVideoRotationAngleSupported(90) {
+                        connection.videoRotationAngle = 90
+                    } else if connection.isVideoOrientationSupported {
+                        connection.videoOrientation = .portrait
+                    }
+                }
             }
-            captureSession.addOutput(videoOutput)
 
-            // Rotate buffer to portrait so Vision receives an upright image and can use
-            // .up orientation (no rotation math). This also aligns layerPointConverted's
-            // coordinate space with Vision's output, so skeleton overlay requires no inversion.
-            if let connection = videoOutput.connection(with: .video),
-               connection.isVideoRotationAngleSupported(90) {
-                connection.videoRotationAngle = 90
-            }
-        }
-        captureSession.commitConfiguration()
-
-        sessionQueue.async { [captureSession] in
             captureSession.startRunning()
         }
         // Required for UIDevice.current.orientation to reflect device rotation.
@@ -66,8 +70,10 @@ final class CameraSession: NSObject, ObservableObject, CameraSessionProtocol {
 
     func stop() {
         UIDevice.current.endGeneratingDeviceOrientationNotifications()
-        sessionQueue.async { [captureSession] in
-            captureSession.stopRunning()
+        sessionQueue.sync { [captureSession] in
+            if captureSession.isRunning {
+                captureSession.stopRunning()
+            }
         }
     }
 }

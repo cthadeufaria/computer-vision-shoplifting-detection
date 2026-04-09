@@ -2,7 +2,7 @@ name: ShopliftDetect
 options:
   bundleIdPrefix: com.shopliftdetect
   deploymentTarget:
-    iOS: "17.0"
+    iOS: "15.0"
   xcodeVersion: "16.0"
   swift: "6.0"
   createIntermediateGroups: true
@@ -10,7 +10,7 @@ options:
 settings:
   base:
     SWIFT_VERSION: "6.0"
-    IPHONEOS_DEPLOYMENT_TARGET: "17.0"
+    IPHONEOS_DEPLOYMENT_TARGET: "15.0"
     ENABLE_STRICT_OBJC_MSGSEND: YES
 
 targets:
@@ -37,6 +37,7 @@ targets:
       - sdk: Vision.framework
       - sdk: AVFoundation.framework
       - sdk: CoreML.framework
+      - sdk: Network.framework
 
   ShopliftDetectTests:
     type: bundle.unit-test

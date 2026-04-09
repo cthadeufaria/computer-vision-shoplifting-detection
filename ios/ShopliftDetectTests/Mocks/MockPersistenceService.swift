@@ -2,4 +2,5 @@
 
 final class MockPersistenceService: PersistenceServiceProtocol {
     var onboardingComplete = false
+    var selectedRole: DeviceRole?
 }
