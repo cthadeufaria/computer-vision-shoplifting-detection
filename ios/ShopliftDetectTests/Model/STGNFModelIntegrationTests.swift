@@ -110,4 +110,12 @@ final class STGNFModelIntegrationTests: XCTestCase {
         XCTAssertEqual(coremlNLL, expectedNLL, accuracy: 1e-3,
                        "CoreML NLL \(coremlNLL) differs from PyTorch NLL \(expectedNLL)")
     }
+
+    func testModelContractMatchesApr01_1416RunAssumptions() {
+        XCTAssertEqual(STGNFModelRunner.expectedInputShape, [1, 2, 24, 18])
+        XCTAssertEqual(STGNFModelRunner.expectedSegmentLength, 24)
+        XCTAssertEqual(STGNFModelRunner.expectedJointCount, 18)
+        XCTAssertFalse(STGNFModelRunner.usesConfidenceChannel)
+        XCTAssertEqual(STGNFModelRunner.outputFeatureName, "nll_score")
+    }
 }

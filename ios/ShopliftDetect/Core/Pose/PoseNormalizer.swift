@@ -10,10 +10,10 @@ struct PoseNormalizer {
     /// - Parameter window: 24 PoseSkeleton frames, each with 18 keypoints in 0–1 coords.
     /// - Returns: MLMultiArray of shape [1, 2, 24, 18] (Float32), conf channel dropped.
     func normalize(_ window: [PoseSkeleton]) throws -> MLMultiArray {
-        precondition(window.count == 24, "Window must contain exactly 24 frames")
+        precondition(window.count == STGNFModelRunner.expectedSegmentLength, "Window must contain exactly \(STGNFModelRunner.expectedSegmentLength) frames")
 
-        let numFrames = 24
-        let numJoints = 18
+        let numFrames = STGNFModelRunner.expectedSegmentLength
+        let numJoints = STGNFModelRunner.expectedJointCount
 
         // Step 1: copy xy into [24, 18, 2]. Coords are already 0–1; no division needed.
         var xy = [[[Float]]](
@@ -21,6 +21,7 @@ struct PoseNormalizer {
             count: numFrames
         )
         for (f, skeleton) in window.enumerated() {
+            precondition(skeleton.keypoints.count == numJoints, "Each frame must contain exactly \(numJoints) keypoints")
             for (j, kp) in skeleton.keypoints.enumerated() {
                 xy[f][j][0] = kp.x
                 xy[f][j][1] = kp.y
@@ -64,7 +65,7 @@ struct PoseNormalizer {
         }
 
         // Step 5: build MLMultiArray [1, 2, 24, 18] — channel 0 = x, channel 1 = y.
-        let shape: [NSNumber] = [1, 2, 24, 18]
+        let shape = STGNFModelRunner.expectedInputShape.map(NSNumber.init(value:))
         let array = try MLMultiArray(shape: shape, dataType: .float32)
         for f in 0..<numFrames {
             for j in 0..<numJoints {

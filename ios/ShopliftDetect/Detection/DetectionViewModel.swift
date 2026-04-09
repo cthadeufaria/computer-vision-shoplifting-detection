@@ -12,8 +12,10 @@ final class DetectionViewModel: ObservableObject {
     private let camera: CameraSessionProtocol
     private let estimator: any PoseEstimatorProtocol
     private let converter: any KeypointConverterProtocol
-    private let scorer: any AnomalyScorerProtocol
+    private var scorer: any AnomalyScorerProtocol
     private let tracking: TrackingServiceProtocol
+    private let settings: SettingsServiceProtocol
+    private let streaming: StreamingServiceProtocol
     private var modelRunner: STGNFModelRunner?
 
     // Per-track frame buffers keyed by IoU-matched bounding box track IDs.
@@ -28,13 +30,25 @@ final class DetectionViewModel: ObservableObject {
         estimator: any PoseEstimatorProtocol,
         converter: any KeypointConverterProtocol,
         scorer: any AnomalyScorerProtocol,
-        tracking: TrackingServiceProtocol
+        tracking: TrackingServiceProtocol,
+        settings: SettingsServiceProtocol,
+        streaming: StreamingServiceProtocol
     ) {
         self.camera = camera
         self.estimator = estimator
         self.converter = converter
         self.scorer = scorer
         self.tracking = tracking
+        self.settings = settings
+        self.streaming = streaming
+    }
+
+    var threshold: Float {
+        settings.anomalyThreshold
+    }
+
+    var isStreaming: Bool {
+        streaming.isStreaming
     }
 
     func enablePreviewTestMode() {
@@ -42,9 +56,16 @@ final class DetectionViewModel: ObservableObject {
         skeletons = []
     }
 
+    func updateThreshold(_ newValue: Float) {
+        settings.anomalyThreshold = newValue
+        scorer.threshold = newValue
+        objectWillChange.send()
+    }
+
     func start() throws {
         modelRunner = try? STGNFModelRunner()
         try camera.start()
+        streaming.startStreaming()
         camera.framePublisher
             .sink { [weak self] pixelBuffer in
                 guard let self else { return }
@@ -58,6 +79,7 @@ final class DetectionViewModel: ObservableObject {
 
     func stop() {
         camera.stop()
+        streaming.stopStreaming()
         cancellables.removeAll()
         trackBuffers.removeAll()
         frameIndex = 0

@@ -2,7 +2,7 @@ import Foundation
 
 /// Thread-safe 24-frame rolling window for pose skeletons (Swift actor).
 actor FrameBuffer {
-    static let capacity = 24
+    static let capacity = STGNFModelRunner.expectedSegmentLength
     private var frames: [PoseSkeleton] = []
 
     var isReady: Bool { frames.count == Self.capacity }

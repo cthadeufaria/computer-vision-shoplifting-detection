@@ -137,6 +137,14 @@ final class PoseNormalizerTests: XCTestCase {
     func testOutputShapeIs_1_2_24_18() throws {
         let skeletons = makeSyntheticWindow()
         let array = try PoseNormalizer().normalize(skeletons)
-        XCTAssertEqual(array.shape.map { $0.intValue }, [1, 2, 24, 18])
+        XCTAssertEqual(array.shape.map { $0.intValue }, STGNFModelRunner.expectedInputShape)
+    }
+
+    func testOutputDropsConfidenceChannelForModelContract() throws {
+        let skeletons = makeSyntheticWindow(confidence: 0.15)
+        let array = try PoseNormalizer().normalize(skeletons)
+
+        XCTAssertEqual(array.count, STGNFModelRunner.expectedInputShape.reduce(1, *))
+        XCTAssertFalse(STGNFModelRunner.usesConfidenceChannel)
     }
 }

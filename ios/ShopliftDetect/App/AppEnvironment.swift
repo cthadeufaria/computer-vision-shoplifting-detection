@@ -13,13 +13,13 @@ final class AppEnvironment: ObservableObject {
     init(
         persistenceService: PersistenceServiceProtocol = UserDefaultsPersistenceService(),
         permissionService: PermissionServiceProtocol = AVPermissionService(),
-        settingsService: SettingsServiceProtocol = UserDefaultsSettingsService(),
+        settingsService: SettingsServiceProtocol? = nil,
         pairingService: PairingServiceProtocol = NoopPairingService(),
         streamingService: StreamingServiceProtocol = NoopStreamingService()
     ) {
         self.persistenceService = persistenceService
         self.permissionService = permissionService
-        self.settingsService = settingsService
+        self.settingsService = settingsService ?? UserDefaultsSettingsService(persistence: persistenceService)
         self.pairingService = pairingService
         self.streamingService = streamingService
         self.onboardingComplete = persistenceService.onboardingComplete
@@ -60,7 +60,9 @@ final class AppEnvironment: ObservableObject {
             estimator: PoseEstimator(),
             converter: KeypointConverter(),
             scorer: AnomalyScorer(threshold: settingsService.anomalyThreshold),
-            tracking: TrackingService()
+            tracking: TrackingService(),
+            settings: settingsService,
+            streaming: streamingService
         )
     }
 

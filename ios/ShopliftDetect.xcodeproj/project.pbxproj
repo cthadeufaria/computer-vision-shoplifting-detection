@@ -14,6 +14,7 @@
 		0DEED99990BA277A68317081 /* CameraPreviewLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E2A485136553B90AE794311 /* CameraPreviewLayer.swift */; };
 		0F8282AD009EEE25F428B7FC /* CoreML.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9AC92BE2C676E071B356AB39 /* CoreML.framework */; };
 		1312FBC1DDFA68BDF67EC314 /* PoseSkeleton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F15ED481F24B75C9E334547 /* PoseSkeleton.swift */; };
+		1392166BA8C114B0EEC7F170 /* DetectionSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 503CA64C48F9622BE6292DFB /* DetectionSettings.swift */; };
 		13A6424321C1D7DCFF601708 /* PersistenceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A953C6BD7B0F8564C038EBE7 /* PersistenceService.swift */; };
 		164C1E3688B92033956EEC52 /* DetectionViewComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 062A240A59066E1731D6F0B4 /* DetectionViewComponents.swift */; };
 		1C6BF23D3F3F5BE99E162EFC /* CameraSessionProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4192C56AFA85F7502C1AB2EA /* CameraSessionProtocol.swift */; };
@@ -135,6 +136,7 @@
 		457B0F7D35D18944BB4A086D /* PosePreviewViewComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PosePreviewViewComponents.swift; sourceTree = "<group>"; };
 		47F850CF30D4D4A4A2C99C8C /* PosePreviewViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PosePreviewViewModelTests.swift; sourceTree = "<group>"; };
 		4B11EFCE5F2D8339E76887AE /* OnboardingUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingUITests.swift; sourceTree = "<group>"; };
+		503CA64C48F9622BE6292DFB /* DetectionSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetectionSettings.swift; sourceTree = "<group>"; };
 		51C5939E25CEBBB78EB12E7C /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		54A40D9814815CD7DCA408CA /* MockStreamingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockStreamingService.swift; sourceTree = "<group>"; };
 		564F9160A110D72DADE7579D /* MockPersistenceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPersistenceService.swift; sourceTree = "<group>"; };
@@ -311,6 +313,7 @@
 			isa = PBXGroup;
 			children = (
 				249367B62D95A41113BDB920 /* AnomalyResult.swift */,
+				503CA64C48F9622BE6292DFB /* DetectionSettings.swift */,
 				6B902C55BFA1157F4D892DF3 /* DetectionState.swift */,
 				CAF3461C5C3E78E4AF8240CE /* Keypoint.swift */,
 				7F15ED481F24B75C9E334547 /* PoseSkeleton.swift */,
@@ -653,6 +656,7 @@
 				1C6BF23D3F3F5BE99E162EFC /* CameraSessionProtocol.swift in Sources */,
 				EFBEB9B325EA3FF4E87E9A68 /* ConnectionState.swift in Sources */,
 				2BF2ECEA782D7233E6A30B5B /* DetectionResult.swift in Sources */,
+				1392166BA8C114B0EEC7F170 /* DetectionSettings.swift in Sources */,
 				E21B6D500B27111267DA8992 /* DetectionState.swift in Sources */,
 				00155CF16FC07AFBE62B63EB /* DetectionView.swift in Sources */,
 				164C1E3688B92033956EEC52 /* DetectionViewComponents.swift in Sources */,

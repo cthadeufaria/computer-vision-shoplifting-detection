@@ -48,19 +48,19 @@
 
 ### Tests for User Story 1 ⚠️
 
-- [ ] T010 [P] [US1] Add camera detection state-transition tests in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectTests/Detection/DetectionViewModelTests.swift
-- [ ] T011 [P] [US1] Add tracking edge-case tests for multi-person IoU matching in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectTests/Detection/TrackingServiceTests.swift
-- [ ] T012 [P] [US1] Add threshold persistence and scoring boundary tests in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectTests/Model/AnomalyScorerTests.swift
-- [ ] T013 [P] [US1] Add pose normalization and fixture parity coverage for the latest model input contract in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectTests/Pose/PoseNormalizerTests.swift and /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectTests/Model/STGNFModelIntegrationTests.swift
-- [ ] T014 [P] [US1] Add camera-role UI flow coverage for start/dismiss/warmup behavior in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectUITests/DetectionToggleUITests.swift
+- [X] T010 [P] [US1] Add camera detection state-transition tests in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectTests/Detection/DetectionViewModelTests.swift
+- [X] T011 [P] [US1] Add tracking edge-case tests for multi-person IoU matching in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectTests/Detection/TrackingServiceTests.swift
+- [X] T012 [P] [US1] Add threshold persistence and scoring boundary tests in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectTests/Model/AnomalyScorerTests.swift
+- [X] T013 [P] [US1] Add pose normalization and fixture parity coverage for the latest model input contract in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectTests/Pose/PoseNormalizerTests.swift and /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectTests/Model/STGNFModelIntegrationTests.swift
+- [X] T014 [P] [US1] Add camera-role UI flow coverage for start/dismiss/warmup behavior in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectUITests/DetectionToggleUITests.swift
 
 ### Implementation for User Story 1
 
-- [ ] T015 [P] [US1] Add persisted detection settings model and service wiring in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Core/Domain/DetectionSettings.swift and /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Core/Services/PersistenceService.swift
-- [ ] T016 [P] [US1] Update anomaly scoring and model wrapper for configurable threshold and Apr01_1416 model assumptions in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Core/Model/AnomalyScorer.swift and /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Core/Model/STGNFModelWrapper.swift
-- [ ] T017 [P] [US1] Finalize tracking and rolling-window infrastructure in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Detection/TrackingService.swift and /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Core/Model/FrameBuffer.swift
-- [ ] T018 [US1] Implement camera detection orchestration with injected services and outbound streaming callbacks in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Detection/DetectionViewModel.swift
-- [ ] T019 [US1] Update camera-role UI for warmup, score cards, streaming indicator, and threshold settings in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Detection/DetectionView.swift, /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Detection/DetectionViewComponents.swift, /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Detection/ScoreCardView.swift, and /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Home/HomeView.swift
+- [X] T015 [P] [US1] Add persisted detection settings model and service wiring in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Core/Domain/DetectionSettings.swift and /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Core/Services/PersistenceService.swift
+- [X] T016 [P] [US1] Update anomaly scoring and model wrapper for configurable threshold and Apr01_1416 model assumptions in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Core/Model/AnomalyScorer.swift and /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Core/Model/STGNFModelWrapper.swift
+- [X] T017 [P] [US1] Finalize tracking and rolling-window infrastructure in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Detection/TrackingService.swift and /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Core/Model/FrameBuffer.swift
+- [X] T018 [US1] Implement camera detection orchestration with injected services and outbound streaming callbacks in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Detection/DetectionViewModel.swift
+- [X] T019 [US1] Update camera-role UI for warmup, score cards, streaming indicator, and threshold settings in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Detection/DetectionView.swift, /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Detection/DetectionViewComponents.swift, /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Detection/ScoreCardView.swift, and /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Home/HomeView.swift
 
 **Checkpoint**: User Story 1 should be fully functional and independently testable as the MVP.
 

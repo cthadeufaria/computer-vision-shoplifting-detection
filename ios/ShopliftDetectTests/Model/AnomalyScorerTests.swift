@@ -60,4 +60,19 @@ final class AnomalyScorerTests: XCTestCase {
         let sut = AnomalyScorer()
         XCTAssertEqual(sut.threshold, -1.2, accuracy: 1e-6)
     }
+
+    func test_detectionSettingsDefaultUsesNegative1Point2Threshold() {
+        XCTAssertEqual(DetectionSettings.default.anomalyThreshold, -1.2, accuracy: 1e-6)
+    }
+
+    @MainActor
+    func test_settingsServicePersistsThresholdThroughPersistenceService() {
+        let persistence = MockPersistenceService()
+        let sut = UserDefaultsSettingsService(persistence: persistence)
+
+        sut.anomalyThreshold = -0.8
+
+        XCTAssertEqual(persistence.detectionSettings.anomalyThreshold, -0.8, accuracy: 1e-6)
+        XCTAssertEqual(sut.anomalyThreshold, -0.8, accuracy: 1e-6)
+    }
 }

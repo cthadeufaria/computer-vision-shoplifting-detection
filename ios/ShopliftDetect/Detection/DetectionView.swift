@@ -23,6 +23,13 @@ struct DetectionView: View {
             SkeletonOverlayView(skeletons: viewModel.skeletons, previewLayer: viewModel.previewLayer)
                 .ignoresSafeArea()
             DetectionScoreCardOverlay(state: viewModel.detectionState, rotation: rotation.angle)
+            DetectionStatusOverlay(
+                threshold: viewModel.threshold,
+                isStreaming: viewModel.isStreaming,
+                rotation: rotation.angle,
+                decreaseThreshold: { viewModel.updateThreshold(viewModel.threshold - 0.1) },
+                increaseThreshold: { viewModel.updateThreshold(viewModel.threshold + 0.1) }
+            )
             WarmupIndicatorView(state: viewModel.detectionState, rotation: rotation.angle)
             DetectionDismissButton(rotation: rotation.angle) {
                 viewModel.stop()

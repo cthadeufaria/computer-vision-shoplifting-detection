@@ -42,6 +42,10 @@ struct HomeView: View {
                 .foregroundStyle(.blue)
             Text("ShopliftDetect")
                 .font(.largeTitle.bold())
+            Text(String(format: "Current threshold %.1f", viewModel.anomalyThreshold))
+                .font(.headline.monospacedDigit())
+                .foregroundStyle(.secondary)
+                .accessibilityIdentifier("homeThresholdLabel")
             Spacer()
             VStack(spacing: 16) {
                 Button("Start Detection") {

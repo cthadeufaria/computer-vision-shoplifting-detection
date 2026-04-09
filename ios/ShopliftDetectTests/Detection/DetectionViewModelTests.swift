@@ -9,6 +9,8 @@ final class DetectionViewModelTests: XCTestCase {
     var mockConverter: MockKeypointConverter!
     var mockScorer: MockAnomalyScorer!
     var mockTracking: MockTrackingService!
+    var mockSettings: MockSettingsService!
+    var mockStreaming: MockStreamingService!
 
     override func setUp() {
         mockCamera = MockCameraSession()
@@ -16,12 +18,16 @@ final class DetectionViewModelTests: XCTestCase {
         mockConverter = MockKeypointConverter()
         mockScorer = MockAnomalyScorer()
         mockTracking = MockTrackingService()
+        mockSettings = MockSettingsService()
+        mockStreaming = MockStreamingService()
         sut = DetectionViewModel(
             camera: mockCamera,
             estimator: mockEstimator,
             converter: mockConverter,
             scorer: mockScorer,
-            tracking: mockTracking
+            tracking: mockTracking,
+            settings: mockSettings,
+            streaming: mockStreaming
         )
     }
 
@@ -37,6 +43,12 @@ final class DetectionViewModelTests: XCTestCase {
         if case .warmingUp = sut.detectionState { /* pass */ } else {
             XCTFail("Expected .warmingUp, got \(sut.detectionState)")
         }
+    }
+
+    func test_start_startsStreaming() throws {
+        try sut.start()
+        XCTAssertEqual(mockStreaming.startCallCount, 1)
+        XCTAssertTrue(sut.isStreaming)
     }
 
     func test_start_whenCameraThrows_stateRemainsIdle() {
@@ -59,6 +71,13 @@ final class DetectionViewModelTests: XCTestCase {
         XCTAssertEqual(mockCamera.stopCallCount, 1)
     }
 
+    func test_stop_stopsStreaming() throws {
+        try sut.start()
+        sut.stop()
+        XCTAssertEqual(mockStreaming.stopCallCount, 1)
+        XCTAssertFalse(sut.isStreaming)
+    }
+
     func test_stop_clearsSkeletons() throws {
         try sut.start()
         sut.stop()
@@ -72,5 +91,17 @@ final class DetectionViewModelTests: XCTestCase {
         if case .warmingUp = sut.detectionState { /* pass */ } else {
             XCTFail("Expected .warmingUp")
         }
+    }
+
+    func test_threshold_readsFromSettings() {
+        mockSettings.anomalyThreshold = -0.7
+        XCTAssertEqual(sut.threshold, -0.7, accuracy: 0.001)
+    }
+
+    func test_updateThreshold_updatesSettingsAndScorer() {
+        sut.updateThreshold(-0.4)
+        XCTAssertEqual(mockSettings.anomalyThreshold, -0.4, accuracy: 0.001)
+        XCTAssertEqual(mockScorer.threshold, -0.4, accuracy: 0.001)
+        XCTAssertEqual(sut.threshold, -0.4, accuracy: 0.001)
     }
 }

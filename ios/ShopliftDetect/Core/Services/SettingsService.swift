@@ -1,16 +1,14 @@
 import Foundation
 
 final class UserDefaultsSettingsService: SettingsServiceProtocol {
-    private let thresholdKey = "anomalyThreshold"
+    private let persistence: PersistenceServiceProtocol
+
+    init(persistence: PersistenceServiceProtocol = UserDefaultsPersistenceService()) {
+        self.persistence = persistence
+    }
 
     var anomalyThreshold: Float {
-        get {
-            let stored = UserDefaults.standard.object(forKey: thresholdKey)
-            guard stored != nil else { return -1.2 }
-            return UserDefaults.standard.float(forKey: thresholdKey)
-        }
-        set {
-            UserDefaults.standard.set(newValue, forKey: thresholdKey)
-        }
+        get { persistence.detectionSettings.anomalyThreshold }
+        set { persistence.detectionSettings = DetectionSettings(anomalyThreshold: newValue) }
     }
 }

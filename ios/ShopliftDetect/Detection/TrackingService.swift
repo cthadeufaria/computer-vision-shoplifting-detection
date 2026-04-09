@@ -9,15 +9,30 @@ protocol TrackingServiceProtocol: AnyObject {
 /// Assigns persistent track IDs to detected skeletons using IoU-based matching.
 @MainActor
 final class TrackingService: TrackingServiceProtocol {
+    private struct TrackState {
+        var boundingBox: CGRect
+        var lastSeenFrame: Int
+    }
+
     private let iouThreshold: CGFloat = 0.3
-    private var lastBBox: [String: CGRect] = [:]
+    private let maxMissingFrames = 6
+    private var tracks: [String: TrackState] = [:]
+    private var currentFrameIndex: Int?
+    private var claimedTrackIDs = Set<String>()
 
     func matchTrack(for skeleton: PoseSkeleton) -> String {
+        if currentFrameIndex != skeleton.frameIndex {
+            currentFrameIndex = skeleton.frameIndex
+            claimedTrackIDs.removeAll()
+        }
+
+        pruneExpiredTracks(currentFrameIndex: skeleton.frameIndex)
+
         var bestID: String?
         var bestIoU: CGFloat = 0
 
-        for (id, bbox) in lastBBox {
-            let iou = computeIoU(skeleton.boundingBox, bbox)
+        for (id, state) in tracks where !claimedTrackIDs.contains(id) {
+            let iou = computeIoU(skeleton.boundingBox, state.boundingBox)
             if iou > bestIoU {
                 bestIoU = iou
                 bestID = id
@@ -25,13 +40,27 @@ final class TrackingService: TrackingServiceProtocol {
         }
 
         if let id = bestID, bestIoU >= iouThreshold {
-            lastBBox[id] = skeleton.boundingBox
+            tracks[id] = TrackState(
+                boundingBox: skeleton.boundingBox,
+                lastSeenFrame: skeleton.frameIndex
+            )
+            claimedTrackIDs.insert(id)
             return id
         }
 
         let newID = UUID().uuidString
-        lastBBox[newID] = skeleton.boundingBox
+        tracks[newID] = TrackState(
+            boundingBox: skeleton.boundingBox,
+            lastSeenFrame: skeleton.frameIndex
+        )
+        claimedTrackIDs.insert(newID)
         return newID
+    }
+
+    private func pruneExpiredTracks(currentFrameIndex: Int) {
+        tracks = tracks.filter { _, state in
+            currentFrameIndex - state.lastSeenFrame <= maxMissingFrames
+        }
     }
 
     private func computeIoU(_ a: CGRect, _ b: CGRect) -> CGFloat {

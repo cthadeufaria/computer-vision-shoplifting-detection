@@ -23,6 +23,13 @@ private final class STGNFInputProvider: MLFeatureProvider {
 /// generated model type at compile time.
 /// anomaly_score = -NLL (more negative = more anomalous).
 final class STGNFModelRunner: STGNFModelProtocol, @unchecked Sendable {
+    static let expectedInputShape = [1, 2, 24, 18]
+    static let expectedSegmentLength = 24
+    static let expectedJointCount = 18
+    static let usesConfidenceChannel = false
+    static let inputFeatureName = "pose_window"
+    static let outputFeatureName = "nll_score"
+
     private let coremlModel: MLModel
 
     init() throws {
@@ -40,10 +47,15 @@ final class STGNFModelRunner: STGNFModelProtocol, @unchecked Sendable {
     }
 
     func runInference(on input: MLMultiArray) throws -> Float {
+        let inputShape = input.shape.map(\.intValue)
+        guard inputShape == Self.expectedInputShape else {
+            throw STGNFModelError.invalidInputShape(expected: Self.expectedInputShape, actual: inputShape)
+        }
+
         let provider = STGNFInputProvider(poseWindow: input)
         let output = try coremlModel.prediction(from: provider)
 
-        guard let nllFeature = output.featureValue(for: "nll_score"),
+        guard let nllFeature = output.featureValue(for: Self.outputFeatureName),
               let nllArray = nllFeature.multiArrayValue else {
             throw STGNFModelError.outputMissing
         }
@@ -56,4 +68,5 @@ final class STGNFModelRunner: STGNFModelProtocol, @unchecked Sendable {
 enum STGNFModelError: Error {
     case modelNotFound
     case outputMissing
+    case invalidInputShape(expected: [Int], actual: [Int])
 }
