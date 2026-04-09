@@ -80,6 +80,9 @@ final class DetectionViewModel: ObservableObject {
     func stop() {
         camera.stop()
         streaming.stopStreaming()
+        for feed in streaming.feedStates {
+            streaming.updateFeedConnectionState(.stale, for: feed.sessionID)
+        }
         cancellables.removeAll()
         trackBuffers.removeAll()
         frameIndex = 0
@@ -144,6 +147,7 @@ final class DetectionViewModel: ObservableObject {
             guard let self else { return }
             skeletons = currentSkeletons
             frameIndex += 1
+            publishSupervisorUpdates(for: currentSkeletons)
         }
 
         // Warmup counter update (FrameBuffer.count is async — actor isolated).
@@ -156,6 +160,57 @@ final class DetectionViewModel: ObservableObject {
                 guard let self, case .warmingUp = detectionState else { return }
                 detectionState = .warmingUp(framesCollected: count, framesNeeded: FrameBuffer.capacity)
             }
+        }
+    }
+
+    private func publishSupervisorUpdates(for skeletons: [PoseSkeleton]) {
+        guard let sessionID = streaming.feedStates.first?.sessionID else { return }
+
+        let detections = skeletons.enumerated().map { index, skeleton in
+            DetectionResult(
+                trackID: index + 1,
+                score: scoreForCurrentState(),
+                label: labelForCurrentState(),
+                keypoints: skeleton.keypoints,
+                boundingBox: skeleton.boundingBox,
+                timestamp: Date()
+            )
+        }
+
+        let frame = VideoFrame(
+            timestamp: UInt64(Date().timeIntervalSince1970 * 1000),
+            jpegData: Data([UInt8(min(skeletons.count, 255))]),
+            width: 320,
+            height: 240
+        )
+
+        streaming.publishFrame(frame, for: sessionID)
+        streaming.publishDetections(detections, for: sessionID)
+    }
+
+    private func scoreForCurrentState() -> Float {
+        switch detectionState {
+        case .running(let latestResult):
+            return latestResult.score
+        case .warmingUp:
+            return 0
+        case .error:
+            return -999
+        case .idle:
+            return 0
+        }
+    }
+
+    private func labelForCurrentState() -> AnomalyLabel {
+        switch detectionState {
+        case .running(let latestResult):
+            return latestResult.label
+        case .warmingUp:
+            return .warmup
+        case .error:
+            return .anomaly
+        case .idle:
+            return .normal
         }
     }
 }

@@ -1,21 +1,31 @@
 import SwiftUI
 
 struct SupervisorHomeView: View {
+    let connectionStatusText: String
+    @StateObject private var viewModel: SupervisorViewModel
+
+    init(
+        connectionStatusText: String,
+        viewModel: @autoclosure @escaping () -> SupervisorViewModel
+    ) {
+        self.connectionStatusText = connectionStatusText
+        _viewModel = StateObject(wrappedValue: viewModel())
+    }
+
     var body: some View {
-        VStack(spacing: 20) {
-            Spacer()
-            Image(systemName: "rectangle.3.group.bubble.left")
-                .font(.system(size: 72))
-                .foregroundStyle(.blue)
-            Text("Supervisor Mode")
-                .font(.largeTitle.bold())
-                .accessibilityIdentifier("supervisorHomeTitle")
-            Text("Pair a camera device to begin monitoring live feeds.")
-                .font(.body)
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal, 24)
-            Spacer()
+        VStack(spacing: 12) {
+            HStack {
+                Text("Supervisor Mode")
+                    .font(.largeTitle.bold())
+                    .accessibilityIdentifier("supervisorHomeTitle")
+                Spacer()
+                Text(connectionStatusText)
+                    .font(.headline)
+                    .foregroundStyle(.secondary)
+                    .accessibilityIdentifier("supervisorConnectionStatusLabel")
+            }
+
+            SupervisorView(viewModel: viewModel)
         }
         .padding()
     }

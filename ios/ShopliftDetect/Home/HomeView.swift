@@ -15,7 +15,10 @@ struct HomeView: View {
                 case .camera:
                     cameraHome
                 case .supervisor:
-                    SupervisorHomeView()
+                    SupervisorHomeView(
+                        connectionStatusText: viewModel.pairingStatusText,
+                        viewModel: appEnvironment.makeSupervisorViewModel()
+                    )
                 }
             }
             .fullScreenCover(isPresented: $viewModel.isDetectionActive) {
@@ -46,6 +49,10 @@ struct HomeView: View {
                 .font(.headline.monospacedDigit())
                 .foregroundStyle(.secondary)
                 .accessibilityIdentifier("homeThresholdLabel")
+            Text(viewModel.pairingStatusText)
+                .font(.headline)
+                .foregroundStyle(.secondary)
+                .accessibilityIdentifier("homePairingStatusLabel")
             Spacer()
             VStack(spacing: 16) {
                 Button("Start Detection") {

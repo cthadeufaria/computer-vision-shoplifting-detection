@@ -34,10 +34,23 @@ struct OnboardingView: View {
                 OnboardingPageView(
                     title: viewModel.selectedRoleTitle(),
                     description: viewModel.permissionSummaryText(),
-                    systemImage: "camera.fill"
+                    systemImage: viewModel.selectedRole == .camera ? "qrcode" : "qrcode.viewfinder"
                 )
 
-                Button("Grant Camera Access") {
+                if viewModel.selectedRole == .camera {
+                    QRCodeDisplayView(
+                        payload: viewModel.qrPayload,
+                        connectionStateText: viewModel.connectionStateText()
+                    )
+                } else if viewModel.selectedRole == .supervisor {
+                    QRScannerView(
+                        payloadText: $viewModel.scannedPayload,
+                        connectionStateText: viewModel.connectionStateText(),
+                        onScan: viewModel.scanQRCode
+                    )
+                }
+
+                Button(viewModel.permissionButtonTitle()) {
                     Task {
                         await viewModel.completeAfterPermissions()
                         appEnvironment.refreshOnboardingState()
@@ -50,6 +63,12 @@ struct OnboardingView: View {
         }
         .tabViewStyle(.page(indexDisplayMode: .always))
         .animation(.easeInOut, value: viewModel.currentPage)
+        .onAppear {
+            viewModel.updatePairingScreenVisibility(isVisible: viewModel.currentPage == viewModel.totalPages - 1)
+        }
+        .onChange(of: viewModel.currentPage) { newValue in
+            viewModel.updatePairingScreenVisibility(isVisible: newValue == viewModel.totalPages - 1)
+        }
         .overlay(alignment: .bottomTrailing) {
             if viewModel.currentPage < viewModel.totalPages - 1 {
                 Button("Next") {

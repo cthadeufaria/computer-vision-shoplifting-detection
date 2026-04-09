@@ -6,13 +6,16 @@ final class OnboardingViewModelTests: XCTestCase {
     var sut: OnboardingViewModel!
     var mockPersistence: MockPersistenceService!
     var mockPermission: MockPermissionService!
+    var mockPairing: MockPairingService!
 
     override func setUp() {
         mockPersistence = MockPersistenceService()
         mockPermission = MockPermissionService()
+        mockPairing = MockPairingService()
         sut = OnboardingViewModel(
             persistence: mockPersistence,
-            permission: mockPermission
+            permission: mockPermission,
+            pairing: mockPairing
         )
     }
 
@@ -34,6 +37,7 @@ final class OnboardingViewModelTests: XCTestCase {
 
     func test_completeAfterPermissions_setsOnboardingCompleteInPersistence() async {
         mockPermission.authorizationStatus = .authorized
+        mockPairing.connectionState = .connected
         sut.selectRole(.supervisor)
 
         await sut.completeAfterPermissions()
@@ -81,5 +85,37 @@ final class OnboardingViewModelTests: XCTestCase {
         sut.nextPage()
 
         XCTAssertEqual(sut.currentPage, 2)
+    }
+
+    func test_updatePairingScreenVisibility_forCameraPreparesQRCode() {
+        sut.selectRole(.camera)
+        sut.currentPage = sut.totalPages - 1
+
+        sut.updatePairingScreenVisibility(isVisible: true)
+
+        XCTAssertEqual(mockPairing.prepareCameraPairingCallCount, 1)
+        XCTAssertEqual(sut.qrPayload, "sdlink://192.168.1.24:7890?token=TEST1234")
+        XCTAssertEqual(sut.connectionState, .listening)
+    }
+
+    func test_scanQRCode_whenPairingFails_setsErrorMessage() {
+        let failingPairing = PairingService(externalValidationToken: "VALID123")
+        sut = OnboardingViewModel(
+            persistence: mockPersistence,
+            permission: mockPermission,
+            pairing: failingPairing,
+            prefilledSupervisorPayload: "sdlink://192.168.1.24:7890?token=WRONG999"
+        )
+        sut.selectRole(.supervisor)
+        sut.currentPage = sut.totalPages - 1
+        sut.updatePairingScreenVisibility(isVisible: true)
+
+        sut.scanQRCode()
+
+        XCTAssertEqual(sut.connectionState, .failed(PairingFailureReason.invalidToken.rawValue))
+        XCTAssertEqual(
+            sut.errorMessage,
+            "The pairing token is invalid. Ask the camera device to show a fresh QR code and rescan."
+        )
     }
 }

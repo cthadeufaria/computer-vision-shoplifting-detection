@@ -104,4 +104,22 @@ final class DetectionViewModelTests: XCTestCase {
         XCTAssertEqual(mockScorer.threshold, -0.4, accuracy: 0.001)
         XCTAssertEqual(sut.threshold, -0.4, accuracy: 0.001)
     }
+
+    func test_stopLeavesLastPublishedFrameAvailableForSupervisorTile() throws {
+        try sut.start()
+        mockStreaming.feedStates = [
+            SupervisorFeedTileState(
+                sessionID: UUID(),
+                deviceName: "Aisle 3 Camera",
+                connectionState: .stale,
+                latestFrame: VideoFrame(timestamp: 1, jpegData: Data([0x01]), width: 32, height: 32),
+                latestDetections: []
+            )
+        ]
+
+        sut.stop()
+
+        XCTAssertNotNil(mockStreaming.feedStates.first?.latestFrame)
+        XCTAssertEqual(mockStreaming.stopCallCount, 1)
+    }
 }

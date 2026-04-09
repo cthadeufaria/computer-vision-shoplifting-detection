@@ -9,7 +9,14 @@ struct ShopliftDetectApp: App {
         let permissionService: PermissionServiceProtocol = arguments.contains("--ui-test-camera-authorized")
             ? UITestPermissionService()
             : AVPermissionService()
-        let environment = AppEnvironment(permissionService: permissionService)
+        let requiredExternalToken = arguments
+            .first(where: { $0.hasPrefix("--ui-test-required-token=") })?
+            .replacingOccurrences(of: "--ui-test-required-token=", with: "")
+        let environment = AppEnvironment(
+            permissionService: permissionService,
+            pairingService: PairingService(externalValidationToken: requiredExternalToken),
+            launchArguments: arguments
+        )
         environment.applyLaunchArguments(arguments)
         _appEnvironment = StateObject(wrappedValue: environment)
     }
