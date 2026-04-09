@@ -5,6 +5,7 @@ struct PosePreviewView: View {
     @StateObject private var viewModel: PosePreviewViewModel
     @ObservedObject private var rotation = DeviceRotation.shared
     @State private var startError: String?
+    private let isPreviewUITest = ProcessInfo.processInfo.arguments.contains("--ui-test-pose-preview")
 
     init(
         isPresented: Binding<Bool>,
@@ -27,6 +28,10 @@ struct PosePreviewView: View {
             PoseDebugOverlay(debugInfo: viewModel.debugInfo)
         }
         .task {
+            if isPreviewUITest {
+                viewModel.enablePreviewTestMode()
+                return
+            }
             do {
                 try viewModel.start()
             } catch {

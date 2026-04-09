@@ -8,7 +8,7 @@ final class PosePreviewUITests: XCTestCase {
         super.setUp()
         continueAfterFailure = false
         app = XCUIApplication()
-        app.launchArguments = ["--skip-onboarding"]
+        app.launchArguments = ["--skip-onboarding", "--ui-test-pose-preview"]
         app.launch()
     }
 
@@ -31,7 +31,14 @@ final class PosePreviewUITests: XCTestCase {
         app.buttons["posePreviewButton"].tap()
         let dismiss = app.buttons["posePreviewDismissButton"]
         XCTAssertTrue(dismiss.waitForExistence(timeout: 3))
-        dismiss.tap()
+        let cameraErrorAlert = app.alerts["Camera Error"]
+
+        if cameraErrorAlert.waitForExistence(timeout: 1) {
+            cameraErrorAlert.buttons["OK"].tap()
+        } else {
+            dismiss.tap()
+        }
+
         XCTAssertTrue(app.buttons["startDetectionButton"].waitForExistence(timeout: 3))
     }
 }

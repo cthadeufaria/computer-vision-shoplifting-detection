@@ -18,6 +18,8 @@
 	<string>APPL</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Camera access is required to detect poses for shoplifting anomaly analysis.</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Local network access is required to pair a camera device with a supervisory device and share live monitoring data.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

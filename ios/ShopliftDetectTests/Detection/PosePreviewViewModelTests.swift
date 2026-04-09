@@ -40,4 +40,11 @@ final class PosePreviewViewModelTests: XCTestCase {
         sut.stop()
         XCTAssertTrue(sut.skeletons.isEmpty)
     }
+
+    func test_enablePreviewTestMode_setsDebugSkeletonState() {
+        sut.enablePreviewTestMode()
+
+        XCTAssertEqual(sut.skeletons.count, 1)
+        XCTAssertEqual(sut.debugInfo, "UI Preview Mode")
+    }
 }

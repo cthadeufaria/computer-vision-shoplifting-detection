@@ -74,17 +74,17 @@
 
 ### Tests for User Story 3 ⚠️
 
-- [ ] T020 [P] [US3] Add QR payload parsing and token lifecycle tests in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectTests/Networking/PairingServiceTests.swift
-- [ ] T021 [P] [US3] Add framed handshake and heartbeat timeout tests in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectTests/Networking/StreamProtocolTests.swift
-- [ ] T022 [P] [US3] Add onboarding QR display/scan and invalid-token UI tests in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectUITests/OnboardingUITests.swift and /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectUITests/RoleSelectionUITests.swift
+- [X] T020 [P] [US3] Add QR payload parsing and token lifecycle tests in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectTests/Networking/PairingServiceTests.swift
+- [X] T021 [P] [US3] Add framed handshake and heartbeat timeout tests in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectTests/Networking/StreamProtocolTests.swift
+- [X] T022 [P] [US3] Add onboarding QR display/scan and invalid-token UI tests in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectUITests/OnboardingUITests.swift and /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectUITests/RoleSelectionUITests.swift
 
 ### Implementation for User Story 3
 
-- [ ] T023 [P] [US3] Implement framed stream transport and heartbeat message handling in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Networking/StreamProtocol.swift and /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Networking/StreamingService.swift
-- [ ] T024 [P] [US3] Implement pairing listener/connector, QR payload generation, token validation, and handshake messages in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Networking/PairingService.swift
-- [ ] T025 [US3] Update onboarding view model for role-based QR presentation, scanning, connection state, and rescan recovery in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Onboarding/OnboardingViewModel.swift
-- [ ] T026 [US3] Build camera QR display and supervisor QR scanner screens with connection feedback in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Onboarding/QRCodeDisplayView.swift, /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Onboarding/QRScannerView.swift, and /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Onboarding/OnboardingView.swift
-- [ ] T027 [US3] Route pairing state into the role-appropriate home flow in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Home/HomeViewModel.swift and /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Home/HomeView.swift
+- [X] T023 [P] [US3] Implement framed stream transport and heartbeat message handling in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Networking/StreamProtocol.swift and /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Networking/StreamingService.swift
+- [X] T024 [P] [US3] Implement pairing listener/connector, QR payload generation, token validation, and handshake messages in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Networking/PairingService.swift
+- [X] T025 [US3] Update onboarding view model for role-based QR presentation, scanning, connection state, and rescan recovery in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Onboarding/OnboardingViewModel.swift
+- [X] T026 [US3] Build camera QR display and supervisor QR scanner screens with connection feedback in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Onboarding/QRCodeDisplayView.swift, /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Onboarding/QRScannerView.swift, and /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Onboarding/OnboardingView.swift
+- [X] T027 [US3] Route pairing state into the role-appropriate home flow in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Home/HomeViewModel.swift and /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Home/HomeView.swift
 
 **Checkpoint**: User Story 3 should be fully functional and independently testable.
 
@@ -98,16 +98,16 @@
 
 ### Tests for User Story 2 ⚠️
 
-- [ ] T028 [P] [US2] Add supervisor session-limit and stale-tile state tests in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectTests/Networking/PairingServiceTests.swift and /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectTests/Detection/DetectionViewModelTests.swift
-- [ ] T029 [P] [US2] Add supervisor view-model tests for tile updates, full-screen selection, and disconnect behavior in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectTests/Supervisor/SupervisorViewModelTests.swift
-- [ ] T030 [P] [US2] Add supervisor monitoring UI tests for empty grid, live tile, full-screen expansion, and fifth-camera rejection in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectUITests/SupervisorMonitoringUITests.swift
+- [X] T028 [P] [US2] Add supervisor session-limit and stale-tile state tests in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectTests/Networking/PairingServiceTests.swift and /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectTests/Detection/DetectionViewModelTests.swift
+- [X] T029 [P] [US2] Add supervisor view-model tests for tile updates, full-screen selection, and disconnect behavior in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectTests/Supervisor/SupervisorViewModelTests.swift
+- [X] T030 [P] [US2] Add supervisor monitoring UI tests for empty grid, live tile, full-screen expansion, and fifth-camera rejection in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectUITests/SupervisorMonitoringUITests.swift
 
 ### Implementation for User Story 2
 
-- [ ] T031 [P] [US2] Add supervisor feed-grid domain types in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Supervisor/SupervisorFeedTileState.swift and /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Supervisor/SupervisorFeedGrid.swift
-- [ ] T032 [US2] Implement supervisor session orchestration, tile updates, session limits, and stale-frame behavior in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Supervisor/SupervisorViewModel.swift
-- [ ] T033 [US2] Build supervisor monitoring UI, tile thumbnails, stale overlay, and full-screen feed detail in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Supervisor/SupervisorView.swift, /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Supervisor/DeviceRowView.swift, /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Supervisor/CameraFeedDetailView.swift, and /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Home/SupervisorHomeView.swift
-- [ ] T034 [US2] Connect camera-side stream publishing and supervisor-side stream consumption in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Detection/DetectionViewModel.swift, /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Networking/StreamingService.swift, and /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Supervisor/SupervisorViewModel.swift
+- [X] T031 [P] [US2] Add supervisor feed-grid domain types in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Supervisor/SupervisorFeedTileState.swift and /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Supervisor/SupervisorFeedGrid.swift
+- [X] T032 [US2] Implement supervisor session orchestration, tile updates, session limits, and stale-frame behavior in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Supervisor/SupervisorViewModel.swift
+- [X] T033 [US2] Build supervisor monitoring UI, tile thumbnails, stale overlay, and full-screen feed detail in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Supervisor/SupervisorView.swift, /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Supervisor/DeviceRowView.swift, /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Supervisor/CameraFeedDetailView.swift, and /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Home/SupervisorHomeView.swift
+- [X] T034 [US2] Connect camera-side stream publishing and supervisor-side stream consumption in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Detection/DetectionViewModel.swift, /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Networking/StreamingService.swift, and /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Supervisor/SupervisorViewModel.swift
 
 **Checkpoint**: User Stories 2 and 3 should now work independently and together.
 
@@ -139,9 +139,9 @@
 
 **Purpose**: Final hardening, docs alignment, and validation across stories.
 
-- [ ] T041 [P] Add or update Info.plist usage strings and local-network privacy text in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Resources/Info.plist
-- [ ] T042 [P] Add missing fixture or helper coverage for networking and supervisor flows in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectTests/Fixtures and /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectTests/Mocks
-- [ ] T043 Run unit and UI test suites from /Users/bernese/git/computer-vision-shoplifting-detection/ios/quickstart.md and fix regressions across /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect, /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectTests, and /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectUITests
+- [X] T041 [P] Add or update Info.plist usage strings and local-network privacy text in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Resources/Info.plist
+- [X] T042 [P] Add missing fixture or helper coverage for networking and supervisor flows in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectTests/Fixtures and /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectTests/Mocks
+- [X] T043 Run unit and UI test suites from /Users/bernese/git/computer-vision-shoplifting-detection/ios/quickstart.md and fix regressions across /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect, /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectTests, and /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectUITests
 - [ ] T044 Run two-device manual validation from /Users/bernese/git/computer-vision-shoplifting-detection/ios/specs/001-camera-supervisor-p2p/quickstart.md and document any follow-up notes in /Users/bernese/git/computer-vision-shoplifting-detection/ios/specs/001-camera-supervisor-p2p/quickstart.md
 
 ---

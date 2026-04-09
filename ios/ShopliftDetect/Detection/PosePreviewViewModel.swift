@@ -39,6 +39,18 @@ final class PosePreviewViewModel: ObservableObject {
             .store(in: &cancellables)
     }
 
+    func enablePreviewTestMode() {
+        skeletons = [
+            PoseSkeleton(
+                keypoints: [],
+                frameIndex: 0,
+                timestamp: .zero,
+                boundingBox: CGRect(x: 0.2, y: 0.2, width: 0.3, height: 0.4)
+            )
+        ]
+        debugInfo = "UI Preview Mode"
+    }
+
     func stop() {
         camera.stop()
         cancellables.removeAll()
