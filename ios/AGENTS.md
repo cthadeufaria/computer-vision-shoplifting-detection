@@ -191,3 +191,11 @@ These exist in the current codebase and must be resolved before adding new featu
 - Mark ViewModels `@MainActor` at the class level, not method by method.
 - Services that do off-thread work should be `actor` (see `FrameBuffer`) or return on `MainActor` via `await`.
 - Never call `DispatchQueue.main.async` — use `await MainActor.run` or `@MainActor` annotations.
+
+## Recent Changes
+- 001-camera-supervisor-p2p: Added Swift 6.0 for the app, Python 3 for fixture/model conversion scripts + SwiftUI, Combine, AVFoundation, Vision, CoreML, Network.framework, CoreImage, XCTest, XCUITest, XcodeGen
+- 001-camera-supervisor-p2p: Added [if applicable, e.g., PostgreSQL, CoreData, files or N/A]
+
+## Active Technologies
+- Swift 6.0 for the app, Python 3 for fixture/model conversion scripts + SwiftUI, Combine, AVFoundation, Vision, CoreML, Network.framework, CoreImage, XCTest, XCUITest, XcodeGen (001-camera-supervisor-p2p)
+- UserDefaults via `PersistenceService`; bundled `.mlpackage` and JSON fixtures in app/test resources; no database (001-camera-supervisor-p2p)
