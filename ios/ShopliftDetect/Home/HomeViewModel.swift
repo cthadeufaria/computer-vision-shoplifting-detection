@@ -9,22 +9,27 @@ enum HomeDestination: Equatable {
 final class HomeViewModel: ObservableObject {
     @Published var isCameraStreamingActive = false
     @Published var isPosePreviewActive = false
+    @Published private(set) var selectedAppearance: AppAppearance
 
     private let persistence: PersistenceServiceProtocol
     private let settings: SettingsServiceProtocol
     private let pairing: PairingServiceProtocol
     private let capabilities: DeviceCapabilities
+    private let onAppearanceSelected: (AppAppearance) -> Void
 
     init(
         persistence: PersistenceServiceProtocol,
         settings: SettingsServiceProtocol,
         pairing: PairingServiceProtocol,
-        capabilities: DeviceCapabilities
+        capabilities: DeviceCapabilities,
+        onAppearanceSelected: @escaping (AppAppearance) -> Void = { _ in }
     ) {
         self.persistence = persistence
         self.settings = settings
         self.pairing = pairing
         self.capabilities = capabilities
+        self.onAppearanceSelected = onAppearanceSelected
+        self.selectedAppearance = settings.appAppearance
     }
 
     var selectedRole: DeviceRole? {
@@ -76,5 +81,12 @@ final class HomeViewModel: ObservableObject {
 
     var canShowPosePreview: Bool {
         capabilities.supportsPosePreview
+    }
+
+    func selectAppearance(_ appearance: AppAppearance) {
+        guard selectedAppearance != appearance else { return }
+        selectedAppearance = appearance
+        settings.appAppearance = appearance
+        onAppearanceSelected(appearance)
     }
 }

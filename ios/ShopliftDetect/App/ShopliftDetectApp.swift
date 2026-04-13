@@ -30,6 +30,7 @@ struct ShopliftDetectApp: App {
                     OnboardingView(viewModel: appEnvironment.makeOnboardingViewModel())
                 }
             }
+            .preferredColorScheme(appEnvironment.activeAppearance.preferredColorScheme)
             .environmentObject(appEnvironment)
         }
     }
