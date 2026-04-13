@@ -83,8 +83,8 @@ feed tile with score overlay from the camera device.
    **Then** the tile expands to full-screen with the same score overlay layout as the
    camera device's detection view.
 7. **Given** a connected camera stops sending frames, **When** the disconnect timeout is
-   reached, **Then** the supervisor freezes the last received frame and displays a
-   stale/disconnected overlay on that tile.
+   reached, **Then** the supervisor applies the disconnected feed behavior defined by
+   FR-011.
 
 ---
 
@@ -110,7 +110,8 @@ show connection status "Connected" → role-appropriate home screen shown on eac
    **Then** the QR code encodes a payload matching `sdlink://<LAN_IP>:<PORT>`.
 2. **Given** the supervisor role is selected, **When** the user points the camera at
    the QR code, **Then** the payload is parsed and a TCP connection is attempted.
-3. **Given** the QR payload is invalid (wrong scheme, non-LAN IP, malformed),
+3. **Given** the QR payload is invalid (wrong scheme, non-LAN IP, malformed,
+   or cannot establish an encrypted channel),
    **When** scanning occurs, **Then** an error message is shown and scanning resumes.
 4. **Given** a valid QR payload is scanned, **When** the supervisor presents the
    included single-use pairing token during the handshake, **Then** the camera accepts
@@ -121,8 +122,8 @@ show connection status "Connected" → role-appropriate home screen shown on eac
    reuse the previously scanned QR payload, **Then** the handshake is rejected and the
    camera requires a newly displayed QR code.
 7. **Given** the camera device loses connectivity or goes to background,
-   **When** a heartbeat is missed, **Then** the supervisor tile shows a disconnected
-   state within 5 seconds.
+   **When** a heartbeat is missed, **Then** the supervisor applies the disconnected
+   feed behavior defined by FR-011.
 
 ---
 
@@ -151,6 +152,35 @@ is skipped and the correct role home screen is shown immediately.
 
 ---
 
+### User Story 5 — Camera Operator Uses Pose Preview for Diagnostics (Priority: P3)
+
+A camera-role user opens Pose Preview from the home screen to verify camera framing,
+pose detection alignment, and overall session stability before starting anomaly detection.
+The screen shows the live camera preview with skeleton overlays and can be dismissed
+back to the home screen without disrupting later detection use.
+
+**Why this priority**: Pose Preview is a diagnostic and operator-confidence workflow.
+It is less critical than detection, pairing, and monitoring, but it is valuable for
+camera placement checks, troubleshooting, and pre-shift validation.
+
+**Independent Test**: Launch the app as Smart Camera, open Pose Preview, confirm the
+live preview and pose overlay appear, dismiss it back to home, and verify detection
+can still be started normally afterward.
+
+**Acceptance Scenarios**:
+
+1. **Given** the Smart Camera home screen is visible, **When** the user selects
+   Pose Preview, **Then** the app opens a full-screen live camera preview for
+   diagnostic use.
+2. **Given** Pose Preview is active and a person is in frame, **When** body pose
+   detection succeeds, **Then** the preview displays a skeleton overlay on the person.
+3. **Given** Pose Preview is active, **When** the user dismisses it, **Then** the
+   app returns to the Smart Camera home screen without crashing or becoming unresponsive.
+4. **Given** the user has entered and dismissed Pose Preview, **When** they later tap
+   Start Detection, **Then** the normal detection flow still starts successfully.
+
+---
+
 ### Edge Cases
 
 - What happens when two devices are on different Wi-Fi networks?
@@ -162,10 +192,13 @@ is skipped and the correct role home screen is shown immediately.
 - What happens when the camera device's LAN IP changes mid-session?
   → The TCP connection drops; the supervisor tile shows disconnected state and
     the user must re-pair.
+- What happens when encrypted transport negotiation fails?
+  → Pairing is rejected, no video frames are transmitted, and the supervisor is
+    prompted to rescan or retry after both devices are on the same trusted Wi-Fi.
 - What happens when a supervisor attempts to pair a fifth camera device?
   → The pairing attempt is refused and the UI explains that v1 supports up to four simultaneous feeds.
 - What happens when a connected camera stops sending frames unexpectedly?
-  → The supervisor keeps the last received frame visible and overlays a stale/disconnected status within 5 seconds.
+  → The supervisor applies the disconnected feed behavior defined by FR-011.
 - What happens when the anomaly threshold produces false positives on normal retail footage?
   → The threshold is adjustable in a Settings sheet, defaults to -1.2, and is
     persisted locally on each camera device. A note on the detection screen explains
@@ -179,6 +212,12 @@ is skipped and the correct role home screen is shown immediately.
 - What happens when multiple people are in frame simultaneously?
   → Each tracked person gets an independent score card; tracking uses IoU-based
     identity association.
+- What happens when Pose Preview is opened and dismissed repeatedly?
+  → The app returns to the Smart Camera home screen each time without crashing,
+    hanging, or preventing a later detection session from starting.
+- What happens when no person is visible in Pose Preview?
+  → The live camera preview remains visible and the app shows no skeleton overlay
+    until a person enters frame.
 
 ---
 
@@ -223,6 +262,18 @@ is skipped and the correct role home screen is shown immediately.
 - **FR-017**: The camera device MUST invalidate the displayed QR code and pairing token
   immediately when the pairing screen is dismissed or replaced, and MUST generate a fresh
   token the next time the pairing screen is shown.
+- **FR-018**: All video-frame and detection-result messages MUST be transmitted over
+  an encrypted, authenticated local connection (TLS via Network.framework or an
+  equivalent encrypted channel); if encryption cannot be established, the connection
+  MUST fail before any frame data is sent.
+- **FR-019**: The app build MUST include SwiftLint enforcement with a committed ruleset
+  and fail the local build or CI/pre-commit gate when configured lint rules report
+  warnings or violations.
+- **FR-020**: The Smart Camera role MUST provide a Pose Preview mode from the home screen
+  that displays the live camera preview with pose skeleton overlays for diagnostic use
+  without showing anomaly scoring UI.
+- **FR-021**: Entering and dismissing Pose Preview MUST return the user to the Smart Camera
+  home screen without preventing a subsequent detection session from starting successfully.
 
 ### Key Entities
 
@@ -256,16 +307,19 @@ is skipped and the correct role home screen is shown immediately.
   update at least once per second.
 - **SC-004**: Two devices can be paired in under 30 seconds using the QR code flow on
   a shared Wi-Fi network.
-- **SC-005**: Supervisor feed tiles update at 10 fps or better from each connected
-  camera device under normal LAN conditions with four simultaneous feeds active.
+- **SC-005**: Supervisor feed tiles update near 10 fps from each connected camera
+  device under normal LAN conditions with four simultaneous feeds active, without
+  exceeding the 10 fps supervisor streaming cap.
 - **SC-006**: An anomaly event on the camera device appears on the supervisor tile within
   500 ms of detection.
 - **SC-007**: The app runs at 30 fps camera capture on an iPhone 8 (iOS 15) without
   sustained frame drops or thermal throttling during a 10-minute session.
-- **SC-008**: All 43 unit, integration, and UI tests pass before the feature is
-  considered complete.
+- **SC-008**: All required unit, integration, and UI test suites pass before the
+  feature is considered complete.
 - **SC-009**: Pose normalization output matches the Python reference implementation
   within a tolerance of 1e-5 per element on the seeded fixture dataset.
+- **SC-010**: A camera-role user can open Pose Preview, confirm live preview visibility,
+  dismiss it, and start detection afterward in under 30 seconds on a supported device.
 
 ---
 

@@ -10,12 +10,12 @@
 ## Format: `[ID] [P?] [Story] Description`
 
 - **[P]**: Can run in parallel (different files, no dependencies)
-- **[Story]**: Which user story this task belongs to (e.g. `US1`, `US2`, `US3`, `US4`)
+- **[Story]**: Which user story this belongs to (e.g. `US1`, `US2`, `US3`, `US4`, `US5`)
 - Include exact file paths in descriptions
 
 ## Phase 1: Setup (Shared Infrastructure)
 
-**Purpose**: Align the existing iOS project with the plan and constitution before feature work starts.
+**Purpose**: Align the existing iOS project, generated project files, and model/tooling baseline with the plan and constitution.
 
 - [X] T001 Update iOS deployment targets and strict-concurrency project settings in /Users/bernese/git/computer-vision-shoplifting-detection/ios/project.yml and /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect.xcodeproj/project.pbxproj
 - [X] T002 [P] Update CoreML conversion assumptions and model-source comments for the Apr01_1416 checkpoint in /Users/bernese/git/computer-vision-shoplifting-detection/ios/scripts/convert_stgnf_to_coreml.py
@@ -42,7 +42,7 @@
 
 ## Phase 3: User Story 1 - Camera Device Detects and Streams in Real Time (Priority: P1) 🎯 MVP
 
-**Goal**: Deliver camera-role onboarding-to-detection flow with real-time pose inference, warmup, multi-person tracking, score cards, threshold persistence, and outbound stream publishing hooks.
+**Goal**: Deliver the camera-role detection flow with real-time pose inference, warmup handling, multi-person tracking, threshold persistence, and outbound stream publishing hooks.
 
 **Independent Test**: Launch the app on a physical device, complete onboarding as Smart Camera, tap Start Detection, and confirm skeleton overlay appears within 1 second while score cards move from warmup to GOOD/ANOMALY after ~0.8 seconds.
 
@@ -131,18 +131,58 @@
 - [X] T039 [US4] Implement onboarding flow state, persisted role writes, and permission CTA handling in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Onboarding/OnboardingViewModel.swift and /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Onboarding/OnboardingView.swift
 - [X] T040 [US4] Implement launch routing for persisted role and onboarding-complete state in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Home/HomeViewModel.swift and /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Home/HomeView.swift
 
-**Checkpoint**: All user stories should now be independently functional.
+**Checkpoint**: User Story 4 should be independently functional.
 
 ---
 
-## Phase 7: Polish & Cross-Cutting Concerns
+## Phase 7: User Story 5 - Camera Operator Uses Pose Preview for Diagnostics (Priority: P3)
 
-**Purpose**: Final hardening, docs alignment, and validation across stories.
+**Goal**: Deliver Pose Preview as a formal Smart Camera diagnostic workflow with live camera preview, skeleton overlay, reliable dismiss behavior, and safe transition back into detection.
 
-- [X] T041 [P] Add or update Info.plist usage strings and local-network privacy text in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Resources/Info.plist
-- [X] T042 [P] Add missing fixture or helper coverage for networking and supervisor flows in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectTests/Fixtures and /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectTests/Mocks
-- [X] T043 Run unit and UI test suites from /Users/bernese/git/computer-vision-shoplifting-detection/ios/quickstart.md and fix regressions across /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect, /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectTests, and /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectUITests
-- [ ] T044 Run two-device manual validation from /Users/bernese/git/computer-vision-shoplifting-detection/ios/specs/001-camera-supervisor-p2p/quickstart.md and document any follow-up notes in /Users/bernese/git/computer-vision-shoplifting-detection/ios/specs/001-camera-supervisor-p2p/quickstart.md
+**Independent Test**: Launch the app as Smart Camera, open Pose Preview, confirm the live preview and pose overlay appear, dismiss it to home, and verify detection can still be started normally afterward.
+
+### Tests for User Story 5 ⚠️
+
+- [X] T041 [P] [US5] Add Pose Preview view-model tests for camera start-stop, preview state, and dropped-frame processing behavior in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectTests/Detection/PosePreviewViewModelTests.swift
+- [X] T042 [P] [US5] Add Pose Preview UI coverage for presentation, camera preview visibility, count badge visibility, and dismiss-to-home behavior in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectUITests/PosePreviewUITests.swift and /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectUITests/DetectionToggleUITests.swift
+
+### Implementation for User Story 5
+
+- [X] T043 [P] [US5] Implement Pose Preview camera and overlay orchestration in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Detection/PosePreviewViewModel.swift and /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Core/Pose/PoseEstimator.swift
+- [X] T044 [US5] Implement Pose Preview UI, dismiss flow, and home-screen launch affordance in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Detection/PosePreviewView.swift, /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Detection/PosePreviewViewComponents.swift, and /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Home/HomeView.swift
+
+**Checkpoint**: Pose Preview should be independently usable as a Smart Camera diagnostic flow.
+
+---
+
+## Phase 8: Polish & Cross-Cutting Concerns
+
+**Purpose**: Final hardening, docs alignment, and validation across delivered stories.
+
+- [X] T045 [P] Add or update Info.plist usage strings and local-network privacy text in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Resources/Info.plist
+- [X] T046 [P] Add missing fixture or helper coverage for networking and supervisor flows in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectTests/Fixtures and /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectTests/Mocks
+- [X] T047 Run the required automated suite inventory from /Users/bernese/git/computer-vision-shoplifting-detection/ios/specs/001-camera-supervisor-p2p/quickstart.md and fix regressions across /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect, /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectTests, and /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectUITests
+- [ ] T048 Run baseline two-device manual validation from /Users/bernese/git/computer-vision-shoplifting-detection/ios/specs/001-camera-supervisor-p2p/quickstart.md, including repeated pose-preview entry/dismiss, camera-session stability checks on physical hardware, and measured QR-pairing / Pose Preview recovery times, then document follow-up notes in /Users/bernese/git/computer-vision-shoplifting-detection/ios/specs/001-camera-supervisor-p2p/quickstart.md
+- [X] T049 [P] Add encrypted transport contract tests for TLS-required handshake failure, successful encrypted session setup, and no-frame-before-encryption behavior in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectTests/Networking/EncryptedTransportTests.swift
+- [X] T050 Implement encrypted/authenticated local transport using Network.framework TLS parameters in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Networking/PairingService.swift and /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Networking/StreamingService.swift
+- [X] T051 [P] Add SwiftLint configuration and Xcode/CI enforcement in /Users/bernese/git/computer-vision-shoplifting-detection/ios/.swiftlint.yml and /Users/bernese/git/computer-vision-shoplifting-detection/ios/project.yml
+- [X] T052 Run SwiftLint and encrypted-transport regression tests, then fix violations across /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect, /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectTests, and /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectUITests
+
+---
+
+## Phase 9: Upgrade & Stability Hardening
+
+**Purpose**: Continue upgrading and bug fixing after initial feature delivery, with explicit coverage tracking, quantified evidence, and updated device validation.
+
+- [X] T053 [P] Add camera-session and Pose Preview lifecycle regression tests for repeated present-dismiss, dropped-frame handling, long-running preview stability, and detection-after-preview recovery in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectTests/Detection/PosePreviewViewModelTests.swift, /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectTests/Detection/DetectionViewModelTests.swift, and /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectUITests/PosePreviewUITests.swift
+- [X] T054 [P] Add cross-feature regression tests for pairing recovery, stale-feed recovery, and onboarding relaunch integrity in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectTests/Networking/PairingServiceTests.swift, /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectTests/Supervisor/SupervisorViewModelTests.swift, and /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectUITests/OnboardingUITests.swift
+- [X] T055 Fix remaining camera/session stability bugs uncovered by the new regression coverage in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Core/Camera/CameraSession.swift, /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Core/Pose/PoseEstimator.swift, /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Detection/PosePreviewViewModel.swift, and /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Detection/DetectionViewModel.swift
+- [ ] T056 Fix remaining supervisor, pairing, and onboarding bugs uncovered by the new regression coverage in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Networking/PairingService.swift, /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Networking/StreamingService.swift, /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Supervisor/SupervisorViewModel.swift, /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Onboarding/OnboardingViewModel.swift, and /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetect/Home/HomeViewModel.swift
+- [X] T057 [P] Build a feature coverage matrix that maps formal-scope requirements and user-visible flows to implementation files, automated tests, manual validation evidence, and coverage status in /Users/bernese/git/computer-vision-shoplifting-detection/ios/specs/001-camera-supervisor-p2p/feature-coverage-matrix.md
+- [X] T058 [P] Add or update a helper script that derives feature-to-code and feature-to-test inputs for the coverage matrix in /Users/bernese/git/computer-vision-shoplifting-detection/ios/scripts/generate_feature_coverage_matrix.py
+- [ ] T059 Run the updated simulator regression subset and required full suite inventory, then document results and uncovered gaps in /Users/bernese/git/computer-vision-shoplifting-detection/ios/specs/001-camera-supervisor-p2p/feature-coverage-matrix.md and /Users/bernese/git/computer-vision-shoplifting-detection/ios/specs/001-camera-supervisor-p2p/quickstart.md
+- [ ] T060 Run the updated physical-device checklist from /Users/bernese/git/computer-vision-shoplifting-detection/ios/specs/001-camera-supervisor-p2p/quickstart.md, capture pass-fail notes and measured times for Pose Preview, detection, pairing, and disconnect recovery, and record findings in /Users/bernese/git/computer-vision-shoplifting-detection/ios/specs/001-camera-supervisor-p2p/quickstart.md and /Users/bernese/git/computer-vision-shoplifting-detection/ios/specs/001-camera-supervisor-p2p/feature-coverage-matrix.md
+- [ ] T061 Capture quantified on-device performance evidence for camera fps, inference latency, Pose Preview stability, and memory footprint in /Users/bernese/git/computer-vision-shoplifting-detection/ios/specs/001-camera-supervisor-p2p/feature-coverage-matrix.md and /Users/bernese/git/computer-vision-shoplifting-detection/ios/specs/001-camera-supervisor-p2p/quickstart.md
 
 ---
 
@@ -155,8 +195,10 @@
 - **Phase 3: US1**: Depends on Phase 2 only and is the MVP.
 - **Phase 4: US3**: Depends on Phase 2 and can proceed after US1 if working sequentially.
 - **Phase 5: US2**: Depends on Phase 2 and on US3 pairing/stream contracts for full end-to-end behavior.
-- **Phase 6: US4**: Depends on Phase 2 and can proceed in parallel with later stories once the shared services are stable.
-- **Phase 7: Polish**: Depends on all desired user stories being complete.
+- **Phase 6: US4**: Depends on Phase 2 and can proceed in parallel with later stories once shared services are stable.
+- **Phase 7: US5**: Depends on Phase 2 and can proceed in parallel with later Smart Camera work once camera and pose services are stable.
+- **Phase 8: Polish**: Depends on all desired user stories being complete.
+- **Phase 9: Upgrade & Stability Hardening**: Depends on Phases 3-8 and focuses on regression coverage, bug fixing, feature coverage reporting, and quantified validation evidence.
 
 ### User Story Dependencies
 
@@ -164,6 +206,7 @@
 - **US3 (P2)**: No dependency on other user stories after foundational work.
 - **US2 (P2)**: Depends on US3 for authenticated pairing and live stream sessions, but remains independently testable once those services exist.
 - **US4 (P3)**: No hard dependency on other user stories after foundational work.
+- **US5 (P3)**: Depends on foundational camera and pose services but not on supervisor workflows.
 
 ### Within Each User Story
 
@@ -176,11 +219,14 @@
 
 - `T002` and `T003` can run in parallel after `T001`.
 - `T004` to `T007` can run in parallel during foundational work.
+- `T041` and `T042` were parallelizable for US5 test coverage.
+- `T049` and `T051` can run in parallel during cross-cutting hardening.
+- `T053` and `T054` can run in parallel before the hardening bug-fix pass.
+- `T057` and `T058` can run in parallel while regression fixes are underway.
 - US1 test tasks `T010` to `T014` can run in parallel.
 - US3 test tasks `T020` to `T022` can run in parallel.
 - US2 test tasks `T028` to `T030` can run in parallel.
 - US4 test tasks `T035` to `T037` can run in parallel.
-- US4 can proceed in parallel with US3 once foundational dependency injection is done.
 
 ---
 
@@ -200,12 +246,11 @@ Task: "Add framed handshake and heartbeat timeout tests in /Users/bernese/git/co
 Task: "Add onboarding QR display/scan and invalid-token UI tests in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectUITests/OnboardingUITests.swift and /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectUITests/RoleSelectionUITests.swift"
 ```
 
-## Parallel Example: User Story 4
+## Parallel Example: User Story 5
 
 ```bash
-Task: "Add onboarding view-model tests for page progression, role confirmation, persistence writes, and permission denial handling in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectTests/Onboarding/OnboardingViewModelTests.swift"
-Task: "Add home routing tests for persisted-role launch behavior in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectTests/Home/HomeViewModelTests.swift"
-Task: "Add full onboarding and relaunch UI coverage in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectUITests/OnboardingUITests.swift"
+Task: "Add Pose Preview view-model tests in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectTests/Detection/PosePreviewViewModelTests.swift"
+Task: "Add Pose Preview UI coverage in /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectUITests/PosePreviewUITests.swift and /Users/bernese/git/computer-vision-shoplifting-detection/ios/ShopliftDetectUITests/DetectionToggleUITests.swift"
 ```
 
 ## Implementation Strategy
@@ -214,7 +259,7 @@ Task: "Add full onboarding and relaunch UI coverage in /Users/bernese/git/comput
 
 1. Complete Setup and Foundational phases.
 2. Complete US1.
-3. Validate detection MVP on device before starting networking-heavy work.
+3. Validate the detection MVP on device before starting networking-heavy work.
 
 ### Incremental Delivery
 
@@ -222,7 +267,9 @@ Task: "Add full onboarding and relaunch UI coverage in /Users/bernese/git/comput
 2. Add US3 for authenticated pairing.
 3. Add US2 for supervisor monitoring.
 4. Add US4 for polished onboarding/routing persistence.
-5. Finish with cross-cutting validation and regression fixes.
+5. Add US5 for formal Pose Preview diagnostics.
+6. Finish with cross-cutting validation and regression fixes.
+7. Complete the upgrade hardening phase with the feature coverage matrix and updated device checklist.
 
 ### Parallel Team Strategy
 
@@ -230,11 +277,13 @@ Task: "Add full onboarding and relaunch UI coverage in /Users/bernese/git/comput
 2. After Phase 2:
    - Developer A: US1
    - Developer B: US3
-   - Developer C: US4
+   - Developer C: US4/US5
 3. Once US3 stabilizes, a developer takes US2 on top of the shared networking contracts.
+4. After delivered stories are stable, one developer focuses on Phase 9 reporting/hardening while others resolve surfaced bugs.
 
 ## Notes
 
 - All tasks use the required checklist format.
 - Story phases are structured for TDD: tests first, implementation second.
-- US2 is intentionally placed after US3 because pairing and framed transport are prerequisites for realistic supervisor monitoring.
+- US2 intentionally follows US3 because pairing and framed transport are prerequisites for realistic supervisor monitoring.
+- The feature coverage matrix is feature-traceability reporting, not raw compiler line coverage.
