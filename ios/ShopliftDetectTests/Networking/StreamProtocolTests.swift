@@ -31,6 +31,7 @@ final class StreamProtocolTests: XCTestCase {
         let streaming = StreamingService(nowProvider: { Date(timeIntervalSince1970: 100) })
         let heartbeat = try StreamProtocol().encode(.heartbeat(timestamp: 100))
 
+        streaming.noteConnectionEstablished(at: Date(timeIntervalSince1970: 99), encrypted: true)
         let message = try streaming.receive(heartbeat)
 
         XCTAssertEqual(message, .heartbeat(timestamp: 100))

@@ -83,4 +83,46 @@ final class PairingServiceTests: XCTestCase {
         XCTAssertEqual(sut.connectionState, .failed(PairingFailureReason.connectionLimitReached.rawValue))
         XCTAssertEqual(sut.sessions.count, 4)
     }
+
+    func test_connectToCamera_afterExpiredToken_generatesFreshPayloadThatConnects() {
+        final class TokenBox: @unchecked Sendable {
+            var values = ["OLDTOKEN", "NEWTOKEN"]
+        }
+
+        let tokenBox = TokenBox()
+        let sut = PairingService(
+            lanHostProvider: { "192.168.1.24" },
+            portProvider: { 7890 },
+            tokenProvider: { tokenBox.values.removeFirst() }
+        )
+
+        let expiredPayload = sut.prepareCameraPairing(deviceName: "Aisle Camera") ?? ""
+        sut.expireCameraPairing()
+        sut.connectToCamera(using: expiredPayload, deviceName: "Front Desk iPad")
+        XCTAssertEqual(sut.connectionState, .failed(PairingFailureReason.expiredToken.rawValue))
+
+        let freshPayload = sut.prepareCameraPairing(deviceName: "Aisle Camera") ?? ""
+        sut.connectToCamera(using: freshPayload, deviceName: "Front Desk iPad")
+
+        XCTAssertEqual(sut.connectionState, .connected)
+        XCTAssertEqual(sut.currentToken?.value, "NEWTOKEN")
+    }
+
+    func test_connectToCamera_afterInvalidToken_canRecoverWithValidPayload() {
+        let sut = PairingService(externalValidationToken: "VALID123")
+
+        sut.connectToCamera(
+            using: "sdlink://192.168.1.24:7890?token=WRONG999",
+            deviceName: "Front Desk iPad"
+        )
+        XCTAssertEqual(sut.connectionState, .failed(PairingFailureReason.invalidToken.rawValue))
+
+        sut.connectToCamera(
+            using: "sdlink://192.168.1.24:7890?token=VALID123",
+            deviceName: "Front Desk iPad"
+        )
+
+        XCTAssertEqual(sut.connectionState, .connected)
+        XCTAssertEqual(sut.currentSession?.connectionState, .connected)
+    }
 }

@@ -33,6 +33,15 @@ targets:
         SWIFT_STRICT_CONCURRENCY: complete
         CODE_SIGN_IDENTITY: "-"
         CODE_SIGNING_REQUIRED: NO
+    preBuildScripts:
+      - name: SwiftLint
+        basedOnDependencyAnalysis: false
+        script: |
+          if command -v swiftlint >/dev/null; then
+            swiftlint --strict --config "${SRCROOT}/.swiftlint.yml"
+          else
+            echo "warning: SwiftLint is not installed; install it to enforce .swiftlint.yml locally."
+          fi
     dependencies:
       - sdk: Vision.framework
       - sdk: AVFoundation.framework

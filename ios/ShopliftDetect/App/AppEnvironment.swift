@@ -120,6 +120,7 @@ final class AppEnvironment: ObservableObject {
         if arguments.contains("--ui-test-supervisor-feed"),
            let session = pairingService.sessions.first {
             streamingService.registerFeed(session)
+            streamingService.noteConnectionEstablished(at: Date())
             streamingService.publishFrame(
                 VideoFrame(timestamp: 1, jpegData: Data([0x01, 0x02]), width: 120, height: 90),
                 for: session.sessionID

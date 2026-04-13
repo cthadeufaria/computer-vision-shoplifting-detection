@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 77;
+	objectVersion = 63;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -101,6 +101,8 @@
 		F7334E370FBDDFAEE264F525 /* PairingSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F0D1C97F48FFD0F8728C418 /* PairingSession.swift */; };
 		F86D9C32EDA9918C62D71F85 /* SupervisorMonitoringUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E3BC743524FA8F4D2CA5F4B /* SupervisorMonitoringUITests.swift */; };
 		FC5BA15712B60F01553E1DFE /* FrameBufferTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08B0B5E64E637835B936739B /* FrameBufferTests.swift */; };
+		B00000000000000000000001 /* SecureTransport.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00000000000000000000002 /* SecureTransport.swift */; };
+		B00000000000000000000003 /* EncryptedTransportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00000000000000000000004 /* EncryptedTransportTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -164,7 +166,7 @@
 		5AA5EB84DC02A1169E590848 /* SupervisorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupervisorView.swift; sourceTree = "<group>"; };
 		61D757002FF71DA72DCAA366 /* DeviceRole.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceRole.swift; sourceTree = "<group>"; };
 		61FF0EA3C4628DDF5A83C028 /* DetectionResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetectionResult.swift; sourceTree = "<group>"; };
-		620A741B88EFC23F02912327 /* STGNFModel.mlpackage */ = {isa = PBXFileReference; path = STGNFModel.mlpackage; sourceTree = "<group>"; };
+		620A741B88EFC23F02912327 /* STGNFModel.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; path = STGNFModel.mlpackage; sourceTree = "<group>"; };
 		6359123FEAC1B25977609A49 /* PoseNormalizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoseNormalizerTests.swift; sourceTree = "<group>"; };
 		648057EC4BCBB3707A35C50D /* ShopliftDetectApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopliftDetectApp.swift; sourceTree = "<group>"; };
 		6A3422CBFAC03A05E563A92D /* RoleSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoleSelectionView.swift; sourceTree = "<group>"; };
@@ -194,7 +196,7 @@
 		9AA818872EE8E8EB5714B4AF /* MockPoseEstimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPoseEstimator.swift; sourceTree = "<group>"; };
 		9AC92BE2C676E071B356AB39 /* CoreML.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreML.framework; path = System/Library/Frameworks/CoreML.framework; sourceTree = SDKROOT; };
 		A31C1A4351D53D17D0F9CFD2 /* MockPermissionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPermissionService.swift; sourceTree = "<group>"; };
-		A5C6B931B966482BBF5AFFF6 /* ShopliftDetect.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = ShopliftDetect.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A5C6B931B966482BBF5AFFF6 /* ShopliftDetect.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ShopliftDetect.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A7288FDA2CC4C844F197D2A8 /* AnomalyScorer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnomalyScorer.swift; sourceTree = "<group>"; };
 		A953C6BD7B0F8564C038EBE7 /* PersistenceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceService.swift; sourceTree = "<group>"; };
 		AAAC584F33E12ED8B1B0F803 /* DeviceRotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceRotation.swift; sourceTree = "<group>"; };
@@ -219,6 +221,8 @@
 		F24C2D68A487CA54A3F1E0E5 /* STGNFModelWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = STGNFModelWrapper.swift; sourceTree = "<group>"; };
 		FE11F6104EAD80C980FDDA61 /* CameraSessionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraSessionTests.swift; sourceTree = "<group>"; };
 		FF9DE054FD4956403008759B /* SupervisorHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupervisorHomeView.swift; sourceTree = "<group>"; };
+		B00000000000000000000002 /* SecureTransport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureTransport.swift; sourceTree = "<group>"; };
+		B00000000000000000000004 /* EncryptedTransportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncryptedTransportTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -371,12 +375,13 @@
 				61D757002FF71DA72DCAA366 /* DeviceRole.swift */,
 				0F5B1579E81E5BE137DA61EC /* PairingService.swift */,
 				1F0D1C97F48FFD0F8728C418 /* PairingSession.swift */,
-				7BBE1AF51B54951C34A4EC18 /* PairingToken.swift */,
-				DB6D0F7A5A2E49028E4F9715 /* QRCodeDisplayView.swift */,
-				9559C1EFAC646A22FE7B20DC /* QRScannerView.swift */,
-				053B1BFDA7B8CB908021B62E /* StreamingService.swift */,
-				3656C8B60726836AC8F1BEF6 /* StreamProtocol.swift */,
-				6BA8C505644282FAF4A416CA /* VideoFrame.swift */,
+					7BBE1AF51B54951C34A4EC18 /* PairingToken.swift */,
+					DB6D0F7A5A2E49028E4F9715 /* QRCodeDisplayView.swift */,
+					9559C1EFAC646A22FE7B20DC /* QRScannerView.swift */,
+					B00000000000000000000002 /* SecureTransport.swift */,
+					053B1BFDA7B8CB908021B62E /* StreamingService.swift */,
+					3656C8B60726836AC8F1BEF6 /* StreamProtocol.swift */,
+					6BA8C505644282FAF4A416CA /* VideoFrame.swift */,
 			);
 			path = Networking;
 			sourceTree = "<group>";
@@ -518,12 +523,13 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		CC7BBB0AD68959699857E90C /* Networking */ = {
-			isa = PBXGroup;
-			children = (
-				2D1154AB718103CC815CAC5A /* PairingServiceTests.swift */,
-				20501840E4E51292376E9682 /* StreamProtocolTests.swift */,
-			);
+			CC7BBB0AD68959699857E90C /* Networking */ = {
+				isa = PBXGroup;
+				children = (
+					B00000000000000000000004 /* EncryptedTransportTests.swift */,
+					2D1154AB718103CC815CAC5A /* PairingServiceTests.swift */,
+					20501840E4E51292376E9682 /* StreamProtocolTests.swift */,
+				);
 			path = Networking;
 			sourceTree = "<group>";
 		};
@@ -597,6 +603,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = C9356C0626D66B4A3F3816E8 /* Build configuration list for PBXNativeTarget "ShopliftDetect" */;
 			buildPhases = (
+				B00000000000000000000005 /* SwiftLint */,
 				4200247D31D5F032EE8CDCED /* Sources */,
 				2268D3CC8C0C4A9C9B0B77E6 /* Resources */,
 				BEFDC817BB247A31043671F7 /* Frameworks */,
@@ -654,7 +661,6 @@
 			);
 			mainGroup = A1A5300727E7105447286583;
 			minimizedProjectReferenceProxies = 1;
-			preferredProjectObjectVersion = 77;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -676,6 +682,28 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		B00000000000000000000005 /* SwiftLint */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftLint;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if command -v swiftlint >/dev/null; then\n  swiftlint --strict --config \"${SRCROOT}/.swiftlint.yml\"\nelse\n  echo \"warning: SwiftLint is not installed; install it to enforce .swiftlint.yml locally.\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		066D7D0CEDF6D825BD89C440 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -692,6 +720,7 @@
 				69183E574A283293AC9D3847 /* MockCameraSession.swift in Sources */,
 				2FCA059696264B0E2F3D99A4 /* MockKeypointConverter.swift in Sources */,
 				40A2C48995EEDE3AE84D9447 /* MockPairingService.swift in Sources */,
+				B00000000000000000000003 /* EncryptedTransportTests.swift in Sources */,
 				23C4A2B80DC1EAF7990A1D08 /* MockPermissionService.swift in Sources */,
 				D968AABCE97646897844D64C /* MockPersistenceService.swift in Sources */,
 				F145E4829145C2D81B4BF85C /* MockPoseEstimator.swift in Sources */,
@@ -763,6 +792,7 @@
 				43E53A4D7A00B762C42C52E0 /* SettingsServiceProtocol.swift in Sources */,
 				738525DA0A87F14848D03A26 /* ShopliftDetectApp.swift in Sources */,
 				4A359BE27193D29472625C30 /* SkeletonOverlayView.swift in Sources */,
+				B00000000000000000000001 /* SecureTransport.swift in Sources */,
 				01C0B617886E62FFB0BEB5D8 /* StreamProtocol.swift in Sources */,
 				4C1476677899BA22E69C69B3 /* StreamingService.swift in Sources */,
 				BD6E4CD0735779B6CC80F37D /* StreamingServiceProtocol.swift in Sources */,
@@ -881,8 +911,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGNING_REQUIRED = NO;
-				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 599WAZ6282;
 				INFOPLIST_FILE = ShopliftDetect/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -890,6 +922,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.shopliftdetect.app;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
 				SWIFT_STRICT_CONCURRENCY = complete;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1015,8 +1048,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGNING_REQUIRED = NO;
-				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 599WAZ6282;
 				INFOPLIST_FILE = ShopliftDetect/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1024,6 +1059,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.shopliftdetect.app;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
 				SWIFT_STRICT_CONCURRENCY = complete;
 				TARGETED_DEVICE_FAMILY = "1,2";

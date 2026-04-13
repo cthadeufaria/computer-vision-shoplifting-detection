@@ -13,7 +13,9 @@ final class PosePreviewViewModel: ObservableObject {
     private let estimator: any PoseEstimatorProtocol
     private let converter: any KeypointConverterProtocol
     private var cancellables = Set<AnyCancellable>()
+    private var isProcessingFrame = false
     private var frameIndex = 0
+    private var processingSessionID = UUID()
 
     var previewLayer: AVCaptureVideoPreviewLayer { camera.previewLayer }
 
@@ -28,12 +30,23 @@ final class PosePreviewViewModel: ObservableObject {
     }
 
     func start() throws {
+        processingSessionID = UUID()
+        isProcessingFrame = false
+        debugInfo = ""
         try camera.start()
+        let sessionID = processingSessionID
         camera.framePublisher
             .sink { [weak self] pixelBuffer in
                 guard let self else { return }
+                guard !isProcessingFrame else { return }
+                isProcessingFrame = true
                 Task { [weak self] in
-                    await self?.processFrame(pixelBuffer)
+                    guard let self else { return }
+                    await self.processFrame(pixelBuffer, sessionID: sessionID)
+                    await MainActor.run {
+                        guard self.processingSessionID == sessionID else { return }
+                        self.isProcessingFrame = false
+                    }
                 }
             }
             .store(in: &cancellables)
@@ -52,15 +65,19 @@ final class PosePreviewViewModel: ObservableObject {
     }
 
     func stop() {
+        processingSessionID = UUID()
         camera.stop()
         cancellables.removeAll()
+        isProcessingFrame = false
         frameIndex = 0
         skeletons = []
+        debugInfo = ""
     }
 
-    nonisolated private func processFrame(_ pixelBuffer: CVPixelBuffer) async {
+    nonisolated private func processFrame(_ pixelBuffer: CVPixelBuffer, sessionID: UUID) async {
         let snapshot: (Int, any PoseEstimatorProtocol, any KeypointConverterProtocol, UIDeviceOrientation)? = await MainActor.run { [weak self] in
             guard let self else { return nil }
+            guard self.processingSessionID == sessionID else { return nil }
             return (self.frameIndex, self.estimator, self.converter,
                     UIDevice.current.orientation)
         }
@@ -98,6 +115,7 @@ final class PosePreviewViewModel: ObservableObject {
 
         await MainActor.run { [weak self] in
             guard let self else { return }
+            guard self.processingSessionID == sessionID else { return }
             skeletons = currentSkeletons
             frameIndex += 1
 

@@ -74,4 +74,48 @@ final class SupervisorViewModelTests: XCTestCase {
         XCTAssertEqual(sut.grid.tiles.first?.connectionState, .stale)
         XCTAssertNotNil(sut.grid.tiles.first?.latestFrame)
     }
+
+    func test_refreshUpdatesSelectedTileWhenFeedRecoversFromStale() {
+        let pairing = MockPairingService()
+        let streaming = MockStreamingService()
+        let session = PairingSession(
+            sessionID: UUID(uuidString: "99999999-2222-3333-4444-555555555555")!,
+            role: .camera,
+            deviceName: "Aisle 1 Camera",
+            host: "192.168.1.30",
+            port: 7890,
+            connectionState: .stale
+        )
+        pairing.sessions = [session]
+        streaming.feedStates = [
+            SupervisorFeedTileState(
+                sessionID: session.sessionID,
+                deviceName: session.deviceName,
+                connectionState: .stale,
+                latestFrame: VideoFrame(timestamp: 1, jpegData: Data([0x01]), width: 64, height: 64),
+                latestDetections: []
+            )
+        ]
+
+        let sut = SupervisorViewModel(pairing: pairing, streaming: streaming)
+        sut.refresh()
+        let selected = try! XCTUnwrap(sut.grid.tiles.first)
+        sut.select(selected)
+
+        streaming.feedStates = [
+            SupervisorFeedTileState(
+                sessionID: session.sessionID,
+                deviceName: "Recovered Camera Name",
+                connectionState: .connected,
+                latestFrame: VideoFrame(timestamp: 2, jpegData: Data([0x02]), width: 64, height: 64),
+                latestDetections: []
+            )
+        ]
+
+        sut.refresh()
+
+        XCTAssertEqual(sut.selectedTile?.connectionState, .connected)
+        XCTAssertEqual(sut.selectedTile?.deviceName, "Aisle 1 Camera")
+        XCTAssertEqual(sut.selectedTile?.latestFrame?.timestamp, 2)
+    }
 }

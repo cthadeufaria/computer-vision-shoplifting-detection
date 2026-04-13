@@ -193,9 +193,10 @@ These exist in the current codebase and must be resolved before adding new featu
 - Never call `DispatchQueue.main.async` — use `await MainActor.run` or `@MainActor` annotations.
 
 ## Recent Changes
+- 001-camera-supervisor-p2p: Added Swift 6.0 for the app, Python 3 for fixture/model conversion and reporting scripts + SwiftUI, Combine, AVFoundation, Vision, CoreML, Network.framework with TLS parameters, CoreImage, XCTest, XCUITest, XcodeGen, SwiftLin
 - 001-camera-supervisor-p2p: Added Swift 6.0 for the app, Python 3 for fixture/model conversion scripts + SwiftUI, Combine, AVFoundation, Vision, CoreML, Network.framework, CoreImage, XCTest, XCUITest, XcodeGen
 - 001-camera-supervisor-p2p: Added [if applicable, e.g., PostgreSQL, CoreData, files or N/A]
 
 ## Active Technologies
-- Swift 6.0 for the app, Python 3 for fixture/model conversion scripts + SwiftUI, Combine, AVFoundation, Vision, CoreML, Network.framework, CoreImage, XCTest, XCUITest, XcodeGen (001-camera-supervisor-p2p)
-- UserDefaults via `PersistenceService`; bundled `.mlpackage` and JSON fixtures in app/test resources; no database (001-camera-supervisor-p2p)
+- Swift 6.0 for the app, Python 3 for fixture/model conversion and reporting scripts + SwiftUI, Combine, AVFoundation, Vision, CoreML, Network.framework with TLS parameters, CoreImage, XCTest, XCUITest, XcodeGen, SwiftLin (001-camera-supervisor-p2p)
+- UserDefaults via `PersistenceService`; bundled `.mlpackage` and JSON fixtures in app/test resources; markdown planning artifacts in `specs/`; no database (001-camera-supervisor-p2p)

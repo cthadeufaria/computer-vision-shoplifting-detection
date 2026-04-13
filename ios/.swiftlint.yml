@@ -1,0 +1,14 @@
+included:
+  - ShopliftDetect
+  - ShopliftDetectTests
+  - ShopliftDetectUITests
+
+excluded:
+  - ShopliftDetect.xcodeproj
+  - ShopliftDetect/Resources/STGNFModel.mlpackage
+  - DerivedData
+
+only_rules:
+  - trailing_whitespace
+
+reporter: xcode

@@ -121,4 +121,28 @@ final class OnboardingUITests: XCTestCase {
         app.launch()
         XCTAssertTrue(app.buttons["startDetectionButton"].waitForExistence(timeout: 3))
     }
+
+    func testSupervisorOnboardingSkippedOnSecondLaunch() {
+        app.terminate()
+        app.launchArguments = [
+            "--reset-onboarding",
+            "--ui-test-camera-authorized",
+            "--ui-test-pairing-payload=sdlink://192.168.1.24:7890?token=VALID123"
+        ]
+        app.launch()
+
+        app.buttons["nextButton"].tap()
+        app.buttons["nextButton"].tap()
+        app.buttons["supervisorRoleButton"].tap()
+        app.buttons["nextButton"].tap()
+        app.buttons["scanQRCodeButton"].tap()
+        app.buttons["grantCameraAccessButton"].tap()
+        XCTAssertTrue(app.staticTexts["supervisorHomeTitle"].waitForExistence(timeout: 5))
+
+        app.terminate()
+        app.launchArguments = []
+        app.launch()
+
+        XCTAssertTrue(app.staticTexts["supervisorHomeTitle"].waitForExistence(timeout: 3))
+    }
 }

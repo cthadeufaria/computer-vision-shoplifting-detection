@@ -8,11 +8,12 @@ final class CameraSession: NSObject, ObservableObject, CameraSessionProtocol {
     private let captureSession = AVCaptureSession()
     private let videoOutput = AVCaptureVideoDataOutput()
     private let sessionQueue = DispatchQueue(label: "com.shopliftdetect.camera", qos: .userInitiated)
+    private var isConfigured = false
     let previewLayer: AVCaptureVideoPreviewLayer
 
     private let frameSubject = PassthroughSubject<CVPixelBuffer, Never>()
     var framePublisher: AnyPublisher<CVPixelBuffer, Never> { frameSubject.eraseToAnyPublisher() }
-    
+
     override init() {
         previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
         previewLayer.videoGravity = .resizeAspectFill
@@ -25,44 +26,54 @@ final class CameraSession: NSObject, ObservableObject, CameraSessionProtocol {
         }
 
         try sessionQueue.sync {
-            captureSession.beginConfiguration()
-            defer { captureSession.commitConfiguration() }
+            if !isConfigured {
+                captureSession.beginConfiguration()
+                do {
+                    captureSession.sessionPreset = .hd1920x1080
 
-            captureSession.sessionPreset = .hd1920x1080
-
-            // Prefer back camera on iPhone; fall back to any available camera (Mac/simulator).
-            if captureSession.inputs.isEmpty {
-                let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
-                    ?? AVCaptureDevice.default(for: .video)
-                guard let device,
-                      let input = try? AVCaptureDeviceInput(device: device),
-                      captureSession.canAddInput(input) else {
-                    throw CameraError.deviceUnavailable
-                }
-                captureSession.addInput(input)
-            }
-
-            if captureSession.outputs.isEmpty {
-                videoOutput.setSampleBufferDelegate(self, queue: sessionQueue)
-                videoOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA]
-                guard captureSession.canAddOutput(videoOutput) else {
-                    throw CameraError.outputUnavailable
-                }
-                captureSession.addOutput(videoOutput)
-
-                // Rotate buffer to portrait so Vision receives an upright image and can use
-                // .up orientation (no rotation math). This also aligns layerPointConverted's
-                // coordinate space with Vision's output, so skeleton overlay requires no inversion.
-                if let connection = videoOutput.connection(with: .video) {
-                    if #available(iOS 17.0, *), connection.isVideoRotationAngleSupported(90) {
-                        connection.videoRotationAngle = 90
-                    } else if connection.isVideoOrientationSupported {
-                        connection.videoOrientation = .portrait
+                    // Prefer back camera on iPhone; fall back to any available camera (Mac/simulator).
+                    if captureSession.inputs.isEmpty {
+                        let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
+                            ?? AVCaptureDevice.default(for: .video)
+                        guard let device,
+                              let input = try? AVCaptureDeviceInput(device: device),
+                              captureSession.canAddInput(input) else {
+                            throw CameraError.deviceUnavailable
+                        }
+                        captureSession.addInput(input)
                     }
+
+                    if captureSession.outputs.isEmpty {
+                        videoOutput.setSampleBufferDelegate(self, queue: sessionQueue)
+                        videoOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA]
+                        guard captureSession.canAddOutput(videoOutput) else {
+                            throw CameraError.outputUnavailable
+                        }
+                        captureSession.addOutput(videoOutput)
+
+                        // Rotate buffer to portrait so Vision receives an upright image and can use
+                        // .up orientation (no rotation math). This also aligns layerPointConverted's
+                        // coordinate space with Vision's output, so skeleton overlay requires no inversion.
+                        if let connection = videoOutput.connection(with: .video) {
+                            if #available(iOS 17.0, *), connection.isVideoRotationAngleSupported(90) {
+                                connection.videoRotationAngle = 90
+                            } else if connection.isVideoOrientationSupported {
+                                connection.videoOrientation = .portrait
+                            }
+                        }
+                    }
+
+                    captureSession.commitConfiguration()
+                    isConfigured = true
+                } catch {
+                    captureSession.commitConfiguration()
+                    throw error
                 }
             }
 
-            captureSession.startRunning()
+            if !captureSession.isRunning {
+                captureSession.startRunning()
+            }
         }
         // Required for UIDevice.current.orientation to reflect device rotation.
         UIDevice.current.beginGeneratingDeviceOrientationNotifications()

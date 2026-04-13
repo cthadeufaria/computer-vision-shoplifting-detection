@@ -4,16 +4,20 @@ import UIKit
 
 /// Runs VNDetectHumanBodyPoseRequest on camera frames.
 final class PoseEstimator: @unchecked Sendable, PoseEstimatorProtocol {
-    private let requestHandler = VNSequenceRequestHandler()
-
     func detectPoses(
         in pixelBuffer: CVPixelBuffer,
         deviceOrientation: UIDeviceOrientation = .portrait
     ) throws -> [VNHumanBodyPoseObservation] {
         let request = VNDetectHumanBodyPoseRequest()
-        try requestHandler.perform([request], on: pixelBuffer,
-                                   orientation: Self.imageOrientation(for: pixelBuffer,
-                                                                      deviceOrientation: deviceOrientation))
+        let requestHandler = VNSequenceRequestHandler()
+        try requestHandler.perform(
+            [request],
+            on: pixelBuffer,
+            orientation: Self.imageOrientation(
+                for: pixelBuffer,
+                deviceOrientation: deviceOrientation
+            )
+        )
         return request.results ?? []
     }
 

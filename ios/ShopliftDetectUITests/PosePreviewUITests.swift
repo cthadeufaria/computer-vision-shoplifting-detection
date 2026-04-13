@@ -19,7 +19,8 @@ final class PosePreviewUITests: XCTestCase {
 
     func testPosePreviewShowsSkeletonCountBadge() {
         app.buttons["posePreviewButton"].tap()
-        XCTAssertTrue(app.staticTexts["posePreviewCount"].waitForExistence(timeout: 3))
+        let countBadge = app.descendants(matching: .any)["posePreviewCount"]
+        XCTAssertTrue(countBadge.waitForExistence(timeout: 3))
     }
 
     func testPosePreviewShowsCameraFeed() {
@@ -40,5 +41,23 @@ final class PosePreviewUITests: XCTestCase {
         }
 
         XCTAssertTrue(app.buttons["startDetectionButton"].waitForExistence(timeout: 3))
+    }
+
+    func testPosePreviewCanBeRepeatedlyPresentedAndDismissedBeforeStartingDetection() {
+        for _ in 0..<3 {
+            app.buttons["posePreviewButton"].tap()
+            let dismiss = app.buttons["posePreviewDismissButton"]
+            XCTAssertTrue(dismiss.waitForExistence(timeout: 3))
+            dismiss.tap()
+            XCTAssertTrue(app.buttons["startDetectionButton"].waitForExistence(timeout: 3))
+        }
+
+        app.terminate()
+        app = XCUIApplication()
+        app.launchArguments = ["--skip-onboarding", "--ui-test-detection-preview"]
+        app.launch()
+        app.buttons["startDetectionButton"].tap()
+
+        XCTAssertTrue(app.buttons["xmark.circle.fill"].waitForExistence(timeout: 3))
     }
 }

@@ -20,8 +20,10 @@ final class DetectionViewModel: ObservableObject {
 
     // Per-track frame buffers keyed by IoU-matched bounding box track IDs.
     private var trackBuffers: [String: FrameBuffer] = [:]
+    private var isProcessingFrame = false
     private var frameIndex = 0
     private var cancellables = Set<AnyCancellable>()
+    private var processingSessionID = UUID()
 
     var previewLayer: AVCaptureVideoPreviewLayer { camera.previewLayer }
 
@@ -64,13 +66,23 @@ final class DetectionViewModel: ObservableObject {
 
     func start() throws {
         modelRunner = try? STGNFModelRunner()
+        processingSessionID = UUID()
+        isProcessingFrame = false
         try camera.start()
         streaming.startStreaming()
+        let sessionID = processingSessionID
         camera.framePublisher
             .sink { [weak self] pixelBuffer in
                 guard let self else { return }
+                guard !isProcessingFrame else { return }
+                isProcessingFrame = true
                 Task { [weak self] in
-                    await self?.processFrame(pixelBuffer)
+                    guard let self else { return }
+                    await self.processFrame(pixelBuffer, sessionID: sessionID)
+                    await MainActor.run {
+                        guard self.processingSessionID == sessionID else { return }
+                        self.isProcessingFrame = false
+                    }
                 }
             }
             .store(in: &cancellables)
@@ -78,6 +90,7 @@ final class DetectionViewModel: ObservableObject {
     }
 
     func stop() {
+        processingSessionID = UUID()
         camera.stop()
         streaming.stopStreaming()
         for feed in streaming.feedStates {
@@ -85,6 +98,7 @@ final class DetectionViewModel: ObservableObject {
         }
         cancellables.removeAll()
         trackBuffers.removeAll()
+        isProcessingFrame = false
         frameIndex = 0
         detectionState = .idle
         skeletons = []
@@ -92,10 +106,11 @@ final class DetectionViewModel: ObservableObject {
 
     // nonisolated so Vision and CoreML run on the cooperative thread pool,
     // never on the main thread. MainActor state is accessed via await MainActor.run.
-    nonisolated private func processFrame(_ pixelBuffer: CVPixelBuffer) async {
+    nonisolated private func processFrame(_ pixelBuffer: CVPixelBuffer, sessionID: UUID) async {
         // Snapshot the Sendable objects we need off MainActor.
         let snapshot: (Int, any PoseEstimatorProtocol, any KeypointConverterProtocol, any AnomalyScorerProtocol, STGNFModelRunner?, UIDeviceOrientation)? = await MainActor.run { [weak self] in
             guard let self else { return nil }
+            guard self.processingSessionID == sessionID else { return nil }
             return (self.frameIndex, self.estimator, self.converter, self.scorer,
                     self.modelRunner, UIDevice.current.orientation)
         }
@@ -136,7 +151,9 @@ final class DetectionViewModel: ObservableObject {
                    let score = try? runner.runInference(on: mlArray) {
                     let result = scor.classify(score: score, isWarmup: false)
                     await MainActor.run { [weak self] in
-                        self?.detectionState = .running(latestResult: result)
+                        guard let self else { return }
+                        guard self.processingSessionID == sessionID else { return }
+                        self.detectionState = .running(latestResult: result)
                     }
                 }
             }
@@ -145,6 +162,7 @@ final class DetectionViewModel: ObservableObject {
         // Commit UI updates.
         await MainActor.run { [weak self] in
             guard let self else { return }
+            guard self.processingSessionID == sessionID else { return }
             skeletons = currentSkeletons
             frameIndex += 1
             publishSupervisorUpdates(for: currentSkeletons)
@@ -152,12 +170,15 @@ final class DetectionViewModel: ObservableObject {
 
         // Warmup counter update (FrameBuffer.count is async — actor isolated).
         let firstBuffer: FrameBuffer? = await MainActor.run { [weak self] in
-            self?.trackBuffers.values.first
+            guard let self else { return nil }
+            guard self.processingSessionID == sessionID else { return nil }
+            return self.trackBuffers.values.first
         }
         if let firstBuffer {
             let count = await firstBuffer.count
             await MainActor.run { [weak self] in
                 guard let self, case .warmingUp = detectionState else { return }
+                guard self.processingSessionID == sessionID else { return }
                 detectionState = .warmingUp(framesCollected: count, framesNeeded: FrameBuffer.capacity)
             }
         }

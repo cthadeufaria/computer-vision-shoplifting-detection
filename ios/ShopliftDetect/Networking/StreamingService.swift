@@ -6,32 +6,59 @@ final class StreamingService: StreamingServiceProtocol {
     private(set) var connectionState: ConnectionState = .idle
     private(set) var latestHeartbeatAt: Date?
     private(set) var feedStates: [SupervisorFeedTileState] = []
+    private(set) var isEncryptedChannelEstablished = false
 
     private let streamProtocol: StreamProtocol
     private let nowProvider: () -> Date
     private let timeoutInterval: TimeInterval
+    private let secureTransport: any SecureTransportConfiguring
+
+    var isEncryptedTransportRequired: Bool {
+        secureTransport.requiresEncryptedTransport
+    }
 
     init(
         streamProtocol: StreamProtocol = StreamProtocol(),
         timeoutInterval: TimeInterval = 5,
-        nowProvider: @escaping () -> Date = Date.init
+        nowProvider: @escaping () -> Date = Date.init,
+        secureTransport: any SecureTransportConfiguring = NetworkSecureTransportConfiguration()
     ) {
         self.streamProtocol = streamProtocol
         self.timeoutInterval = timeoutInterval
         self.nowProvider = nowProvider
+        self.secureTransport = secureTransport
     }
 
     func startStreaming() {
         isStreaming = true
+        _ = secureTransport.makeParameters()
     }
 
     func stopStreaming() {
         isStreaming = false
+        isEncryptedChannelEstablished = false
     }
 
     func noteConnectionEstablished(at date: Date = Date()) {
+        noteConnectionEstablished(at: date, encrypted: true)
+    }
+
+    func noteConnectionEstablished(at date: Date = Date(), encrypted: Bool) {
+        do {
+            try secureTransport.validateEncryptedChannelEstablished(encrypted)
+            isEncryptedChannelEstablished = encrypted
+            latestHeartbeatAt = date
+            connectionState = .connected
+        } catch {
+            isEncryptedChannelEstablished = false
+            connectionState = .failed(PairingFailureReason.encryptedChannelUnavailable.rawValue)
+        }
+    }
+
+    func noteEncryptedConnectionEstablished(at date: Date = Date()) {
         latestHeartbeatAt = date
         connectionState = .connected
+        isEncryptedChannelEstablished = true
     }
 
     func makeHeartbeatMessage(timestamp: UInt64) throws -> Data {
@@ -40,6 +67,7 @@ final class StreamingService: StreamingServiceProtocol {
 
     @discardableResult
     func receive(_ data: Data) throws -> StreamProtocol.Message {
+        try secureTransport.validateEncryptedChannelEstablished(isEncryptedChannelEstablished)
         let message = try streamProtocol.decode(data)
 
         switch message {
@@ -80,6 +108,7 @@ final class StreamingService: StreamingServiceProtocol {
     }
 
     func publishFrame(_ frame: VideoFrame, for sessionID: UUID) {
+        guard canSendFrameData() else { return }
         updateFeed(for: sessionID) { tile in
             tile.latestFrame = frame
             tile.connectionState = .connected
@@ -87,6 +116,7 @@ final class StreamingService: StreamingServiceProtocol {
     }
 
     func publishDetections(_ detections: [DetectionResult], for sessionID: UUID) {
+        guard canSendFrameData() else { return }
         updateFeed(for: sessionID) { tile in
             tile.latestDetections = detections
             tile.connectionState = .connected
@@ -104,5 +134,15 @@ final class StreamingService: StreamingServiceProtocol {
         var tile = feedStates[index]
         update(&tile)
         feedStates[index] = tile
+    }
+
+    private func canSendFrameData() -> Bool {
+        do {
+            try secureTransport.validateEncryptedChannelEstablished(isEncryptedChannelEstablished)
+            return true
+        } catch {
+            connectionState = .failed(PairingFailureReason.encryptedChannelUnavailable.rawValue)
+            return false
+        }
     }
 }

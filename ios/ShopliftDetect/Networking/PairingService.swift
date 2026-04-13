@@ -8,6 +8,7 @@ enum PairingFailureReason: String, Error, Equatable, Sendable {
     case reusedToken = "reused_token"
     case unsupportedVersion = "unsupported_version"
     case connectionLimitReached = "connection_limit_reached"
+    case encryptedChannelUnavailable = "encrypted_channel_unavailable"
 }
 
 struct PairingPayload: Equatable, Sendable {
@@ -48,19 +49,29 @@ final class PairingService: PairingServiceProtocol {
     private let tokenProvider: () -> String
     private let nowProvider: () -> Date
     private let externalValidationToken: String?
+    private let secureTransport: any SecureTransportConfiguring
+    private let encryptedChannelEstablishedProvider: () -> Bool
+
+    var isEncryptedTransportRequired: Bool {
+        secureTransport.requiresEncryptedTransport
+    }
 
     init(
         lanHostProvider: @escaping () -> String = { "192.168.1.24" },
         portProvider: @escaping () -> UInt16 = { 7890 },
         tokenProvider: @escaping () -> String = { UUID().uuidString.replacingOccurrences(of: "-", with: "").prefix(8).uppercased() },
         nowProvider: @escaping () -> Date = Date.init,
-        externalValidationToken: String? = nil
+        externalValidationToken: String? = nil,
+        secureTransport: any SecureTransportConfiguring = NetworkSecureTransportConfiguration(),
+        encryptedChannelEstablishedProvider: @escaping () -> Bool = { true }
     ) {
         self.lanHostProvider = lanHostProvider
         self.portProvider = portProvider
         self.tokenProvider = tokenProvider
         self.nowProvider = nowProvider
         self.externalValidationToken = externalValidationToken
+        self.secureTransport = secureTransport
+        self.encryptedChannelEstablishedProvider = encryptedChannelEstablishedProvider
     }
 
     @discardableResult
@@ -95,6 +106,8 @@ final class PairingService: PairingServiceProtocol {
             connectionState = .connecting
             let payload = try Self.parsePayload(payloadString)
             connectionState = .handshaking
+            _ = secureTransport.makeParameters()
+            try secureTransport.validateEncryptedChannelEstablished(encryptedChannelEstablishedProvider())
             try validateToken(for: payload)
             try validateSupervisorCapacity()
 
@@ -118,6 +131,9 @@ final class PairingService: PairingServiceProtocol {
         } catch let reason as PairingFailureReason {
             currentSession?.connectionState = .failed(reason.rawValue)
             connectionState = .failed(reason.rawValue)
+        } catch SecureTransportError.encryptedChannelUnavailable {
+            currentSession?.connectionState = .failed(PairingFailureReason.encryptedChannelUnavailable.rawValue)
+            connectionState = .failed(PairingFailureReason.encryptedChannelUnavailable.rawValue)
         } catch {
             currentSession?.connectionState = .failed(PairingFailureReason.invalidPayload.rawValue)
             connectionState = .failed(PairingFailureReason.invalidPayload.rawValue)
