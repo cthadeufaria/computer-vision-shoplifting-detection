@@ -11,4 +11,9 @@ final class UserDefaultsSettingsService: SettingsServiceProtocol {
         get { persistence.detectionSettings.anomalyThreshold }
         set { persistence.detectionSettings = DetectionSettings(anomalyThreshold: newValue) }
     }
+
+    var appAppearance: AppAppearance {
+        get { persistence.appAppearance }
+        set { persistence.appAppearance = newValue }
+    }
 }

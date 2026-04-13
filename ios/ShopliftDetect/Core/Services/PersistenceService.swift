@@ -5,6 +5,7 @@ protocol PersistenceServiceProtocol: AnyObject {
     var onboardingComplete: Bool { get set }
     var selectedRole: DeviceRole? { get set }
     var detectionSettings: DetectionSettings { get set }
+    var appAppearance: AppAppearance { get set }
 }
 
 final class UserDefaultsPersistenceService: PersistenceServiceProtocol {
@@ -12,6 +13,7 @@ final class UserDefaultsPersistenceService: PersistenceServiceProtocol {
         static let onboardingComplete = "onboardingComplete"
         static let selectedRole = "selectedRole"
         static let anomalyThreshold = "anomalyThreshold"
+        static let appAppearance = "appAppearance"
     }
 
     var onboardingComplete: Bool {
@@ -41,6 +43,20 @@ final class UserDefaultsPersistenceService: PersistenceServiceProtocol {
         }
         set {
             UserDefaults.standard.set(newValue.anomalyThreshold, forKey: Keys.anomalyThreshold)
+        }
+    }
+
+    var appAppearance: AppAppearance {
+        get {
+            guard let rawValue = UserDefaults.standard.string(forKey: Keys.appAppearance),
+                  let appearance = AppAppearance(rawValue: rawValue) else {
+                return .light
+            }
+
+            return appearance
+        }
+        set {
+            UserDefaults.standard.set(newValue.rawValue, forKey: Keys.appAppearance)
         }
     }
 }
