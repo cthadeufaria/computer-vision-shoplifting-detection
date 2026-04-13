@@ -41,6 +41,11 @@ struct OnboardingView: View {
                     systemImage: viewModel.selectedRole == .camera ? "qrcode" : "qrcode.viewfinder"
                 )
 
+                AppearancePickerView(selectedAppearance: viewModel.selectedAppearance) { appearance in
+                    viewModel.selectAppearance(appearance)
+                }
+                .accessibilityIdentifier("onboardingAppearancePicker")
+
                 if viewModel.selectedRole == .camera {
                     QRCodeDisplayView(
                         payload: viewModel.qrPayload,
@@ -92,5 +97,6 @@ struct OnboardingView: View {
         } message: {
             Text(viewModel.errorMessage ?? "")
         }
+        .screenAppearanceIdentifier("onboardingScreen")
     }
 }

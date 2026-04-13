@@ -15,10 +15,7 @@ struct HomeView: View {
                 case .camera:
                     cameraHome
                 case .supervisor:
-                    SupervisorHomeView(
-                        connectionStatusText: viewModel.pairingStatusText,
-                        viewModel: appEnvironment.makeSupervisorViewModel()
-                    )
+                    supervisorHome
                 }
             }
             .fullScreenCover(isPresented: $viewModel.isCameraStreamingActive) {
@@ -35,10 +32,17 @@ struct HomeView: View {
             }
         }
         .navigationViewStyle(.stack)
+        .screenAppearanceIdentifier("homeScreen")
     }
 
     private var cameraHome: some View {
-        VStack(spacing: 40) {
+        VStack(spacing: 28) {
+            AppearancePickerView(selectedAppearance: viewModel.selectedAppearance) { appearance in
+                viewModel.selectAppearance(appearance)
+            }
+            .padding(.top)
+            .padding(.horizontal)
+
             Spacer()
             Image(systemName: "eye.trianglebadge.exclamationmark")
                 .font(.system(size: 80))
@@ -74,6 +78,21 @@ struct HomeView: View {
                 }
             }
             Spacer()
+        }
+    }
+
+    private var supervisorHome: some View {
+        VStack(spacing: 16) {
+            AppearancePickerView(selectedAppearance: viewModel.selectedAppearance) { appearance in
+                viewModel.selectAppearance(appearance)
+            }
+            .padding(.horizontal)
+            .padding(.top)
+
+            SupervisorHomeView(
+                connectionStatusText: viewModel.pairingStatusText,
+                viewModel: appEnvironment.makeSupervisorViewModel()
+            )
         }
     }
 }
