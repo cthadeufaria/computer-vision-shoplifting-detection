@@ -9,7 +9,8 @@ final class HomeViewModelTests: XCTestCase {
         let sut = HomeViewModel(
             persistence: persistence,
             settings: MockSettingsService(),
-            pairing: MockPairingService()
+            pairing: MockPairingService(),
+            capabilities: MockDeviceCapabilitiesService().currentCapabilities
         )
 
         XCTAssertEqual(sut.selectedRole, .camera)
@@ -22,7 +23,8 @@ final class HomeViewModelTests: XCTestCase {
         let sut = HomeViewModel(
             persistence: MockPersistenceService(),
             settings: settings,
-            pairing: MockPairingService()
+            pairing: MockPairingService(),
+            capabilities: MockDeviceCapabilitiesService().currentCapabilities
         )
 
         XCTAssertEqual(sut.anomalyThreshold, -0.8, accuracy: 0.0001)
@@ -32,7 +34,8 @@ final class HomeViewModelTests: XCTestCase {
         let sut = HomeViewModel(
             persistence: MockPersistenceService(),
             settings: MockSettingsService(),
-            pairing: MockPairingService()
+            pairing: MockPairingService(),
+            capabilities: MockDeviceCapabilitiesService().currentCapabilities
         )
 
         XCTAssertEqual(sut.destination, .camera)
@@ -44,7 +47,8 @@ final class HomeViewModelTests: XCTestCase {
         let sut = HomeViewModel(
             persistence: persistence,
             settings: MockSettingsService(),
-            pairing: MockPairingService()
+            pairing: MockPairingService(),
+            capabilities: MockDeviceCapabilitiesService().currentCapabilities
         )
 
         XCTAssertEqual(sut.destination, .supervisor)
@@ -56,9 +60,29 @@ final class HomeViewModelTests: XCTestCase {
         let sut = HomeViewModel(
             persistence: MockPersistenceService(),
             settings: MockSettingsService(),
-            pairing: pairing
+            pairing: pairing,
+            capabilities: MockDeviceCapabilitiesService().currentCapabilities
         )
 
         XCTAssertEqual(sut.pairingStatusText, "Connected")
+    }
+
+    func test_destination_fallsBackToCameraWhenSupervisorUnsupported() {
+        let persistence = MockPersistenceService()
+        persistence.selectedRole = .supervisor
+        let sut = HomeViewModel(
+            persistence: persistence,
+            settings: MockSettingsService(),
+            pairing: MockPairingService(),
+            capabilities: MockDeviceCapabilitiesService(
+                supportsSupervisorRole: false,
+                supportsOnDeviceInference: false,
+                supportsPosePreview: false
+            ).currentCapabilities
+        )
+
+        XCTAssertEqual(sut.destination, .camera)
+        XCTAssertFalse(sut.canShowPosePreview)
+        XCTAssertEqual(sut.cameraPrimaryActionTitle, "Start Streaming")
     }
 }

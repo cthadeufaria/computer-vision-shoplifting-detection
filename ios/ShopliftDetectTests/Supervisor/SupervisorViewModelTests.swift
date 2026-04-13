@@ -3,7 +3,7 @@ import XCTest
 
 @MainActor
 final class SupervisorViewModelTests: XCTestCase {
-    func test_refreshLoadsTilesFromStreamingService() {
+    func test_refreshLoadsTilesFromStreamingService() async {
         let pairing = MockPairingService()
         let streaming = MockStreamingService()
         let session = PairingSession(
@@ -24,15 +24,31 @@ final class SupervisorViewModelTests: XCTestCase {
         pairing.sessions = [session]
         streaming.feedStates = [tile]
 
-        let sut = SupervisorViewModel(pairing: pairing, streaming: streaming)
-        sut.refresh()
+        let sut = SupervisorViewModel(
+            pairing: pairing,
+            streaming: streaming,
+            remoteInference: RemoteInferenceService(
+                estimator: MockPoseEstimator(),
+                converter: MockKeypointConverter(),
+                scorerThreshold: -1.2
+            )
+        )
+        await sut.refresh()
 
         XCTAssertEqual(sut.grid.tiles.count, 1)
         XCTAssertEqual(sut.grid.tiles.first?.deviceName, "Aisle 3 Camera")
     }
 
     func test_selectTile_setsFullScreenSelection() {
-        let sut = SupervisorViewModel(pairing: MockPairingService(), streaming: MockStreamingService())
+        let sut = SupervisorViewModel(
+            pairing: MockPairingService(),
+            streaming: MockStreamingService(),
+            remoteInference: RemoteInferenceService(
+                estimator: MockPoseEstimator(),
+                converter: MockKeypointConverter(),
+                scorerThreshold: -1.2
+            )
+        )
         let tile = SupervisorFeedTileState(
             sessionID: UUID(),
             deviceName: "Aisle 3 Camera",
@@ -46,7 +62,7 @@ final class SupervisorViewModelTests: XCTestCase {
         XCTAssertEqual(sut.selectedTile?.sessionID, tile.sessionID)
     }
 
-    func test_refreshPreservesStaleTileState() {
+    func test_refreshPreservesStaleTileState() async {
         let pairing = MockPairingService()
         let streaming = MockStreamingService()
         let session = PairingSession(
@@ -68,14 +84,22 @@ final class SupervisorViewModelTests: XCTestCase {
             )
         ]
 
-        let sut = SupervisorViewModel(pairing: pairing, streaming: streaming)
-        sut.refresh()
+        let sut = SupervisorViewModel(
+            pairing: pairing,
+            streaming: streaming,
+            remoteInference: RemoteInferenceService(
+                estimator: MockPoseEstimator(),
+                converter: MockKeypointConverter(),
+                scorerThreshold: -1.2
+            )
+        )
+        await sut.refresh()
 
         XCTAssertEqual(sut.grid.tiles.first?.connectionState, .stale)
         XCTAssertNotNil(sut.grid.tiles.first?.latestFrame)
     }
 
-    func test_refreshUpdatesSelectedTileWhenFeedRecoversFromStale() {
+    func test_refreshUpdatesSelectedTileWhenFeedRecoversFromStale() async {
         let pairing = MockPairingService()
         let streaming = MockStreamingService()
         let session = PairingSession(
@@ -97,8 +121,16 @@ final class SupervisorViewModelTests: XCTestCase {
             )
         ]
 
-        let sut = SupervisorViewModel(pairing: pairing, streaming: streaming)
-        sut.refresh()
+        let sut = SupervisorViewModel(
+            pairing: pairing,
+            streaming: streaming,
+            remoteInference: RemoteInferenceService(
+                estimator: MockPoseEstimator(),
+                converter: MockKeypointConverter(),
+                scorerThreshold: -1.2
+            )
+        )
+        await sut.refresh()
         let selected = try! XCTUnwrap(sut.grid.tiles.first)
         sut.select(selected)
 
@@ -112,7 +144,7 @@ final class SupervisorViewModelTests: XCTestCase {
             )
         ]
 
-        sut.refresh()
+        await sut.refresh()
 
         XCTAssertEqual(sut.selectedTile?.connectionState, .connected)
         XCTAssertEqual(sut.selectedTile?.deviceName, "Aisle 1 Camera")

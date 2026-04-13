@@ -12,7 +12,7 @@ final class DetectionToggleUITests: XCTestCase {
 
     private func launchApp(additionalArguments: [String] = []) {
         app = XCUIApplication()
-        app.launchArguments = ["--skip-onboarding"] + additionalArguments
+        app.launchArguments = ["--skip-onboarding", "--ui-test-supervisor-capable-device"] + additionalArguments
         app.launch()
     }
 
@@ -20,12 +20,10 @@ final class DetectionToggleUITests: XCTestCase {
         XCTAssertTrue(app.buttons["startDetectionButton"].waitForExistence(timeout: 3))
     }
 
-    func testStartDetectionPresentsDetectionView() {
-        app.terminate()
-        launchApp(additionalArguments: ["--ui-test-detection-preview"])
-
+    func testStartStreamingPresentsStreamingView() {
         app.buttons["startDetectionButton"].tap()
-        XCTAssertTrue(app.buttons["xmark.circle.fill"].waitForExistence(timeout: 3))
+        XCTAssertTrue(app.buttons["dismissStreamingButton"].waitForExistence(timeout: 3))
+        XCTAssertTrue(app.staticTexts["streamingStatusLabel"].waitForExistence(timeout: 3))
     }
 
     func testPosePreviewPresentsPoseOnlyView() {
@@ -34,50 +32,40 @@ final class DetectionToggleUITests: XCTestCase {
         XCTAssertTrue(app.otherElements["cameraPreview"].waitForExistence(timeout: 3))
     }
 
-    func testWarmupIndicatorVisibleOnLaunch() {
+    func testStreamingViewShowsCameraPreview() {
         app.terminate()
-        launchApp(additionalArguments: ["--ui-test-detection-preview"])
+        launchApp()
 
         app.buttons["startDetectionButton"].tap()
-        XCTAssertTrue(app.staticTexts["warmupIndicator"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.otherElements["cameraPreview"].waitForExistence(timeout: 5))
     }
 
-    func testDetectionViewShowsThresholdControls() {
-        app.terminate()
-        launchApp(additionalArguments: ["--ui-test-detection-preview"])
-
-        app.buttons["startDetectionButton"].tap()
-
-        XCTAssertTrue(app.staticTexts["thresholdValueLabel"].waitForExistence(timeout: 5))
-        XCTAssertTrue(app.buttons["decreaseThresholdButton"].waitForExistence(timeout: 5))
-        XCTAssertTrue(app.buttons["increaseThresholdButton"].waitForExistence(timeout: 5))
-    }
-
-    func testHomeShowsCurrentThreshold() {
+    func testHomeShowsStreamingDescription() {
         XCTAssertTrue(app.staticTexts["homeThresholdLabel"].waitForExistence(timeout: 3))
     }
 
-    func testCameraPreviewRemainsVisibleDuringWarmup() {
+    func testCameraOnlyDeviceHidesPosePreview() {
         app.terminate()
-        launchApp(additionalArguments: ["--ui-test-detection-preview"])
+        launchApp(additionalArguments: ["--ui-test-camera-only-device"])
 
-        app.buttons["startDetectionButton"].tap()
-
-        let warmup = app.staticTexts["warmupIndicator"]
-        let preview = app.otherElements["cameraPreview"]
-
-        XCTAssertTrue(warmup.waitForExistence(timeout: 5))
-        XCTAssertTrue(preview.waitForExistence(timeout: 5))
+        XCTAssertFalse(app.buttons["posePreviewButton"].exists)
     }
 
-    func testDismissReturnsToHome() {
+    func testDismissStreamingReturnsToHome() {
         app.terminate()
-        launchApp(additionalArguments: ["--ui-test-detection-preview"])
+        launchApp()
 
         app.buttons["startDetectionButton"].tap()
-        let dismiss = app.buttons["xmark.circle.fill"]
+        let dismiss = app.buttons["dismissStreamingButton"]
         XCTAssertTrue(dismiss.waitForExistence(timeout: 3))
-        dismiss.tap()
+        let cameraErrorAlert = app.alerts["Camera Error"]
+
+        if cameraErrorAlert.waitForExistence(timeout: 1) {
+            cameraErrorAlert.buttons["OK"].tap()
+        } else {
+            dismiss.tap()
+        }
+
         XCTAssertTrue(app.buttons["startDetectionButton"].waitForExistence(timeout: 3))
     }
 }

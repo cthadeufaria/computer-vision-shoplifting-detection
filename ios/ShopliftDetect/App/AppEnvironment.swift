@@ -3,6 +3,7 @@ import Foundation
 @MainActor
 final class AppEnvironment: ObservableObject {
     @Published private(set) var onboardingComplete: Bool
+    @Published private(set) var activeAppearance: AppAppearance
     private(set) var launchArguments: [String]
 
     let persistenceService: PersistenceServiceProtocol
@@ -10,6 +11,7 @@ final class AppEnvironment: ObservableObject {
     let settingsService: SettingsServiceProtocol
     let pairingService: PairingServiceProtocol
     let streamingService: StreamingServiceProtocol
+    let deviceCapabilitiesService: DeviceCapabilitiesServiceProtocol
 
     init(
         persistenceService: PersistenceServiceProtocol = UserDefaultsPersistenceService(),
@@ -17,6 +19,7 @@ final class AppEnvironment: ObservableObject {
         settingsService: SettingsServiceProtocol? = nil,
         pairingService: PairingServiceProtocol = PairingService(),
         streamingService: StreamingServiceProtocol = StreamingService(),
+        deviceCapabilitiesService: DeviceCapabilitiesServiceProtocol? = nil,
         launchArguments: [String] = []
     ) {
         self.persistenceService = persistenceService
@@ -24,7 +27,9 @@ final class AppEnvironment: ObservableObject {
         self.settingsService = settingsService ?? UserDefaultsSettingsService(persistence: persistenceService)
         self.pairingService = pairingService
         self.streamingService = streamingService
+        self.deviceCapabilitiesService = deviceCapabilitiesService ?? CurrentDeviceCapabilitiesService(launchArguments: launchArguments)
         self.onboardingComplete = persistenceService.onboardingComplete
+        self.activeAppearance = self.settingsService.appAppearance
         self.launchArguments = launchArguments
     }
 
@@ -34,6 +39,7 @@ final class AppEnvironment: ObservableObject {
         if arguments.contains("--reset-onboarding") {
             persistenceService.onboardingComplete = false
             persistenceService.selectedRole = nil
+            updateAppearance(.light)
         } else if arguments.contains("--skip-onboarding") {
             persistenceService.onboardingComplete = true
             if !arguments.contains("--ui-test-supervisor-role") {
@@ -46,6 +52,12 @@ final class AppEnvironment: ObservableObject {
             persistenceService.selectedRole = .supervisor
         }
 
+        if arguments.contains("--ui-test-dark-mode") {
+            updateAppearance(.dark)
+        } else if arguments.contains("--ui-test-light-mode") {
+            updateAppearance(.light)
+        }
+
         configureUITestSupervisorState(arguments)
 
         refreshOnboardingState()
@@ -55,11 +67,20 @@ final class AppEnvironment: ObservableObject {
         onboardingComplete = persistenceService.onboardingComplete
     }
 
+    func updateAppearance(_ appearance: AppAppearance) {
+        settingsService.appAppearance = appearance
+        activeAppearance = appearance
+    }
+
     func makeHomeViewModel() -> HomeViewModel {
         HomeViewModel(
             persistence: persistenceService,
             settings: settingsService,
-            pairing: pairingService
+            pairing: pairingService,
+            capabilities: deviceCapabilitiesService.currentCapabilities,
+            onAppearanceSelected: { [weak self] appearance in
+                self?.updateAppearance(appearance)
+            }
         )
     }
 
@@ -67,8 +88,21 @@ final class AppEnvironment: ObservableObject {
         OnboardingViewModel(
             persistence: persistenceService,
             permission: permissionService,
+            settings: settingsService,
             pairing: pairingService,
-            prefilledSupervisorPayload: launchArgumentValue(prefix: "--ui-test-pairing-payload=")
+            capabilities: deviceCapabilitiesService.currentCapabilities,
+            prefilledSupervisorPayload: launchArgumentValue(prefix: "--ui-test-pairing-payload="),
+            onAppearanceSelected: { [weak self] appearance in
+                self?.updateAppearance(appearance)
+            }
+        )
+    }
+
+    func makeCameraStreamingViewModel() -> CameraStreamingViewModel {
+        CameraStreamingViewModel(
+            camera: CameraSession(),
+            pairing: pairingService,
+            streaming: streamingService
         )
     }
 
@@ -95,7 +129,12 @@ final class AppEnvironment: ObservableObject {
     func makeSupervisorViewModel() -> SupervisorViewModel {
         SupervisorViewModel(
             pairing: pairingService,
-            streaming: streamingService
+            streaming: streamingService,
+            remoteInference: RemoteInferenceService(
+                estimator: PoseEstimator(),
+                converter: KeypointConverter(),
+                scorerThreshold: settingsService.anomalyThreshold
+            )
         )
     }
 

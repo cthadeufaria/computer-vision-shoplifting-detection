@@ -8,7 +8,7 @@ final class PosePreviewUITests: XCTestCase {
         super.setUp()
         continueAfterFailure = false
         app = XCUIApplication()
-        app.launchArguments = ["--skip-onboarding", "--ui-test-pose-preview"]
+        app.launchArguments = ["--skip-onboarding", "--ui-test-pose-preview", "--ui-test-supervisor-capable-device"]
         app.launch()
     }
 
@@ -54,10 +54,10 @@ final class PosePreviewUITests: XCTestCase {
 
         app.terminate()
         app = XCUIApplication()
-        app.launchArguments = ["--skip-onboarding", "--ui-test-detection-preview"]
+        app.launchArguments = ["--skip-onboarding", "--ui-test-supervisor-capable-device"]
         app.launch()
         app.buttons["startDetectionButton"].tap()
 
-        XCTAssertTrue(app.buttons["xmark.circle.fill"].waitForExistence(timeout: 3))
+        XCTAssertTrue(app.buttons["dismissStreamingButton"].waitForExistence(timeout: 3))
     }
 }

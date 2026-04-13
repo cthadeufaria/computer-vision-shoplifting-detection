@@ -38,10 +38,10 @@ struct SupervisorView: View {
         }
         .navigationTitle("Supervisor Mode")
         .task {
-            viewModel.refresh()
+            await viewModel.refresh()
         }
         .refreshable {
-            viewModel.refresh()
+            await viewModel.refresh()
         }
         .fullScreenCover(item: Binding(
             get: { viewModel.selectedTile },

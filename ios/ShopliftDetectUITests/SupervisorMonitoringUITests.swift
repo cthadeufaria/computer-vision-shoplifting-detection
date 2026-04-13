@@ -10,14 +10,14 @@ final class SupervisorMonitoringUITests: XCTestCase {
     }
 
     func testEmptySupervisorGridShowsPlaceholder() {
-        app.launchArguments = ["--skip-onboarding", "--ui-test-supervisor-role"]
+        app.launchArguments = ["--skip-onboarding", "--ui-test-supervisor-role", "--ui-test-supervisor-capable-device"]
         app.launch()
 
         XCTAssertTrue(app.staticTexts["supervisorEmptyStateLabel"].waitForExistence(timeout: 3))
     }
 
     func testSupervisorGridCanShowLiveTileAndOpenDetail() {
-        app.launchArguments = ["--skip-onboarding", "--ui-test-supervisor-role", "--ui-test-supervisor-feed"]
+        app.launchArguments = ["--skip-onboarding", "--ui-test-supervisor-role", "--ui-test-supervisor-feed", "--ui-test-supervisor-capable-device"]
         app.launch()
 
         let tile = app.buttons["supervisorTile_Aisle 3 Camera"]
@@ -28,7 +28,7 @@ final class SupervisorMonitoringUITests: XCTestCase {
     }
 
     func testFifthCameraAttemptShowsLimitError() {
-        app.launchArguments = ["--skip-onboarding", "--ui-test-supervisor-role", "--ui-test-supervisor-maxed"]
+        app.launchArguments = ["--skip-onboarding", "--ui-test-supervisor-role", "--ui-test-supervisor-maxed", "--ui-test-supervisor-capable-device"]
         app.launch()
 
         XCTAssertTrue(app.staticTexts["supervisorLimitBanner"].waitForExistence(timeout: 3))

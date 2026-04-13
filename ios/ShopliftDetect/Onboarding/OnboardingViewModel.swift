@@ -9,24 +9,35 @@ final class OnboardingViewModel: ObservableObject {
     @Published var errorMessage: String?
     @Published private(set) var connectionState: ConnectionState = .idle
     @Published private(set) var qrPayload: String?
+    @Published private(set) var selectedAppearance: AppAppearance
 
     let totalPages = 4
 
     private let persistence: PersistenceServiceProtocol
     private let permission: PermissionServiceProtocol
+    private let settings: SettingsServiceProtocol
     private let pairing: PairingServiceProtocol
+    private let capabilities: DeviceCapabilities
     private let prefilledSupervisorPayload: String?
+    private let onAppearanceSelected: (AppAppearance) -> Void
 
     init(
         persistence: PersistenceServiceProtocol,
         permission: PermissionServiceProtocol,
+        settings: SettingsServiceProtocol,
         pairing: PairingServiceProtocol,
-        prefilledSupervisorPayload: String? = nil
+        capabilities: DeviceCapabilities,
+        prefilledSupervisorPayload: String? = nil,
+        onAppearanceSelected: @escaping (AppAppearance) -> Void = { _ in }
     ) {
         self.persistence = persistence
         self.permission = permission
+        self.settings = settings
         self.pairing = pairing
+        self.capabilities = capabilities
         self.prefilledSupervisorPayload = prefilledSupervisorPayload
+        self.onAppearanceSelected = onAppearanceSelected
+        self.selectedAppearance = settings.appAppearance
     }
 
     var canAdvance: Bool {
@@ -39,7 +50,15 @@ final class OnboardingViewModel: ObservableObject {
     }
 
     func selectRole(_ role: DeviceRole) {
+        guard supportsRole(role) else { return }
         selectedRole = role
+    }
+
+    func selectAppearance(_ appearance: AppAppearance) {
+        guard selectedAppearance != appearance else { return }
+        selectedAppearance = appearance
+        settings.appAppearance = appearance
+        onAppearanceSelected(appearance)
     }
 
     func completeAfterPermissions() async {
@@ -92,9 +111,9 @@ final class OnboardingViewModel: ObservableObject {
     func permissionSummaryText() -> String {
         switch selectedRole {
         case .camera:
-            return "Grant camera access so this device can run live pose detection and keep the pairing code visible while you onboard."
+            return "Grant camera access so this device can capture video and stream frames to a supervisory device on the same Wi-Fi network."
         case .supervisor:
-            return "Grant camera access so this device can scan pairing QR codes, then connect to a smart camera."
+            return "Grant camera access so this device can scan pairing QR codes and run pose plus anomaly inference for paired smart cameras."
         case .none:
             return "Grant camera access to finish setup."
         }
@@ -140,6 +159,29 @@ final class OnboardingViewModel: ObservableObject {
             return "Finish Setup"
         }
         return "Grant Camera Access"
+    }
+
+    func supportsRole(_ role: DeviceRole) -> Bool {
+        switch role {
+        case .camera:
+            return capabilities.supportsCameraRole
+        case .supervisor:
+            return capabilities.supportsSupervisorRole
+        }
+    }
+
+    func roleSubtitle(for role: DeviceRole) -> String {
+        switch role {
+        case .camera:
+            return "Use this device to capture video, compress frames, and stream over Wi-Fi."
+        case .supervisor:
+            return "Use this device to scan QR codes, receive paired camera feeds, and run inference."
+        }
+    }
+
+    var supervisorAvailabilityNote: String? {
+        guard !capabilities.supportsSupervisorRole else { return nil }
+        return "Supervisory View requires a newer iPhone or iPad. This device can run as a Smart Camera."
     }
 
     private func preparePairingContentIfNeeded() {

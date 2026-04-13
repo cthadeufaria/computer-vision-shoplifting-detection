@@ -2,6 +2,10 @@ import SwiftUI
 
 struct RoleSelectionView: View {
     let selectedRole: DeviceRole?
+    let cameraSubtitle: String
+    let supervisorSubtitle: String
+    let supportsSupervisorRole: Bool
+    let supervisorAvailabilityNote: String?
     let onSelect: (DeviceRole) -> Void
 
     var body: some View {
@@ -9,7 +13,7 @@ struct RoleSelectionView: View {
             Text("Choose This Device's Role")
                 .font(.title2.bold())
 
-            Text("Smart Camera runs detection. Supervisory View monitors paired camera feeds.")
+            Text("Smart Camera captures and streams. Supervisory View monitors paired camera feeds and runs inference.")
                 .font(.body)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
@@ -17,17 +21,28 @@ struct RoleSelectionView: View {
 
             roleButton(
                 title: "Smart Camera",
-                subtitle: "Use this device to capture video, estimate poses, and detect anomalies.",
+                subtitle: cameraSubtitle,
                 role: .camera,
-                accessibilityIdentifier: "cameraRoleButton"
+                accessibilityIdentifier: "cameraRoleButton",
+                isEnabled: true
             )
 
             roleButton(
                 title: "Supervisory View",
-                subtitle: "Use this device to scan QR codes and monitor paired cameras.",
+                subtitle: supervisorSubtitle,
                 role: .supervisor,
-                accessibilityIdentifier: "supervisorRoleButton"
+                accessibilityIdentifier: "supervisorRoleButton",
+                isEnabled: supportsSupervisorRole
             )
+
+            if let supervisorAvailabilityNote {
+                Text(supervisorAvailabilityNote)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal)
+                    .accessibilityIdentifier("supervisorAvailabilityNote")
+            }
         }
         .padding()
     }
@@ -36,7 +51,8 @@ struct RoleSelectionView: View {
         title: String,
         subtitle: String,
         role: DeviceRole,
-        accessibilityIdentifier: String
+        accessibilityIdentifier: String,
+        isEnabled: Bool
     ) -> some View {
         Button {
             onSelect(role)
@@ -59,8 +75,10 @@ struct RoleSelectionView: View {
                 RoundedRectangle(cornerRadius: 16)
                     .stroke(selectedRole == role ? Color.blue : Color.clear, lineWidth: 2)
             )
+            .opacity(isEnabled ? 1 : 0.5)
         }
         .buttonStyle(.plain)
+        .disabled(!isEnabled)
         .accessibilityIdentifier(accessibilityIdentifier)
     }
 }

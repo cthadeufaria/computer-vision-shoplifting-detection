@@ -15,7 +15,8 @@ final class OnboardingViewModelTests: XCTestCase {
         sut = OnboardingViewModel(
             persistence: mockPersistence,
             permission: mockPermission,
-            pairing: mockPairing
+            pairing: mockPairing,
+            capabilities: MockDeviceCapabilitiesService().currentCapabilities
         )
     }
 
@@ -104,6 +105,7 @@ final class OnboardingViewModelTests: XCTestCase {
             persistence: mockPersistence,
             permission: mockPermission,
             pairing: failingPairing,
+            capabilities: MockDeviceCapabilitiesService().currentCapabilities,
             prefilledSupervisorPayload: "sdlink://192.168.1.24:7890?token=WRONG999"
         )
         sut.selectRole(.supervisor)
@@ -116,6 +118,27 @@ final class OnboardingViewModelTests: XCTestCase {
         XCTAssertEqual(
             sut.errorMessage,
             "The pairing token is invalid. Ask the camera device to show a fresh QR code and rescan."
+        )
+    }
+
+    func test_selectRole_ignoresUnsupportedSupervisorRole() {
+        sut = OnboardingViewModel(
+            persistence: mockPersistence,
+            permission: mockPermission,
+            pairing: mockPairing,
+            capabilities: MockDeviceCapabilitiesService(
+                supportsSupervisorRole: false,
+                supportsOnDeviceInference: false,
+                supportsPosePreview: false
+            ).currentCapabilities
+        )
+
+        sut.selectRole(.supervisor)
+
+        XCTAssertNil(sut.selectedRole)
+        XCTAssertEqual(
+            sut.supervisorAvailabilityNote,
+            "Supervisory View requires a newer iPhone or iPad. This device can run as a Smart Camera."
         )
     }
 }

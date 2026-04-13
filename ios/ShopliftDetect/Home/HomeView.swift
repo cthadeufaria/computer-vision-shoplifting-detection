@@ -21,10 +21,10 @@ struct HomeView: View {
                     )
                 }
             }
-            .fullScreenCover(isPresented: $viewModel.isDetectionActive) {
-                DetectionView(
-                    isPresented: $viewModel.isDetectionActive,
-                    viewModel: appEnvironment.makeDetectionViewModel()
+            .fullScreenCover(isPresented: $viewModel.isCameraStreamingActive) {
+                CameraStreamingView(
+                    isPresented: $viewModel.isCameraStreamingActive,
+                    viewModel: appEnvironment.makeCameraStreamingViewModel()
                 )
             }
             .fullScreenCover(isPresented: $viewModel.isPosePreviewActive) {
@@ -45,9 +45,11 @@ struct HomeView: View {
                 .foregroundStyle(.blue)
             Text("ShopliftDetect")
                 .font(.largeTitle.bold())
-            Text(String(format: "Current threshold %.1f", viewModel.anomalyThreshold))
-                .font(.headline.monospacedDigit())
+            Text(viewModel.cameraModeDescription)
+                .font(.headline)
+                .multilineTextAlignment(.center)
                 .foregroundStyle(.secondary)
+                .padding(.horizontal)
                 .accessibilityIdentifier("homeThresholdLabel")
             Text(viewModel.pairingStatusText)
                 .font(.headline)
@@ -55,19 +57,21 @@ struct HomeView: View {
                 .accessibilityIdentifier("homePairingStatusLabel")
             Spacer()
             VStack(spacing: 16) {
-                Button("Start Detection") {
-                    viewModel.isDetectionActive = true
+                Button(viewModel.cameraPrimaryActionTitle) {
+                    viewModel.isCameraStreamingActive = true
                 }
                 .buttonStyle(.borderedProminent)
                 .controlSize(.large)
                 .accessibilityIdentifier("startDetectionButton")
 
-                Button("Pose Preview") {
-                    viewModel.isPosePreviewActive = true
+                if viewModel.canShowPosePreview {
+                    Button("Pose Preview") {
+                        viewModel.isPosePreviewActive = true
+                    }
+                    .buttonStyle(.bordered)
+                    .controlSize(.large)
+                    .accessibilityIdentifier("posePreviewButton")
                 }
-                .buttonStyle(.bordered)
-                .controlSize(.large)
-                .accessibilityIdentifier("posePreviewButton")
             }
             Spacer()
         }

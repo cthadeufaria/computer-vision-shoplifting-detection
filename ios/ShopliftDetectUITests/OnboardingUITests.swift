@@ -49,11 +49,28 @@ final class OnboardingUITests: XCTestCase {
         XCTAssertTrue(app.buttons["startDetectionButton"].waitForExistence(timeout: 5))
     }
 
+    func testCameraOnlyDeviceDisablesSupervisorRole() {
+        app.terminate()
+        app.launchArguments = [
+            "--reset-onboarding",
+            "--ui-test-camera-authorized",
+            "--ui-test-camera-only-device"
+        ]
+        app.launch()
+
+        app.buttons["nextButton"].tap()
+        app.buttons["nextButton"].tap()
+
+        XCTAssertTrue(app.staticTexts["supervisorAvailabilityNote"].waitForExistence(timeout: 3))
+        XCTAssertFalse(app.buttons["supervisorRoleButton"].isEnabled)
+    }
+
     func testSupervisorRoleRoutesToSupervisorHome() {
         app.terminate()
         app.launchArguments = [
             "--reset-onboarding",
             "--ui-test-camera-authorized",
+            "--ui-test-supervisor-capable-device",
             "--ui-test-pairing-payload=sdlink://192.168.1.24:7890?token=VALID123"
         ]
         app.launch()
@@ -73,6 +90,7 @@ final class OnboardingUITests: XCTestCase {
         app.launchArguments = [
             "--reset-onboarding",
             "--ui-test-camera-authorized",
+            "--ui-test-supervisor-capable-device",
             "--ui-test-pairing-payload=sdlink://192.168.1.24:7890?token=VALID123"
         ]
         app.launch()
@@ -93,6 +111,7 @@ final class OnboardingUITests: XCTestCase {
         app.launchArguments = [
             "--reset-onboarding",
             "--ui-test-camera-authorized",
+            "--ui-test-supervisor-capable-device",
             "--ui-test-pairing-payload=sdlink://192.168.1.24:7890?token=WRONG999",
             "--ui-test-required-token=VALID123"
         ]
@@ -127,6 +146,7 @@ final class OnboardingUITests: XCTestCase {
         app.launchArguments = [
             "--reset-onboarding",
             "--ui-test-camera-authorized",
+            "--ui-test-supervisor-capable-device",
             "--ui-test-pairing-payload=sdlink://192.168.1.24:7890?token=VALID123"
         ]
         app.launch()

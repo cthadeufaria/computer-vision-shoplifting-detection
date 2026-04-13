@@ -26,6 +26,10 @@ struct OnboardingView: View {
 
             RoleSelectionView(
                 selectedRole: viewModel.selectedRole,
+                cameraSubtitle: viewModel.roleSubtitle(for: .camera),
+                supervisorSubtitle: viewModel.roleSubtitle(for: .supervisor),
+                supportsSupervisorRole: viewModel.supportsRole(.supervisor),
+                supervisorAvailabilityNote: viewModel.supervisorAvailabilityNote,
                 onSelect: viewModel.selectRole
             )
             .tag(2)
