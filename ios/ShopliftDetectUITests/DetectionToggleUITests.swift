@@ -68,4 +68,17 @@ final class DetectionToggleUITests: XCTestCase {
 
         XCTAssertTrue(app.buttons["startDetectionButton"].waitForExistence(timeout: 3))
     }
+
+    func testDarkModeCarriesIntoStreamingPresentation() {
+        app.terminate()
+        launchApp(additionalArguments: ["--ui-test-dark-mode"])
+
+        XCTAssertTrue(app.otherElements["homeScreen"].waitForExistence(timeout: 3))
+        XCTAssertEqual(app.otherElements["homeScreen"].value as? String, "dark")
+
+        app.buttons["startDetectionButton"].tap()
+
+        XCTAssertTrue(app.otherElements["cameraStreamingScreen"].waitForExistence(timeout: 3))
+        XCTAssertEqual(app.otherElements["cameraStreamingScreen"].value as? String, "dark")
+    }
 }

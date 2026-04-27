@@ -12,8 +12,8 @@ struct ScoreCardView: View {
                 Text("Warming up \(collected)/\(needed)")
                     .font(.caption.bold())
                     .padding(8)
-                    .background(.gray.opacity(0.8))
-                    .foregroundStyle(.white)
+                    .background(.thinMaterial)
+                    .foregroundStyle(.primary)
                     .clipShape(RoundedRectangle(cornerRadius: 8))
             case .running(let result):
                 VStack(alignment: .trailing, spacing: 2) {

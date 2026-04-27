@@ -15,7 +15,11 @@ struct SupervisorView: View {
                         .font(.headline)
                         .padding(12)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(Color.orange.opacity(0.14), in: RoundedRectangle(cornerRadius: 12))
+                        .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 12))
+                        .overlay {
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(Color.orange.opacity(0.45), lineWidth: 1)
+                        }
                         .accessibilityIdentifier("supervisorLimitBanner")
                 }
 
@@ -51,5 +55,6 @@ struct SupervisorView: View {
                 viewModel.clearSelection()
             }
         }
+        .screenAppearanceIdentifier("supervisorScreen")
     }
 }

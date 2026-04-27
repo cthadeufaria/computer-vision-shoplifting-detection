@@ -8,7 +8,7 @@ struct DeviceRowView: View {
         Button(action: onTap) {
             VStack(alignment: .leading, spacing: 8) {
                 RoundedRectangle(cornerRadius: 16)
-                    .fill(tile.connectionState == .connected ? Color.green.opacity(0.18) : Color.gray.opacity(0.18))
+                    .fill(.thinMaterial)
                     .frame(height: 120)
                     .overlay(alignment: .center) {
                         VStack(spacing: 6) {
@@ -17,6 +17,10 @@ struct DeviceRowView: View {
                             Text(tile.statusText)
                                 .font(.headline)
                         }
+                    }
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 16)
+                            .stroke(tile.connectionState == .connected ? Color.green.opacity(0.45) : Color.secondary.opacity(0.35), lineWidth: 1)
                     }
 
                 Text(tile.deviceName)
@@ -34,4 +38,3 @@ struct DeviceRowView: View {
         .accessibilityIdentifier("supervisorTile_\(tile.deviceName)")
     }
 }
-

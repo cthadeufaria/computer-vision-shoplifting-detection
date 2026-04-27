@@ -7,14 +7,17 @@ final class OnboardingViewModelTests: XCTestCase {
     var mockPersistence: MockPersistenceService!
     var mockPermission: MockPermissionService!
     var mockPairing: MockPairingService!
+    var mockSettings: MockSettingsService!
 
     override func setUp() {
         mockPersistence = MockPersistenceService()
         mockPermission = MockPermissionService()
         mockPairing = MockPairingService()
+        mockSettings = MockSettingsService()
         sut = OnboardingViewModel(
             persistence: mockPersistence,
             permission: mockPermission,
+            settings: mockSettings,
             pairing: mockPairing,
             capabilities: MockDeviceCapabilitiesService().currentCapabilities
         )
@@ -45,6 +48,24 @@ final class OnboardingViewModelTests: XCTestCase {
 
         XCTAssertTrue(mockPersistence.onboardingComplete)
         XCTAssertEqual(mockPersistence.selectedRole, .supervisor)
+    }
+
+    func test_selectAppearance_updatesSettingsAndPublishesSelection() {
+        var selectedAppearance: AppAppearance?
+        sut = OnboardingViewModel(
+            persistence: mockPersistence,
+            permission: mockPermission,
+            settings: mockSettings,
+            pairing: mockPairing,
+            capabilities: MockDeviceCapabilitiesService().currentCapabilities,
+            onAppearanceSelected: { selectedAppearance = $0 }
+        )
+
+        sut.selectAppearance(.dark)
+
+        XCTAssertEqual(sut.selectedAppearance, .dark)
+        XCTAssertEqual(mockSettings.appAppearance, .dark)
+        XCTAssertEqual(selectedAppearance, .dark)
     }
 
     func test_init_currentPageIsZero() {
@@ -104,6 +125,7 @@ final class OnboardingViewModelTests: XCTestCase {
         sut = OnboardingViewModel(
             persistence: mockPersistence,
             permission: mockPermission,
+            settings: mockSettings,
             pairing: failingPairing,
             capabilities: MockDeviceCapabilitiesService().currentCapabilities,
             prefilledSupervisorPayload: "sdlink://192.168.1.24:7890?token=WRONG999"
@@ -125,6 +147,7 @@ final class OnboardingViewModelTests: XCTestCase {
         sut = OnboardingViewModel(
             persistence: mockPersistence,
             permission: mockPermission,
+            settings: mockSettings,
             pairing: mockPairing,
             capabilities: MockDeviceCapabilitiesService(
                 supportsSupervisorRole: false,

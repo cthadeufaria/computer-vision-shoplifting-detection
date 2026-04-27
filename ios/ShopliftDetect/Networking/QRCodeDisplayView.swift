@@ -8,7 +8,7 @@ struct QRCodeDisplayView: View {
         VStack(spacing: 16) {
             ZStack {
                 RoundedRectangle(cornerRadius: 24)
-                    .fill(Color(.secondarySystemBackground))
+                    .fill(.thinMaterial)
                     .frame(width: 220, height: 220)
 
                 Image(systemName: "qrcode")

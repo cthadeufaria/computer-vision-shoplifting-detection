@@ -58,5 +58,6 @@ struct DetectionView: View {
         .onDisappear {
             viewModel.stop()
         }
+        .screenAppearanceIdentifier("detectionScreen")
     }
 }

@@ -69,11 +69,11 @@ struct RoleSelectionView: View {
             .padding()
             .background(
                 RoundedRectangle(cornerRadius: 16)
-                    .fill(selectedRole == role ? Color.blue.opacity(0.16) : Color(.secondarySystemBackground))
+                    .fill(selectedRole == role ? Color.accentColor.opacity(0.18) : Color(.secondarySystemBackground))
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 16)
-                    .stroke(selectedRole == role ? Color.blue : Color.clear, lineWidth: 2)
+                    .stroke(selectedRole == role ? Color.accentColor : Color.clear, lineWidth: 2)
             )
             .opacity(isEnabled ? 1 : 0.5)
         }

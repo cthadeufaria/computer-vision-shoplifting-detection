@@ -8,7 +8,7 @@ struct CameraFeedDetailView: View {
         NavigationView {
             VStack(spacing: 20) {
                 RoundedRectangle(cornerRadius: 20)
-                    .fill(tile.connectionState == .connected ? Color.green.opacity(0.18) : Color.gray.opacity(0.18))
+                    .fill(.thinMaterial)
                     .frame(height: 260)
                     .overlay {
                         VStack(spacing: 10) {
@@ -17,6 +17,10 @@ struct CameraFeedDetailView: View {
                             Text(tile.statusText)
                                 .font(.title3.bold())
                         }
+                    }
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 20)
+                            .stroke(tile.connectionState == .connected ? Color.green.opacity(0.45) : Color.secondary.opacity(0.35), lineWidth: 1)
                     }
 
                 Text(tile.deviceName)
@@ -38,6 +42,6 @@ struct CameraFeedDetailView: View {
             }
         }
         .navigationViewStyle(.stack)
+        .screenAppearanceIdentifier("cameraFeedDetailScreen")
     }
 }
-

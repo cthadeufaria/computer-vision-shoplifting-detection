@@ -165,4 +165,28 @@ final class OnboardingUITests: XCTestCase {
 
         XCTAssertTrue(app.staticTexts["supervisorHomeTitle"].waitForExistence(timeout: 3))
     }
+
+    func testSelectingDarkModePersistsToHomeAndNextLaunch() {
+        app.buttons["nextButton"].tap()
+        app.buttons["nextButton"].tap()
+        app.buttons["cameraRoleButton"].tap()
+        app.buttons["nextButton"].tap()
+
+        let darkAppearanceButton = app.buttons["Dark"].firstMatch
+        XCTAssertTrue(darkAppearanceButton.waitForExistence(timeout: 3))
+        darkAppearanceButton.tap()
+        XCTAssertEqual(app.otherElements["onboardingScreen"].value as? String, "dark")
+
+        app.buttons["grantCameraAccessButton"].tap()
+
+        XCTAssertTrue(app.otherElements["homeScreen"].waitForExistence(timeout: 5))
+        XCTAssertEqual(app.otherElements["homeScreen"].value as? String, "dark")
+
+        app.terminate()
+        app.launchArguments = []
+        app.launch()
+
+        XCTAssertTrue(app.otherElements["homeScreen"].waitForExistence(timeout: 3))
+        XCTAssertEqual(app.otherElements["homeScreen"].value as? String, "dark")
+    }
 }

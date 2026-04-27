@@ -9,6 +9,8 @@ protocol PersistenceServiceProtocol: AnyObject {
 }
 
 final class UserDefaultsPersistenceService: PersistenceServiceProtocol {
+    private let userDefaults: UserDefaults
+
     private enum Keys {
         static let onboardingComplete = "onboardingComplete"
         static let selectedRole = "selectedRole"
@@ -16,39 +18,43 @@ final class UserDefaultsPersistenceService: PersistenceServiceProtocol {
         static let appAppearance = "appAppearance"
     }
 
+    init(userDefaults: UserDefaults = .standard) {
+        self.userDefaults = userDefaults
+    }
+
     var onboardingComplete: Bool {
-        get { UserDefaults.standard.bool(forKey: Keys.onboardingComplete) }
-        set { UserDefaults.standard.set(newValue, forKey: Keys.onboardingComplete) }
+        get { userDefaults.bool(forKey: Keys.onboardingComplete) }
+        set { userDefaults.set(newValue, forKey: Keys.onboardingComplete) }
     }
 
     var selectedRole: DeviceRole? {
         get {
-            guard let rawValue = UserDefaults.standard.string(forKey: Keys.selectedRole) else {
+            guard let rawValue = userDefaults.string(forKey: Keys.selectedRole) else {
                 return nil
             }
 
             return DeviceRole(rawValue: rawValue)
         }
         set {
-            UserDefaults.standard.set(newValue?.rawValue, forKey: Keys.selectedRole)
+            userDefaults.set(newValue?.rawValue, forKey: Keys.selectedRole)
         }
     }
 
     var detectionSettings: DetectionSettings {
         get {
-            let threshold = UserDefaults.standard.object(forKey: Keys.anomalyThreshold) == nil
+            let threshold = userDefaults.object(forKey: Keys.anomalyThreshold) == nil
                 ? DetectionSettings.default.anomalyThreshold
-                : UserDefaults.standard.float(forKey: Keys.anomalyThreshold)
+                : userDefaults.float(forKey: Keys.anomalyThreshold)
             return DetectionSettings(anomalyThreshold: threshold)
         }
         set {
-            UserDefaults.standard.set(newValue.anomalyThreshold, forKey: Keys.anomalyThreshold)
+            userDefaults.set(newValue.anomalyThreshold, forKey: Keys.anomalyThreshold)
         }
     }
 
     var appAppearance: AppAppearance {
         get {
-            guard let rawValue = UserDefaults.standard.string(forKey: Keys.appAppearance),
+            guard let rawValue = userDefaults.string(forKey: Keys.appAppearance),
                   let appearance = AppAppearance(rawValue: rawValue) else {
                 return .light
             }
@@ -56,7 +62,7 @@ final class UserDefaultsPersistenceService: PersistenceServiceProtocol {
             return appearance
         }
         set {
-            UserDefaults.standard.set(newValue.rawValue, forKey: Keys.appAppearance)
+            userDefaults.set(newValue.rawValue, forKey: Keys.appAppearance)
         }
     }
 }

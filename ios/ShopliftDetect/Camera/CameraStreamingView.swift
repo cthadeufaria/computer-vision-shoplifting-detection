@@ -54,5 +54,6 @@ struct CameraStreamingView: View {
         .onDisappear {
             viewModel.stop()
         }
+        .screenAppearanceIdentifier("cameraStreamingScreen")
     }
 }

@@ -17,6 +17,24 @@ final class HomeViewModelTests: XCTestCase {
         XCTAssertEqual(sut.destination, .camera)
     }
 
+    func test_selectAppearance_updatesSettingsAndPublishesSelection() {
+        let settings = MockSettingsService()
+        var selectedAppearance: AppAppearance?
+        let sut = HomeViewModel(
+            persistence: MockPersistenceService(),
+            settings: settings,
+            pairing: MockPairingService(),
+            capabilities: MockDeviceCapabilitiesService().currentCapabilities,
+            onAppearanceSelected: { selectedAppearance = $0 }
+        )
+
+        sut.selectAppearance(.dark)
+
+        XCTAssertEqual(sut.selectedAppearance, .dark)
+        XCTAssertEqual(settings.appAppearance, .dark)
+        XCTAssertEqual(selectedAppearance, .dark)
+    }
+
     func test_anomalyThreshold_readsFromSettings() {
         let settings = MockSettingsService()
         settings.anomalyThreshold = -0.8

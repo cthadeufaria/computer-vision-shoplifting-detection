@@ -60,4 +60,21 @@ final class PosePreviewUITests: XCTestCase {
 
         XCTAssertTrue(app.buttons["dismissStreamingButton"].waitForExistence(timeout: 3))
     }
+
+    func testDarkModeCarriesIntoPosePreview() {
+        app.terminate()
+        app = XCUIApplication()
+        app.launchArguments = [
+            "--skip-onboarding",
+            "--ui-test-pose-preview",
+            "--ui-test-supervisor-capable-device",
+            "--ui-test-dark-mode"
+        ]
+        app.launch()
+
+        app.buttons["posePreviewButton"].tap()
+
+        XCTAssertTrue(app.otherElements["posePreviewScreen"].waitForExistence(timeout: 3))
+        XCTAssertEqual(app.otherElements["posePreviewScreen"].value as? String, "dark")
+    }
 }

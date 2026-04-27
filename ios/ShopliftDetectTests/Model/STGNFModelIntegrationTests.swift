@@ -2,7 +2,7 @@ import XCTest
 import CoreML
 @testable import ShopliftDetect
 
-/// These tests require STGNFModel.mlpackage to be bundled.
+/// These tests require the raw STGNF model asset to be bundled.
 /// They are skipped automatically when the model is absent.
 final class STGNFModelIntegrationTests: XCTestCase {
 
@@ -14,7 +14,7 @@ final class STGNFModelIntegrationTests: XCTestCase {
     }
 
     private func skipIfNoModel() throws {
-        try XCTSkipIf(model == nil, "STGNFModel.mlpackage not bundled — skipping integration tests")
+        try XCTSkipIf(model == nil, "STGNFModel model asset not bundled — skipping integration tests")
     }
 
     private func loadFixtureData(_ name: String) throws -> Data {

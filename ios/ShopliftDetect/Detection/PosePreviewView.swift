@@ -49,5 +49,6 @@ struct PosePreviewView: View {
         .onDisappear {
             viewModel.stop()
         }
+        .screenAppearanceIdentifier("posePreviewScreen")
     }
 }
