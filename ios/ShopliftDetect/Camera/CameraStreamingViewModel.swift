@@ -7,14 +7,18 @@ import UIKit
 final class CameraStreamingViewModel: ObservableObject {
     @Published private(set) var isStreaming = false
     @Published private(set) var statusText = "Ready to Stream"
+    @Published private(set) var pairingPayloadText: String?
 
     private let camera: CameraSessionProtocol
     private let pairing: PairingServiceProtocol
     private let streaming: StreamingServiceProtocol
+    private let browserStreaming: CameraFrameBroadcasting
     private let targetWidth: CGFloat
     private let jpegCompressionQuality: CGFloat
+    private let browserFrameInterval: TimeInterval
     private var cancellables = Set<AnyCancellable>()
     private var isProcessingFrame = false
+    private var lastBrowserFrameSentAt: Date?
 
     var previewLayer: AVCaptureVideoPreviewLayer { camera.previewLayer }
 
@@ -22,22 +26,30 @@ final class CameraStreamingViewModel: ObservableObject {
         camera: CameraSessionProtocol,
         pairing: PairingServiceProtocol,
         streaming: StreamingServiceProtocol,
+        browserStreaming: CameraFrameBroadcasting = WebSocketCameraStreamingServer(),
         targetWidth: CGFloat = 640,
-        jpegCompressionQuality: CGFloat = 0.55
+        jpegCompressionQuality: CGFloat = 0.55,
+        browserFrameInterval: TimeInterval = 0.2
     ) {
         self.camera = camera
         self.pairing = pairing
         self.streaming = streaming
+        self.browserStreaming = browserStreaming
         self.targetWidth = targetWidth
         self.jpegCompressionQuality = jpegCompressionQuality
+        self.browserFrameInterval = browserFrameInterval
     }
 
     func start() throws {
         isProcessingFrame = false
         try camera.start()
         streaming.startStreaming()
+        ensureCameraPairingPayload()
+        try startBrowserStreamingIfPossible()
         isStreaming = true
-        statusText = "Streaming over local Wi-Fi"
+        statusText = browserStreaming.isRunning
+            ? "Streaming over local Wi-Fi to web supervisors"
+            : "Streaming over local Wi-Fi"
 
         camera.framePublisher
             .sink { [weak self] pixelBuffer in
@@ -58,9 +70,12 @@ final class CameraStreamingViewModel: ObservableObject {
     func stop() {
         camera.stop()
         streaming.stopStreaming()
+        browserStreaming.stop()
         cancellables.removeAll()
         isStreaming = false
         isProcessingFrame = false
+        lastBrowserFrameSentAt = nil
+        pairingPayloadText = nil
         statusText = "Streaming Stopped"
     }
 
@@ -77,7 +92,41 @@ final class CameraStreamingViewModel: ObservableObject {
             guard let self else { return }
             guard let sessionID = pairing.currentSession?.sessionID else { return }
             streaming.publishFrame(frame, for: sessionID)
+            if shouldPublishBrowserFrame(now: Date()) {
+                browserStreaming.publish(frame: frame)
+                lastBrowserFrameSentAt = Date()
+            }
         }
+    }
+
+    private func startBrowserStreamingIfPossible() throws {
+        guard
+            let session = pairing.currentSession,
+            session.role == .camera,
+            let token = pairing.currentToken,
+            token.isVisibleOnScreen
+        else {
+            return
+        }
+
+        try browserStreaming.start(session: session, token: token)
+    }
+
+    private func ensureCameraPairingPayload() {
+        if pairing.currentSession?.role == .camera,
+           pairing.currentToken?.isVisibleOnScreen == true,
+           let payload = pairing.qrPayloadString {
+            pairingPayloadText = payload
+            return
+        }
+
+        pairingPayloadText = pairing.prepareCameraPairing(deviceName: "Smart Camera")
+    }
+
+    private func shouldPublishBrowserFrame(now: Date) -> Bool {
+        guard browserStreaming.isRunning else { return false }
+        guard let lastBrowserFrameSentAt else { return true }
+        return now.timeIntervalSince(lastBrowserFrameSentAt) >= browserFrameInterval
     }
 
     nonisolated private static func makeVideoFrame(

@@ -1,3 +1,4 @@
+import Darwin
 import Foundation
 
 @MainActor
@@ -57,7 +58,7 @@ final class PairingService: PairingServiceProtocol {
     }
 
     init(
-        lanHostProvider: @escaping () -> String = { "192.168.1.24" },
+        lanHostProvider: @escaping () -> String = PairingService.currentLANHost,
         portProvider: @escaping () -> UInt16 = { 7890 },
         tokenProvider: @escaping () -> String = { UUID().uuidString.replacingOccurrences(of: "-", with: "").prefix(8).uppercased() },
         nowProvider: @escaping () -> Date = Date.init,
@@ -216,7 +217,7 @@ final class PairingService: PairingServiceProtocol {
         }
     }
 
-    private static func isLANReachableHost(_ host: String) -> Bool {
+    nonisolated private static func isLANReachableHost(_ host: String) -> Bool {
         if host.hasSuffix(".local") {
             return true
         }
@@ -240,5 +241,64 @@ final class PairingService: PairingServiceProtocol {
         }
 
         return false
+    }
+
+    nonisolated private static func currentLANHost() -> String {
+        var interfaces: UnsafeMutablePointer<ifaddrs>?
+        guard getifaddrs(&interfaces) == 0, let firstInterface = interfaces else {
+            return "127.0.0.1"
+        }
+        defer { freeifaddrs(interfaces) }
+
+        var fallbackHost: String?
+        var cursor: UnsafeMutablePointer<ifaddrs>? = firstInterface
+
+        while let interface = cursor?.pointee {
+            defer { cursor = interface.ifa_next }
+
+            guard
+                let address = interface.ifa_addr,
+                Int32(address.pointee.sa_family) == AF_INET,
+                isUsableLocalInterface(interface),
+                let host = numericHost(for: address),
+                isLANReachableHost(host)
+            else {
+                continue
+            }
+
+            let interfaceName = String(cString: interface.ifa_name)
+            if interfaceName == "en0" {
+                return host
+            }
+
+            fallbackHost = fallbackHost ?? host
+        }
+
+        return fallbackHost ?? "127.0.0.1"
+    }
+
+    nonisolated private static func isUsableLocalInterface(_ interface: ifaddrs) -> Bool {
+        let flags = interface.ifa_flags
+        let isUp = (flags & UInt32(IFF_UP)) != 0
+        let isLoopback = (flags & UInt32(IFF_LOOPBACK)) != 0
+        return isUp && !isLoopback
+    }
+
+    nonisolated private static func numericHost(for address: UnsafePointer<sockaddr>) -> String? {
+        var hostname = [CChar](repeating: 0, count: Int(NI_MAXHOST))
+        let result = getnameinfo(
+            address,
+            socklen_t(MemoryLayout<sockaddr_in>.size),
+            &hostname,
+            socklen_t(hostname.count),
+            nil,
+            0,
+            NI_NUMERICHOST
+        )
+
+        guard result == 0 else { return nil }
+        let endIndex = hostname.firstIndex(of: 0) ?? hostname.endIndex
+        let bytes = hostname[..<endIndex].map { UInt8(bitPattern: $0) }
+        return String(decoding: bytes, as: UTF8.self)
     }
 }

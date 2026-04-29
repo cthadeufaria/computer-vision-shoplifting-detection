@@ -81,6 +81,8 @@
 		A19229D1EF5D3A76EE9F1F27 /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09C0F403D7BCC49383AA2AD3 /* AppEnvironment.swift */; };
 		A260159197378EB8476CB86F /* SupervisorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CEFB043F110D7376D574BB9 /* SupervisorViewModel.swift */; };
 		A9E77A59852CE92510511410 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 762285DBF2AB8D9E04BCE294 /* Assets.xcassets */; };
+		AAE1D938D129C6EB29E5A5E7 /* WebSocketCameraStreamingServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAE1D937D129C6EB29E5A5E7 /* WebSocketCameraStreamingServer.swift */; };
+		AAE1D93AD129C6EB29E5A5E7 /* WebSocketCameraStreamingServerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAE1D939D129C6EB29E5A5E7 /* WebSocketCameraStreamingServerTests.swift */; };
 		B71C9490CA5F371507FA3F8B /* PairingServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A3F7F7A5389E65D5F32C305 /* PairingServiceProtocol.swift */; };
 		B9444843780044A78CD1A0D9 /* OnboardingUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B11EFCE5F2D8339E76887AE /* OnboardingUITests.swift */; };
 		BA97139C11FD34511D784819 /* RoleSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A3422CBFAC03A05E563A92D /* RoleSelectionView.swift */; };
@@ -218,6 +220,8 @@
 		993D9B73D46AFE2B91C41AE6 /* PosePreviewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PosePreviewViewModel.swift; sourceTree = "<group>"; };
 		9AA818872EE8E8EB5714B4AF /* MockPoseEstimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPoseEstimator.swift; sourceTree = "<group>"; };
 		9AC92BE2C676E071B356AB39 /* CoreML.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreML.framework; path = System/Library/Frameworks/CoreML.framework; sourceTree = SDKROOT; };
+		AAE1D937D129C6EB29E5A5E7 /* WebSocketCameraStreamingServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketCameraStreamingServer.swift; sourceTree = "<group>"; };
+		AAE1D939D129C6EB29E5A5E7 /* WebSocketCameraStreamingServerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketCameraStreamingServerTests.swift; sourceTree = "<group>"; };
 		A31C1A4351D53D17D0F9CFD2 /* MockPermissionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPermissionService.swift; sourceTree = "<group>"; };
 		A5C6B931B966482BBF5AFFF6 /* ShopliftDetect.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ShopliftDetect.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A7288FDA2CC4C844F197D2A8 /* AnomalyScorer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnomalyScorer.swift; sourceTree = "<group>"; };
@@ -417,6 +421,7 @@
 				053B1BFDA7B8CB908021B62E /* StreamingService.swift */,
 				3656C8B60726836AC8F1BEF6 /* StreamProtocol.swift */,
 				6BA8C505644282FAF4A416CA /* VideoFrame.swift */,
+				AAE1D937D129C6EB29E5A5E7 /* WebSocketCameraStreamingServer.swift */,
 			);
 			path = Networking;
 			sourceTree = "<group>";
@@ -568,6 +573,7 @@
 				170F97F16227A45820D9FDDC /* EncryptedTransportTests.swift */,
 				2D1154AB718103CC815CAC5A /* PairingServiceTests.swift */,
 				20501840E4E51292376E9682 /* StreamProtocolTests.swift */,
+				AAE1D939D129C6EB29E5A5E7 /* WebSocketCameraStreamingServerTests.swift */,
 			);
 			path = Networking;
 			sourceTree = "<group>";
@@ -788,6 +794,7 @@
 				819EFA877A526AC6B023CCEE /* StreamProtocolTests.swift in Sources */,
 				6F8B6C7ECC8673A521C5D55E /* SupervisorViewModelTests.swift in Sources */,
 				BC2BA3658705EE42EEA4F1F1 /* TrackingServiceTests.swift in Sources */,
+				AAE1D93AD129C6EB29E5A5E7 /* WebSocketCameraStreamingServerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -863,6 +870,7 @@
 				A260159197378EB8476CB86F /* SupervisorViewModel.swift in Sources */,
 				561AA654376488728FDF969B /* TrackingService.swift in Sources */,
 				5EC140FC9D3B87DF625F6705 /* VideoFrame.swift in Sources */,
+				AAE1D938D129C6EB29E5A5E7 /* WebSocketCameraStreamingServer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

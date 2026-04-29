@@ -26,6 +26,17 @@ struct CameraStreamingView: View {
                     .background(.ultraThinMaterial, in: Capsule())
                     .accessibilityIdentifier("streamingStatusLabel")
 
+                if let pairingPayload = viewModel.pairingPayloadText {
+                    Text(pairingPayload)
+                        .font(.footnote.monospaced())
+                        .multilineTextAlignment(.center)
+                        .textSelection(.enabled)
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 10)
+                        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14))
+                        .accessibilityIdentifier("streamingPairingPayloadLabel")
+                }
+
                 Button("Done") {
                     viewModel.stop()
                     isPresented = false
