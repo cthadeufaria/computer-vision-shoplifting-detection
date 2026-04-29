@@ -145,6 +145,7 @@ celerybeat.pid
 .env
 .envrc
 .venv
+node_modules/
 stg_nf_official/.venv/
 env/
 venv/
@@ -166,6 +167,7 @@ venv.bak/
 .mypy_cache/
 .dmypy.json
 dmypy.json
+*.tsbuildinfo
 
 # Pyre type checker
 .pyre/

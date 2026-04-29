@@ -188,10 +188,26 @@ Choose the path based on your goal:
   - start in `shopformer_2/`
 - STG-NF baseline comparison or custom pose/video anomaly scoring:
   - start in `stg_nf_official/`
+- browser-based supervisory monitoring:
+  - start in `web/`
 - legacy UCF-Crime tabular experiment:
   - use `legacy_ucf_crime/`
 
 ## Quick Start By Track
+
+### `web`
+
+Purpose:
+
+- browser version of the ShopliftDetect supervisory flow
+- Smart Camera onboarding is intentionally blocked on web
+- pairs with an iOS Smart Camera over local Wi-Fi using the displayed `sdlink://` payload
+
+```bash
+cd web
+npm install
+npm run dev
+```
 
 ### `shopformer_2`
 
